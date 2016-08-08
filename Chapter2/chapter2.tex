@@ -379,6 +379,8 @@ activation functions removed.
 
 \subsection{Recurrent neural networks}
 
+\nomenclature[z-RNN]{RNN}{Recurrent Neural Network}
+
 While feedforward neural networks provide a flexible model for approximating
 arbitrary functions, they require a fixed-dimension input $\x$ and hence
 cannot be directly applied to sequential data $\x = (\x_t)_{t=1}^T$ where $T$ may
@@ -708,6 +710,8 @@ The converse of the proof implies that $\| \W_{hh}^\tp \| \geq
 \gamma_\sigma > 1$ and exploding gradients to occur.
 
 \subsection{Long short term memory: solving the vanishing gradient}
+
+\nomenclature[z-LSTM]{LBM}{Lattice Boltzmann Method}
 
 In order to build a model which learns long range dependencies, vanishing
 gradients must be avoided. This requires us to design our memory cells holding

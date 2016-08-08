@@ -4,7 +4,7 @@
 \documentclass[a4paper,12pt,times,numbered,index,custombib,
 %print,
 draft,
-chapter
+%chapter
 ]{Classes/PhDThesisPSnPDF}
 
 % ******************************************************************************
@@ -105,7 +105,10 @@ chapter
 % To use choose `chapter' option in the document class
 
 \ifdefineChapter
- \includeonly{ Chapter4/chapter4}
+\includeonly{
+  Chapter7/chapter7,
+  Graveyard/graveyard,
+}
 \fi
 
 % ******************************** Front Matter ********************************
@@ -143,7 +146,7 @@ chapter
 \include{Chapter5/chapter5}
 \include{Chapter6/chapter6}
 \include{Chapter7/chapter7}
-
+\include{Chapter8/chapter8}
 
 
 % ********************************** Back Matter *******************************
@@ -185,5 +188,7 @@ chapter
 
 % *************************************** Index ********************************
 \printthesisindex % If index is present
+
+\include{Graveyard/graveyard}
 
 \end{document}
