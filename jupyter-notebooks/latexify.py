@@ -9,7 +9,7 @@ matplotlib.use('pgf')
 SPINE_COLOR = 'gray'
 TEXT_WIDTH_IN = 6.20081968504
 
-def latexify(fig_width=None, fig_height=None, columns=1):
+def latexify(fig_width=None, fig_height=None, columns=1, ytick_labelsize=8):
     """Set up matplotlib's RC params for LaTeX plotting.
     Call this before plotting a figure.
 
@@ -46,7 +46,7 @@ def latexify(fig_width=None, fig_height=None, columns=1):
         "font.size": 10,
         "legend.fontsize": 8,               # Make the legend/label fonts a little smaller
         "xtick.labelsize": 8,
-        "ytick.labelsize": 8,
+        "ytick.labelsize": ytick_labelsize,
         'figure.figsize': [fig_width,fig_height],
         'text.latex.preamble': ['\usepackage{gensymb}'],
         "pgf.preamble": [

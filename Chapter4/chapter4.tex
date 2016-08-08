@@ -1,4 +1,6 @@
 \chapter{Automatic composition}
+\minitoc
+\mynote{Debug minitoc}
 
 % **************************** Define Graphics Path **************************
 \ifpdf
@@ -7,12 +9,15 @@
     \graphicspath{{Chapter4/Figs/Vector/}{Chapter4/Figs/}}
 \fi
 
-This chapter describes a generative probabilistic sequence model for automatic
-composition of polyphonic music. We introduce a local representation for
-polyphonic scores as well as the preprocessing steps performed to construct
-the corpus of Bach chorales used throughout the remainder of our work. In addition,
-we describe the architecture, design decisions, and techniques used to construct
-and train our model.
+
+This chapter describes a generative RNN sequence model for polyphonic music. We
+first describe our process for constructing a training corpus of chorales and
+quantify the impact of our preprocessing procedure over the corpus. Next, we
+present a simple frame-based sequence encoding for polyphonic music. Using this
+sequence representation, we perform an investigation of various RNN
+architectures, design tradeoffs, and training methods. The results of our
+investigation are used to design our final model, which we compare against
+prior work and utilize in following chapters.
 
 \section{Constructing a corpus of encoded scores}
 
@@ -44,41 +49,38 @@ Schmuckler key-finding algorithm \citep{krumhansl2001cognitive} and then
 transposed according to \mynote{Table XYZ} such that the transposed key is
 C-major for major mode scores and A-minor for minor mode scores.
 
-\mynote{Update time quantization to 16ths (currently 8ths): is this even lossy?}
 Next, we perform \emph{time quantization} by aligning note start and end times
 to the nearest multiple of some minimum duration. Our model uses a minimum
 duration of one $1/16$th note, exceeding the time resoltuions of
-\citep{Boulanger-Lewandowski2012} \citep{Eck2002} by 2x, \citep{hild1991harmonet}
-by 4x, and \citep{bellgard1994harmonizing} by 8x.
+\citep{Boulanger-Lewandowski2012} \citep{Eck2002} by 2x,
+\citep{hild1991harmonet} by 4x, and \citep{bellgard1994harmonizing} by 8x.
 
-\mynote{All dynamics information is removed.}
 We consider only note pitches and durations, neglecting changes in timing
 (e.g. ritardandos), dynamics (e.g. crescendos), and stylistic notations (e.g.
 accents, staccatos, legatos).
 
-An example of the effects of our preprocessing steps is provided in
-\cref{fig:score-effects-preproc} (sheet music notation) and
-\cref{fig:piano-roll-effects-preproc} (piano roll) \mynote{Reference
-background}.
-
-\mynote{Find a score that actually suffers from time quantization}
-\begin{figure}[htbp]
+An example of the distortion introduced through of our preprocessing steps is
+provided in \vref{fig:score-effects-preproc} in sheet music notation and in
+piano roll\mynote{Is piano roll defined?} notation on
+\vref{fig:piano-roll-effects-preproc}.
+\begin{figure}[p]
     \centering
-    \includegraphics[width=0.8\linewidth]{bwv133-6-original-score-1.png}
+    \includegraphics[width=0.8\linewidth]{bwv185-6-original-score-1.png}
     \vspace{1cm}
-    \includegraphics[width=0.8\linewidth]{bwv133-6-preproc-score-1.png}
+    \includegraphics[width=0.8\linewidth]{bwv185-6-preproc-score-1.png}
     \caption{First 4 bars of JCB Chorale BWV 133.6 before (top) and after (bottom) preprocessing. Note
     the transposition down by a semitone to C-major as well as quantization of the
-    semiquavers to quavers in Alto bar 2.}
+    demisemiquavers in the third bar of the Soprano part.}
     \label{fig:score-effects-preproc}
 \end{figure}
 
 \begin{figure}[tb]
     \centering
-        \includegraphics[width=1.0\linewidth]{bwv133-6-original-piano-roll.png}
-        \includegraphics[width=1.0\linewidth]{bwv133-6-preproc-piano-roll.png}
+        \input{Chapter4/Figs/bwv185-6-original-piano-roll.pgf}
+        \input{Chapter4/Figs/bwv185-6-preproc-piano-roll.pgf}
     \caption{Piano roll representation of the same 4 bars from \cref{fig:score-effects-preproc}
-    before and after preprocessing.}
+    before and after preprocessing. Notice the transposition of key as well as quantization
+    of the C5 and D5 notes (after transposition) in bar 3 of the Soprano part.}
     \label{fig:piano-roll-effects-preproc}
 \end{figure}
 
@@ -145,12 +147,13 @@ duration usages before and after quantization. \mynote{Update plots... are they 
     \centering
     \begin{subfigure}[t]{0.48\textwidth}
         \centering
-        \includegraphics[width=1.0\linewidth]{meter-usage-original.png}
+        \input{Chapter4/Figs/meter-usage-original.pgf}
     \end{subfigure}
     ~
     \begin{subfigure}[t]{0.48\textwidth}
         \centering
         \includegraphics[width=1.0\linewidth]{meter-usage-quantized.png}
+        %\input{Chapter4/Figs/meter-usage-quantized.pgf}
     \end{subfigure}
     \caption{Effects of time quantization on meter}
     \label{fig:meter-time-quantization}
@@ -306,8 +309,7 @@ We identified our best model to be \mynote{what is it?}.
 
 In the following sections, we investigate pertubations about this model and the
 effects of various hyperparameters. A complete listing of results are available
-in
-\cref{tab:torch-rnn-config-perfs}.
+in \cref{tab:torch-rnn-config-perfs}.
 
 \subsubsection{Regularization}
 
