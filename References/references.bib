@@ -1,390 +1,1035 @@
-% ------------------------------------------------------------------------
-% SAMPLE BIBLIOGRAPHY FILE
-% ------------------------------------------------------------------------
-@misc{cve-2008-1368,
-  key =          {CVE-2008-1368},
-  title =        {Publication quality tables in \LaTeX*},
-  howpublished = {},
-  institution  = {NIST},
-  day =       17,
-  month =     {March},
-  year =         2008,
-  note =         {[online] \url{http://nvd.nist.gov/nvd.cfm?cvename=CVE-2008-1368}},
-  url = {http://nvd.nist.gov/nvd.cfm?cvename=CVE-2008-1368}
+@article{Martens2011,
+    author = {Martens, James},
+    doi = {2},
+    file = {:home/fliang/Documents/reading/rnn-lstm/ICML2011Sutskever{\_}524.pdf:pdf},
+    isbn = {9781450306195},
+    issn = {1},
+    journal = {Neural Networks},
+    number = {1},
+    pages = {1017--1024},
+    title = {{Generating Text with Recurrent Neural Networks}},
+    url = {http://www.icml-2011.org/papers/524{\_}icmlpaper.pdf},
+    volume = {131},
+    year = {2011}
+}
+@article{Mikolov2011,
+    author = {Mikolov, Toma and Kombrink, Stefan and Burget, Luka and Cernocky, Jan and Khudanpur, Sanjeev},
+    doi = {10.1109/ICASSP.2011.5947611},
+    file = {:home/fliang/Documents/reading/rnn-lstm/mikolov{\_}icassp2011{\_}5528.pdf:pdf},
+    isbn = {9781457705397},
+    issn = {15206149},
+    journal = {ICASSP, IEEE International Conference on Acoustics, Speech and Signal Processing - Proceedings},
+    keywords = {Backpropagation algorithms,Computational complexity,Computational linguistics,Signal processing,Speech communication,Speech recognition},
+    pages = {5528--5531},
+    title = {{Extensions of recurrent neural network language model}},
+    url = {http://dx.doi.org/10.1109/ICASSP.2011.5947611},
+    year = {2011}
+}
+@article{Mikolov2010,
+    author = {Mikolov, T and Karafiat, M and Burget, L and Cernocky, J and Khudanpur, S},
+    file = {:home/fliang/Documents/reading/rnn-lstm/mikolov{\_}interspeech2010{\_}IS100722.pdf:pdf},
+    journal = {Interspeech},
+    number = {September},
+    pages = {1045--1048},
+    title = {{Recurrent Neural Network based Language Model}},
+    year = {2010}
+}
+@article{Graves2005,
+    abstract = {In this paper, we present bidirectional Long Short Term Memory (LSTM) networks, and a modified, full gradient version of the LSTM learning algorithm. We evaluate Bidirectional LSTM (BLSTM) and several other network architectures on the benchmark task of framewise phoneme classification, using the TIMIT database. Our main findings are that bidirectional networks outperform unidirectional ones, and Long Short Term Memory (LSTM) is much faster and also more accurate than both standard Recurrent Neural Nets (RNNs) and time-windowed Multilayer Perceptrons (MLPs). Our results support the view that contextual information is crucial to speech processing, and suggest that BLSTM is an effective architecture with which to exploit it. ?? 2005 Elsevier Ltd. All rights reserved.},
+    author = {Graves, Alex and Schmidhuber, J??rgen},
+    doi = {10.1109/IJCNN.2005.1556215},
+    file = {:home/fliang/Documents/eBooks/AI-ML/deep-learning-reading-list-spring14/deep-learning-reading-list/nlp-speech/ijcnn2005.pdf:pdf},
+    isbn = {0780390482},
+    issn = {08936080},
+    journal = {Proceedings of the International Joint Conference on Neural Networks},
+    mendeley-groups = {BachBot},
+    pages = {2047--2052},
+    pmid = {16112549},
+    title = {{Framewise phoneme classification with bidirectional LSTM networks}},
+    volume = {4},
+    year = {2005}
+}
+@article{Bahdanau2015,
+    archivePrefix = {arXiv},
+    arxivId = {1409.0473},
+    author = {Bahdanau, Dzmitry and Cho, Kyunghyun and Bengio, Yoshua},
+    eprint = {1409.0473},
+    file = {:home/fliang/Documents/eBooks/AI-ML/shane{\_}LSTM/1409.0473v6.pdf:pdf},
+    mendeley-groups = {BachBot},
+    pages = {1--15},
+    title = {{{\#}4 Neural Machine Translation by Jointly Learning to Align and Translate}},
+    url = {http://arxiv.org/pdf/1409.0473v6.pdf},
+    year = {2015}
+}
+@article{Auli2013,
+    abstract = {We present a joint language and transla-tion model based on a recurrent neural net-work which predicts target words based on an unbounded history of both source and tar-get words. The weaker independence as-sumptions of this model result in a vastly larger search space compared to related feed-forward-based language or translation models. We tackle this issue with a new lattice rescor-ing algorithm and demonstrate its effective-ness empirically. Our joint model builds on a well known recurrent neural network language model (Mikolov, 2012) augmented by a layer of additional inputs from the source language. We show competitive accuracy compared to the traditional channel model features. Our best results improve the output of a system trained on WMT 2012 French-English data by up to 1.5 BLEU, and by 1.1 BLEU on average across several test sets.},
+    author = {Auli, Michael and Galley, Michel and Quirk, Chris and Zweig, Geoffrey},
+    file = {:home/fliang/Documents/reading/rnn-lstm/EMNLP2013RNNMT.pdf:pdf},
+    isbn = {9781937284978},
+    journal = {Emnlp},
+    mendeley-groups = {BachBot},
+    number = {October},
+    pages = {1044--1054},
+    title = {{Joint Language and Translation Modeling with Recurrent Neural Networks.}},
+    url = {http://research.microsoft.com/en-us/um/people/gzweig/Pubs/EMNLP2013RNNMT.pdf},
+    year = {2013}
+}
+@article{Sutskever2014,
+    abstract = {Deep Neural Networks (DNNs) are powerful models that have achieved excel-lent performance on difficult learning tasks. Although DNNs work well whenever large labeled training sets are available, they cannot be used to map sequences to sequences. In this paper, we present a general end-to-end approach to sequence learning that makes minimal assumptions on the sequence structure. Our method uses a multilayered Long Short-Term Memory (LSTM) to map the input sequence to a vector of a fixed dimensionality, and then another deep LSTM to decode the target sequence from the vector. Our main result is that on an English to French translation task from the WMT-14 dataset, the translations produced by the LSTM achieve a BLEU score of 34.8 on the entire test set, where the LSTM's BLEU score was penalized on out-of-vocabulary words. Additionally, the LSTM did not have difficulty on long sentences. For comparison, a phrase-based SMT system achieves a BLEU score of 33.3 on the same dataset. When we used the LSTM to rerank the 1000 hypotheses produced by the aforementioned SMT system, its BLEU score increases to 36.5, which is close to the previous state of the art. The LSTM also learned sensible phrase and sentence representations that are sensitive to word order and are relatively invariant to the active and the passive voice. Fi-nally, we found that reversing the order of the words in all source sentences (but not target sentences) improved the LSTM's performance markedly, because doing so introduced many short term dependencies between the source and the target sentence which made the optimization problem easier.},
+    archivePrefix = {arXiv},
+    arxivId = {1409.3215},
+    author = {Sutskever, Ilya and Vinyals, Oriol and Le, Quoc V},
+    eprint = {1409.3215},
+    file = {:home/fliang/Documents/reading/rnn-lstm/5346-sequence-to-sequence-learning-with-neural-networks.pdf:pdf},
+    isbn = {1409.3215},
+    journal = {Advances in Neural Information Processing Systems (NIPS)},
+    mendeley-groups = {BachBot},
+    pages = {3104--3112},
+    title = {{Sequence to sequence learning with neural networks}},
+    url = {http://papers.nips.cc/paper/5346-sequence-to-sequence-learning-with-neural},
+    year = {2014}
+}
+@article{Collobert2011,
+    abstract = {We propose a unified neural network architecture and learning algorithm that can be applied to var- ious natural language processing tasks including part-of-speech tagging, chunking, named entity recognition, and semantic role labeling. This versatility is achieved by trying to avoid task-specific engineering and therefore disregarding a lot of prior knowledge. Instead of exploiting man-made input features carefully optimized for each task, our system learns internal representations on the basis of vast amounts of mostly unlabeled training data. This work is then used as a basis for building a freely available tagging system with good performance and minimal computational re- quirements.},
+    archivePrefix = {arXiv},
+    arxivId = {1103.0398},
+    author = {Collobert, R. and Weston, J. and Bottou, L. and Karlen, M. and Kavukcuoglu, K. and Kuksa, P.},
+    doi = {10.1145/2347736.2347755},
+    eprint = {1103.0398},
+    file = {:home/fliang/Documents/15-16/cambridge/research/papers/1103.0398v1.pdf:pdf},
+    isbn = {1532-4435},
+    issn = {1532-4435},
+    journal = {Journal of Machine Learning Research},
+    keywords = {and semantic role labeling,be applied,by trying,chunking,learning algorithm that can,named entity recognition,natural language processing,neural network architecture and,neural networks,part-of-speech tagging,processing tasks including,this versatility is achieved,to various natural language,we propose a unified},
+    pages = {2493--2537},
+    pmid = {1000183096},
+    title = {{Natural Language Processing (Almost) from Scratch}},
+    volume = {12},
+    year = {2011}
+}
+@article{Brien2016,
+    author = {Brien, Tim O and Roman, Iran},
+    file = {:home/fliang/Documents/15-16/cambridge/research/papers/final.pdf:pdf},
+    journal = {CS224d: Deep Learning for Natural Language Processing Final Projects},
+    mendeley-groups = {Thesis/Related work},
+    pages = {1--9},
+    title = {{A Recurrent Neural Network for Musical Structure Processing and Expectation}},
+    year = {2016}
+}
+@article{Nayebi2015,
+    author = {Nayebi, Aran and Vitelli, Matt},
+    journal = {CS224d: Deep Learning for Natural Language Processing Final Projects},
+    mendeley-groups = {Thesis/Related work},
+    pages = {1--6},
+    title = {{GRUV: Algorithmic Music Generation using Recurrent Neural Networks}},
+    year = {2015}
+}
+@article{Allan2005,
+    author = {Allan, Moray and Williams, Christopher KI},
+    file = {:home/fliang/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Unknown - Unknown - allan2005.pdf:pdf},
+    journal = {Advances in Neural Information Processing Systems},
+    mendeley-groups = {Thesis,Thesis/Harmonization},
+    pages = {25--32},
+    title = {allan2005},
+    volume = {17},
+    year = {2005}
+}
+@article{Boulanger-Lewandowski2012,
+    abstract = {We investigate the problem of modeling symbolic sequences of polyphonic music in a completely general piano-roll representation. We introduce a probabilistic model based on distribution estimators conditioned on a recurrent neural network that is able to discover temporal dependencies in high-dimensional sequences. Our approach outperforms many traditional models of polyphonic music on a variety of realistic datasets. We show how our musical language model can serve as a symbolic prior to improve the accuracy of polyphonic transcription.},
+    archivePrefix = {arXiv},
+    arxivId = {1206.6392},
+    author = {Boulanger-Lewandowski, Nicolas and Vincent, Pascal and Bengio, Yoshua},
+    eprint = {1206.6392},
+    file = {:home/fliang/Documents/reading/rnn-lstm/1206.6392v1.pdf:pdf},
+    isbn = {978-1-4503-1285-1},
+    journal = {Proceedings of the 29th International Conference on Machine Learning (ICML-12)},
+    mendeley-groups = {Thesis/Related work},
+    number = {Cd},
+    pages = {1159--1166},
+    title = {{Modeling Temporal Dependencies in High-Dimensional Sequences: Application to Polyphonic Music Generation and Transcription}},
+    year = {2012}
+}
+@article{Lyu2015,
+    author = {Lyu, Qi},
+    file = {:home/fliang/Documents/15-16/cambridge/research/papers/p991-lyu.pdf:pdf},
+    isbn = {9781450334594},
+    journal = {Proceedings of the 23rd Annual ACM Conference on Multimedia Conference},
+    pages = {991--994},
+    title = {{Polyphonic Music Modelling with LSTM-RTRBM}},
+    year = {2015}
+}
+@article{Eck2002,
+    abstract = {In general music composed by recurrent neural networks (RNNs) suffers from a lack of global structure. Though networks can learn note-by-note transition probabilities and even reproduce phrases, attempts at learning an entire musical form and using that knowledge to guide composition have been unsuccessful. The reason for this failure seems to be that RNNs cannot keep track of temporally distant events that indicate global music structure. Long Short-Term Memory (LSTM) has succeeded in similar domains where other RNNs have failed, such as timing {\&} counting and CSL learning. In the current study we show that LSTM is also a good mechanism for learning to compose music. We compare this approach to previous attempts, with particular focus on issues of data representation. We present experimental results showing that LSTM successfully learns a form of blues music and is able to compose novel (and we believe pleasing) melodies in that style. Remarkably, once the network has found the relevant structure it does not drift from it: LSTM is able to play the blues with good timing and proper structure as long as one is willing to listen.},
+    author = {Eck, Douglas and Schmidhuber, J{\"{u}}rgen},
+    file = {:home/fliang/Documents/15-16/cambridge/research/papers/IDSIA-07-02.pdf:pdf},
+    journal = {Idsia},
+    title = {{A First Look at Music Composition using LSTM Recurrent Neural Networks}},
+    url = {http://www.idsia.ch/{~}juergen/blues/IDSIA-07-02.pdf},
+    year = {2002}
+}
+@article{Eck2002-blues,
+    abstract = {Few types of signal streams are as ubiquitous as music. Here we consider the problem of extracting essential ingredients of music signals, such as well-defined global temporal structure in the form of nested periodicities (or meter). Can we construct an adaptive signal processing device that learns by example how to generate new instances of a given musical style? Because recurrent neural networks can in principle learn the temporal structure of a signal, they are good candidates for such a task. Unfortunately, music composed by standard recurrent neural networks (RNNs) often lacks global coherence. The reason for this failure seems to be that RNNs cannot keep track of temporally distant events that indicate global music structure. Long Short-Term Memory (LSTM) has succeeded in similar domains where other RNNs have failed, such as timing {\&} counting and learning of context sensitive languages. In the current study we show that LSTM is also a good mechanism for learning to compose music. We present experimental results showing that LSTM successfully learns a form of blues music and is able to compose novel (and we believe pleasing) melodies in that style. Remarkably, once the network has found the relevant structure it does not drift from it. LSTM is able to play the blues with good timing and proper structure as long as one is willing to listen.},
+    author = {Eck, D. and Schmidhuber, J.},
+    doi = {10.1109/NNSP.2002.1030094},
+    file = {:home/fliang/Documents/15-16/cambridge/research/papers/ml{\_}compositioin/2002{\_}ieee.pdf:pdf},
+    isbn = {0780376161},
+    issn = {0780376161},
+    journal = {Neural Networks for Signal Processing - Proceedings of the IEEE Workshop},
+    pages = {747--756},
+    title = {{Finding temporal structure in music: Blues improvisation with LSTM recurrent networks}},
+    volume = {2002-Janua},
+    year = {2002}
+}
+@article{Tymoczko2009,
+    abstract = {This paper considers three conceptions of musical distance (or inverse “similarity”) that produce three different musico-geometrical spaces: the first, based on voice leading, yields a collection of continuous quotient spaces or orbifolds; the second, based on acoustics, gives rise to the Tonnetz and related “tuning lattices”; while the third, based on the total interval content of a group of notes, generates a six-dimensional “quality space” first described by Ian Quinn. I will show that although these three measures are in principle quite distinct, they are in practice surprisingly interrelated. This produces the challenge of determining which model is appropriate to a given music-theoretical circumstance. Since the different models can yield comparable results, unwary theorists could potentially find themselves using one type of structure (such as a tuning lattice) to investigate properties more perspicuously represented by another (for instance, voice-leading relationships).},
+    author = {Tymoczko, Dmitri},
+    doi = {10.1007/978-3-642-02394-1_24},
+    file = {:home/fliang/Documents/15-16/cambridge/research/papers/distance.pdf:pdf},
+    isbn = {9783642023934},
+    issn = {18650929},
+    journal = {Communications in Computer and Information Science},
+    keywords = {Fourier transform,Orbifold,Tonnetz,Tuning lattice,Voice leading},
+    pages = {258--272},
+    title = {{Three conceptions of musical distance}},
+    volume = {38},
+    year = {2009}
+}
+@article{Liu2014,
+    abstract = {We propose a framework for computer music composition that uses resilient propagation (RProp) and long short term memory (LSTM) recurrent neural network. In this paper, we show that LSTM network learns the structure and characteristics of music pieces properly by demonstrating its ability to recreate music. We also show that predicting existing music using RProp outperforms Back propagation through time (BPTT).},
+    archivePrefix = {arXiv},
+    arxivId = {1412.3191},
+    author = {Liu, I-Ting and Ramakrishnan, Bhiksha},
+    eprint = {1412.3191},
+    file = {:home/fliang/Documents/15-16/cambridge/research/papers/1412.3191.pdf:pdf},
+    journal = {arXiv:1412.3191},
+    pages = {1--9},
+    title = {{Bach in 2014: Music Composition with Recurrent Neural Network}},
+    url = {http://arxiv.org/abs/1412.3191},
+    volume = {5},
+    year = {2014}
+}
+@article{Koutnik2014,
+    abstract = {Sequence prediction and classification are ubiquitous and challenging problems in machine learning that can require identifying complex dependencies between temporally distant inputs. Recurrent Neural Networks (RNNs) have the ability, in theory, to cope with these temporal dependencies by virtue of the short-term memory implemented by their recurrent (feedback) connections. However, in practice they are difficult to train successfully when long-term memory is required. This paper introduces a simple, yet powerful modification to the simple RNN (SRN) architecture, the Clockwork RNN (CW-RNN), in which the hidden layer is partitioned into separate modules, each processing inputs at its own temporal granularity, making computations only at its prescribed clock rate. Rather than making the standard RNN models more complex, CW-RNN reduces the number of SRN parameters, improves the performance significantly in the tasks tested, and speeds up the network evaluation. The network is demonstrated in preliminary experiments involving three tasks: audio signal generation, TIMIT spoken word classification, where it outperforms both SRN and LSTM networks, and online handwriting recognition, where it outperforms SRNs.},
+    archivePrefix = {arXiv},
+    arxivId = {arXiv:1402.3511v1},
+    author = {Koutnik, Jan and Greff, Klaus and Gomez, Faustino and Schmidhuber, Juergen},
+    eprint = {arXiv:1402.3511v1},
+    file = {:home/fliang/Documents/15-16/cambridge/research/papers/iran{\_}tsobrien{\_}cs224d{\_}proposal.pdf:pdf},
+    isbn = {9781634393973},
+    journal = {Proceedings of The 31st International Conference on Machine Learning},
+    pages = {1863--1871},
+    title = {{A Clockwork RNN}},
+    url = {http://jmlr.org/proceedings/papers/v32/koutnik14.html},
+    volume = {32},
+    year = {2014}
+}
+@article{Cuthbert2011,
+    author = {Cuthbert, Michael Scott and Cabal-ugaz, Jose and Ariza, Chris and Hadley, Beth},
+    file = {:home/fliang/Documents/15-16/cambridge/research/papers/music{\_}classification/Cuthbert{\_}Ariza{\_}Cabal-Ugaz{\_}Hadley{\_}Parikh-Hidden-NIPS2011.pdf:pdf},
+    journal = {Proceedings of the Neural Information Processing Systems Conference},
+    pages = {3--4},
+    title = {{Hidden Beyond MIDI's Reach : Feature Extraction and Machine Learning with Rich Symbolic Formats in music21}},
+    year = {2011}
+}
+@article{Scott2015,
+    title={music21: A toolkit for computer-aided musicology and symbolic music data},
+    author={Cuthbert, Michael Scott and Ariza, Christopher},
+    year={2010},
+    publisher={International Society for Music Information Retrieval}
+}
+@article{Mikolov2015,
+    abstract = {Recurrent neural network is a powerful model that learns temporal patterns in sequential data. For a long time, it was believed that recurrent networks are difficult to train using simple optimizers, such as stochastic gradient descent, due to the so-called vanishing gradient problem. In this paper, we show that learning longer term patterns in real data, such as in natural language, is perfectly possible using gradient descent. This is achieved by using a slight structural modification of the simple recurrent neural network architecture. We encourage some of the hidden units to change their state slowly by making part of the recurrent weight matrix close to identity, thus forming a kind of longer term memory. We evaluate our model on language modeling tasks on benchmark datasets, where we obtain similar performance to the much more complex Long Short Term Memory (LSTM) networks (Hochreiter {\&} Schmidhuber, 1997).},
+    archivePrefix = {arXiv},
+    arxivId = {arXiv:1412.7753v1},
+    author = {Mikolov, Tomas and Joulin, Armand and Chopra, Sumit and Mathieu, Michael},
+    eprint = {arXiv:1412.7753v1},
+    file = {:home/fliang/Documents/reading/rnn-lstm/1412.7753.pdf:pdf},
+    journal = {Iclr},
+    pages = {1--9},
+    title = {{Learning Longer Memory in Recurrent Neural Networks}},
+    url = {http://arxiv.org/pdf/1412.7753v1.pdf},
+    year = {2015}
+}
+@article{Herlands2014,
+    author = {Herlands, William and Der, Ricky and Greenberg, Y and Levin, S},
+    file = {:home/fliang/Documents/15-16/cambridge/research/papers/8314-38152-1-PB.pdf:pdf},
+    isbn = {9781577356776},
+    journal = {Twenty-Eighth AAAI Conference on Artificial Intelligence},
+    keywords = {Applications},
+    mendeley-groups = {Thesis,Thesis/Feature Engineering},
+    pages = {276--282},
+    title = {{A Machine Learning Approach to Musically Meaningful Homogeneous Style Classification}},
+    url = {http://www.aaai.org/ocs/index.php/AAAI/AAAI14/paper/view/8314},
+    year = {2014}
+}
+@article{Pascanu2012,
+    abstract = {There are two widely known issues with prop- erly training Recurrent Neural Networks, the vanishing and the exploding gradient prob- lems detailed in Bengio et al. (1994). In this paper we attempt to improve the under- standing of the underlying issues by explor- ing these problems from an analytical, a geo- metric and a dynamical systems perspective. Our analysis is used to justify a simple yet ef- fective solution. We propose a gradient norm clipping strategy to deal with exploding gra- dients and a soft constraint for the vanishing gradients problem. We validate empirically our hypothesis and proposed solutions in the experimental section.},
+    archivePrefix = {arXiv},
+    arxivId = {arXiv:1211.5063v2},
+    author = {Pascanu, Razvan and Mikolov, Tomas and Bengio, Yoshua},
+    doi = {10.1109/72.279181},
+    eprint = {arXiv:1211.5063v2},
+    file = {:home/fliang/Documents/reading/rnn-lstm/1211.5063v2.pdf:pdf},
+    isbn = {08997667 (ISSN)},
+    issn = {1045-9227},
+    journal = {Proceedings of The 30th International Conference on Machine Learning},
+    mendeley-groups = {Thesis},
+    number = {2},
+    pages = {1310--1318},
+    pmid = {18267787},
+    title = {{On the difficulty of training recurrent neural networks}},
+    url = {http://jmlr.org/proceedings/papers/v28/pascanu13.pdf},
+    year = {2012}
+}
+@article{Bengio1994,
+    abstract = {Recurrent neural networks can be used to map input sequences to output sequences, such as for recognition, production or prediction problems. However, practical difficulties have been reported in training recurrent neural networks to perform tasks in which the temporal contingencies present in the input/output sequences span long intervals. We show why gradient based learning algorithms face an increasingly difficult problem as the duration of the dependencies to be captured increases. These results expose a trade-off between efficient learning by gradient descent and latching on information for long periods. Based on an understanding of this problem, alternatives to standard gradient descent are considered.},
+    archivePrefix = {arXiv},
+    arxivId = {arXiv:1211.5063v2},
+    author = {Bengio, Yoshua and Simard, Patrice and Frasconi, Paolo},
+    doi = {10.1109/72.279181},
+    eprint = {arXiv:1211.5063v2},
+    file = {:home/fliang/Documents/reading/rnn-lstm/1211.5063v1.pdf:pdf},
+    isbn = {1045-9227 VO  - 5},
+    issn = {19410093},
+    journal = {IEEE Transactions on Neural Networks},
+    number = {2},
+    pages = {157--166},
+    pmid = {18267787},
+    title = {{Learning Long-Term Dependencies with Gradient Descent is Difficult}},
+    url = {http://jmlr.org/proceedings/papers/v28/pascanu13.pdf},
+    volume = {5},
+    year = {1994}
+}
+@article{Cybenko1993,
+    abstract = {In this paper we demonstrate that finite linear combinations of compositions of a fixed, univariate function and a set of affine functionals can uniformly approximate any continuous function ofn real variables with support in the unit hypercube; only mild conditions are imposed on the univariate function. Our results settle an open question about representability in the class of single hidden layer neural networks. In particular, we show that arbitrary decision regions can be arbitrarily well approximated by continuous feedforward neural networks with only a single internal, hidden layer and any continuous sigmoidal nonlinearity. The paper discusses approximation properties of other possible types of nonlinearities that might be implemented by artificial neural networks.},
+    author = {Cybenko, George},
+    doi = {10.1007/BF02836480},
+    file = {:home/fliang/Documents/reading/art{\%}3A10.1007{\%}2FBF02551274.pdf:pdf},
+    isbn = {0780300564},
+    issn = {10009221},
+    journal = {Approximation Theory and its Applications},
+    keywords = {approximation,completeness,neural networks},
+    number = {3},
+    pages = {17--28},
+    title = {{Degree of approximation by superpositions of a sigmoidal function}},
+    volume = {9},
+    year = {1993}
+}
+@article{Bengio2011,
+    abstract = {Deep architectures are families of functions corresponding to deep circuits. Deep Learning algorithms are based on parametrizing such circuits and tuning their parameters so as to approximately optimize some training objective. Whereas it was thought too difficult to train deep architectures, several successful algorithms have been proposed in recent years. We review some of the theoretical motivations for deep architectures, as well as some of their practical successes, and propose directions of investigations to address some of the remaining challenges},
+    archivePrefix = {arXiv},
+    arxivId = {1206.5533},
+    author = {Bengio, Yoshua and Delalleau, Olivier},
+    doi = {10.1007/978-3-642-24412-4_3},
+    eprint = {1206.5533},
+    file = {:home/fliang/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Bengio, Delalleau - 2011 - On the expressive power of deep architectures.pdf:pdf},
+    isbn = {9783642244117},
+    issn = {03029743},
+    journal = {Lecture Notes in Computer Science (including subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics)},
+    pages = {18--36},
+    pmid = {25497547},
+    title = {{On the expressive power of deep architectures}},
+    volume = {6925 LNAI},
+    year = {2011}
+}
+@inproceedings{goller1996learning,
+  title={Learning task-dependent distributed representations by backpropagation through structure},
+  author={Goller, Christoph and Kuchler, Andreas},
+  booktitle={Neural Networks, 1996., IEEE International Conference on},
+  volume={1},
+  pages={347--352},
+  year={1996},
+  organization={IEEE}
+}
+@article{:/content/asa/journal/jasa/55/5/10.1121/1.1914648,
+    author = "Terhardt, Ernst",
+    title = "Pitch, consonance, and harmony",
+    journal = "The Journal of the Acoustical Society of America",
+    year = "1974",
+    volume = "55",
+    number = "5",
+    pages = "1061-1069",
+    url = "http://scitation.aip.org/content/asa/journal/jasa/55/5/10.1121/1.1914648",
+    doi = "http://dx.doi.org/10.1121/1.1914648"
+}
+@article{denton1997history,
+    title={The History of Musical Tuning and Temperament during the Classical and Romantic Periods},
+    author={Denton, Christine and Fillion, M},
+    year={1997}
+}
+@online{spn,
+    author = {Flutopedia},
+    title = {Octave Notation},
+    year = 2016,
+    url = {http://www.flutopedia.com/octave_notation.htm},
+    urldate = {2016-07-25}
+}
+@article{jordan1997serial,
+    title={Serial order: A parallel distributed processing approach},
+    author={Jordan, Michael I},
+    journal={Advances in psychology},
+    volume={121},
+    pages={471--495},
+    year={1997},
+    publisher={Elsevier}
+}
+@article{elman1990finding,
+    title={Finding structure in time},
+    author={Elman, Jeffrey L},
+    journal={Cognitive science},
+    volume={14},
+    number={2},
+    pages={179--211},
+    year={1990},
+    publisher={Elsevier}
+}
+@article{hochreiter1997long,
+  title={Long short-term memory},
+  author={Hochreiter, Sepp and Schmidhuber, J{\"u}rgen},
+  journal={Neural computation},
+  volume={9},
+  number={8},
+  pages={1735--1780},
+  year={1997},
+  publisher={MIT Press}
+}
+@article{srivastava2014dropout,
+  title={Dropout: a simple way to prevent neural networks from overfitting.},
+  author={Srivastava, Nitish and Hinton, Geoffrey E and Krizhevsky, Alex and Sutskever, Ilya and Salakhutdinov, Ruslan},
+  journal={Journal of Machine Learning Research},
+  volume={15},
+  number={1},
+  pages={1929--1958},
+  year={2014}
+}
+@article{zaremba2014recurrent,
+  title={Recurrent neural network regularization},
+  author={Zaremba, Wojciech and Sutskever, Ilya and Vinyals, Oriol},
+  journal={arXiv preprint arXiv:1409.2329},
+  year={2014}
+}
+@article{ioffe2015batch,
+  title={Batch normalization: Accelerating deep network training by reducing internal covariate shift},
+  author={Ioffe, Sergey and Szegedy, Christian},
+  journal={arXiv preprint arXiv:1502.03167},
+  year={2015}
+}
+@PHDTHESIS{Mikolov2012,
+   author = {Tom{\'{a}}{\v{s}} Mikolov},
+   title = {Statistical Language Models Based on Neural Networks},
+   pages = {129},
+   year = {2012},
+   location = {Brno, CZ},
+   language = {english},
+   url = {http://www.fit.vutbr.cz/research/view_pub.php?id=10158}
+}
+@article{linnainmaa1970representation,
+  title={The representation of the cumulative rounding error of an algorithm as a Taylor expansion of the local rounding errors},
+  author={Linnainmaa, Seppo},
+  journal={Master's Thesis (in Finnish), Univ. Helsinki},
+  pages={6--7},
+  year={1970}
+}
+@article{rumelhart1988learning,
+  title={Learning representations by back-propagating errors},
+  author={Rumelhart, David E and Hinton, Geoffrey E and Williams, Ronald J},
+  journal={Cognitive modeling},
+  volume={5},
+  number={3},
+  pages={1},
+  year={1988}
+}
+@article{williams1990efficient,
+  title={An efficient gradient-based algorithm for on-line training of recurrent network trajectories},
+  author={Williams, Ronald J and Peng, Jing},
+  journal={Neural computation},
+  volume={2},
+  number={4},
+  pages={490--501},
+  year={1990},
+  publisher={MIT Press}
+}
+@article{citeulike:13881859,
+    author = {Sutskever, Ilya},
+    citeulike-article-id = {13881859},
+    citeulike-linkout-0 = {http://www.cs.utoronto.ca/\%7Eilya/pubs/ilya\_sutskever\_phd\_thesis.pdf},
+    keywords = {deep\_learning\_architectures, lstm, multilayer\_networks, networks, neural, phd-thesis, recurrent, theses},
+    posted-at = {2015-12-11 16:32:08},
+    priority = {2},
+    title = {{Training Recurrent Neural Networks - Ilia Sutskever - PhD thesis}},
+    url = {http://www.cs.utoronto.ca/\%7Eilya/pubs/ilya\_sutskever\_phd\_thesis.pdf}
+}
+@phdthesis{freedman2015correlational,
+  title={Correlational Harmonic Metrics: Bridging Computational and Human Notions of Musical Harmony},
+  author={Freedman, Dylan},
+  year={2015}
+}
+@book{randel1999harvard,
+  title={The Harvard concise dictionary of music and musicians},
+  author={Randel, Don Michael},
+  year={1999},
+  publisher={Harvard University Press}
+}
+@book{griffith1999musical,
+  title={Musical networks: Parallel distributed perception and performance},
+  author={Griffith, Niall and Todd, Peter M},
+  year={1999},
+  publisher={MIT Press}
+}
+@article{mozer1994neural,
+  title={Neural network music composition by prediction: Exploring the benefits of psychoacoustic constraints and multi-scale processing},
+  author={Mozer, Michael C},
+  journal={Connection Science},
+  volume={6},
+  number={2-3},
+  pages={247--280},
+  year={1994},
+  publisher={Taylor \& Francis}
+}
+@inproceedings{franklin2001learning,
+  title={Learning and improvisation},
+  author={Franklin, JA and Dietterich, TG and Becker, S and Ghahramani, Z},
+  booktitle={Neural Information Processing Systems},
+  volume={14},
+  year={2001}
+}
+@inproceedings{franklin2004recurrent,
+  title={Recurrent Neural Networks and Pitch Representations for Music Tasks.},
+  author={Franklin, Judy A},
+  booktitle={FLAIRS Conference},
+  pages={33--37},
+  year={2004}
+}
+@inproceedings{franklin2005jazz,
+  title={Jazz Melody Generation from Recurrent Network Learning of Several Human Melodies.},
+  author={Franklin, Judy A},
+  booktitle={FLAIRS Conference},
+  pages={57--62},
+  year={2005}
+}
+@misc{toiviainen2000symbolic,
+  title={Symbolic AI versus Connectionism in Music Research.},
+  author={Toiviainen, Petri},
+  year={2000}
+}
+@inproceedings{gers2000recurrent,
+  title={Recurrent nets that time and count},
+  author={Gers, Felix A and Schmidhuber, J{\"u}rgen},
+  booktitle={Neural Networks, 2000. IJCNN 2000, Proceedings of the IEEE-INNS-ENNS International Joint Conference on},
+  volume={3},
+  pages={189--194},
+  year={2000},
+  organization={IEEE}
+}
+@article{gers2002learning,
+  title={Learning precise timing with LSTM recurrent networks},
+  author={Gers, Felix A and Schraudolph, Nicol N and Schmidhuber, J{\"u}rgen},
+  journal={Journal of machine learning research},
+  volume={3},
+  number={Aug},
+  pages={115--143},
+  year={2002}
+}
+@inproceedings{sturm2015folk,
+  title={Folk music style modelling by recurrent neural networks with long short term memory units},
+  author={Sturm, Bob and Santos, Joao Felipe and Korshunova, Iryna},
+  booktitle={16th International Society for Music Information Retrieval Conference},
+  year={2015}
+}
+@article{sturm2016music,
+  title={Music transcription modelling and composition using deep learning},
+  author={Sturm, Bob L and Santos, Jo{\~a}o Felipe and Ben-Tal, Oded and Korshunova, Iryna},
+  journal={arXiv preprint arXiv:1604.08723},
+  year={2016}
+}
+@inproceedings{cruz1998learning,
+  title={Learning regular grammars to model musical style: Comparing different coding schemes},
+  author={Cruz-Alc{\'a}zar, Pedro P and Vidal-Ruiz, Enrique},
+  booktitle={International Colloquium on Grammatical Inference},
+  pages={211--222},
+  year={1998},
+  organization={Springer}
+}
+@article{bharucha1989modeling,
+  title={Modeling the perception of tonal structure with neural nets},
+  author={Bharucha, Jamshed J and Todd, Peter M},
+  journal={Computer Music Journal},
+  volume={13},
+  number={4},
+  pages={44--53},
+  year={1989},
+  publisher={JSTOR}
+}
+@inproceedings{todd1988sequential,
+  title={A sequential network design for musical applications},
+  author={Todd, Peter},
+  booktitle={Proceedings of the 1988 connectionist models summer school},
+  pages={76--84},
+  year={1988}
+}
+@article{todd1989connectionist,
+  title={A connectionist approach to algorithmic composition},
+  author={Todd, Peter M},
+  journal={Computer Music Journal},
+  volume={13},
+  number={4},
+  pages={27--43},
+  year={1989},
+  publisher={JSTOR}
+}
+@book{robinson1987utility,
+  title={The utility driven dynamic error propagation network},
+  author={Robinson, AJ and Fallside, Frank},
+  year={1987},
+  publisher={University of Cambridge Department of Engineering}
+}
+@article{williams1995gradient,
+  title={Gradient-based learning algorithms for recurrent networks and their computational complexity},
+  author={Williams, Ronald J and Zipser, David},
+  journal={Back-propagation: Theory, architectures and applications},
+  pages={433--486},
+  year={1995}
+}
+@book{cooper1963rhythmic,
+  title={The rhythmic structure of music},
+  author={Cooper, Grosvenor and Meyer, Leonard B},
+  volume={118},
+  year={1963},
+  publisher={University of Chicago Press}
+}
+@article{shepard1982geometrical,
+  title={Geometrical approximations to the structure of musical pitch.},
+  author={Shepard, Roger N},
+  journal={Psychological review},
+  volume={89},
+  number={4},
+  pages={305},
+  year={1982},
+  publisher={American Psychological Association}
+}
+@article{laden1989representation,
+  title={The representation of pitch in a neural net model of chord classification},
+  author={Laden, Bernice and Keefe, Douglas H},
+  journal={Computer Music Journal},
+  volume={13},
+  number={4},
+  pages={12--26},
+  year={1989},
+  publisher={JSTOR}
+}
+@inproceedings{gers2002dekf,
+  title={DEKF-LSTM.},
+  author={Gers, Felix A and P{\'e}rez-Ortiz, Juan Antonio and Eck, Douglas and Schmidhuber, J{\"u}rgen},
+  booktitle={ESANN},
+  pages={369--376},
+  year={2002}
+}
+@article{gers2001lstm,
+  title={LSTM recurrent networks learn simple context-free and context-sensitive languages},
+  author={Gers, Felix A and Schmidhuber, E},
+  journal={IEEE Transactions on Neural Networks},
+  volume={12},
+  number={6},
+  pages={1333--1340},
+  year={2001},
+  publisher={IEEE}
+}
+@inproceedings{wiles1995learning,
+  title={Learning to count without a counter: A case study of dynamics and activation landscapes in recurrent networks},
+  author={Wiles, Janet and Elman, Jeff},
+  booktitle={Proceedings of the seventeenth annual conference of the cognitive science society},
+  number={s 482},
+  pages={487},
+  year={1995},
+  organization={Erlbaum}
+}
+@article{gers2000learning,
+  title={Learning to forget: Continual prediction with LSTM},
+  author={Gers, Felix A and Schmidhuber, J{\"u}rgen and Cummins, Fred},
+  journal={Neural computation},
+  volume={12},
+  number={10},
+  pages={2451--2471},
+  year={2000},
+  publisher={MIT Press}
+}
+@article{williams1989learning,
+  title={A learning algorithm for continually running fully recurrent neural networks},
+  author={Williams, Ronald J and Zipser, David},
+  journal={Neural computation},
+  volume={1},
+  number={2},
+  pages={270--280},
+  year={1989},
+  publisher={MIT Press}
+}
+@article{bellgard1994harmonizing,
+  title={Harmonizing music the Boltzmann way},
+  author={Bellgard, Matthew I and Tsang, Chi-Ping},
+  journal={Connection Science},
+  volume={6},
+  number={2-3},
+  pages={281--297},
+  year={1994},
+  publisher={Taylor \& Francis}
+}
+@inproceedings{hild1991harmonet,
+  title={HARMONET: A neural net for harmonizing chorales in the style of JS Bach},
+  author={Hild, Hermann and Feulner, Johannes and Menzel, Wolfram},
+  booktitle={NIPS},
+  pages={267--274},
+  year={1991}
+}
+@inproceedings{feulner1994melonet,
+  title={Melonet: Neural networks that learn harmony-based melodic variations},
+  author={Feulner, Johannes and H{\"o}rnel, Dominik},
+  booktitle={Proceedings of the International Computer Music Conference},
+  pages={121--121},
+  year={1994},
+  organization={INTERNATIONAL COMPUTER MUSIC ACCOCIATION}
+}
+@inproceedings{hornel1997melonet,
+  title={MELONET I: Neural nets for inventing baroque-style chorale variations},
+  author={H{\"o}rnel, Dominik},
+  booktitle={NIPS},
+  pages={887--893},
+  year={1997}
+}
+@article{hornel1996learning,
+  title={Learning Musical Structure and Style by Recognition, Prediction and Evolution},
+  author={Hornel, Dominik and Ragg, Tomas},
+  year={1996},
+  publisher={Citeseer}
+}
+@inproceedings{riedmiller1993direct,
+  title={A direct adaptive method for faster backpropagation learning: The RPROP algorithm},
+  author={Riedmiller, Martin and Braun, Heinrich},
+  booktitle={Neural Networks, 1993., IEEE International Conference On},
+  pages={586--591},
+  year={1993},
+  organization={IEEE}
+}
+@article{ebciouglu1988expert,
+  title={An expert system for harmonizing four-part chorales},
+  author={Ebcio{\u{g}}lu, Kemal},
+  journal={Computer Music Journal},
+  volume={12},
+  number={3},
+  pages={43--51},
+  year={1988},
+  publisher={JSTOR}
+}
+@inproceedings{tsang1991harmonizing,
+  title={Harmonizing Music as a Discipline in Contraint Logic Programming},
+  author={Tsang, Chi Ping and Aitken, Melanie},
+  booktitle={Proceedings of the International Computer Music Conference},
+  pages={61--61},
+  year={1991},
+  organization={INTERNATIONAL COMPUTER MUSIC ACCOCIATION}
+}
+@article{piston1978harmony,
+  title={Harmony. (Revised and expanded by Mark DeVoto)},
+  author={Piston, Walter},
+  journal={Londres: Victor Gollancz LTD},
+  year={1978}
+}
+@book{denny1960oxford,
+  title={The Oxford school harmony course},
+  author={Denny, James},
+  volume={1},
+  year={1960},
+  publisher={Oxford University Press}
+}
+@article{hinton1986learning,
+  title={Learning and releaming in Boltzmann machines},
+  author={Hinton, Geoffrey E and Sejnowski, Terrence J},
+  journal={Parallel distributed processing: Explorations in the microstructure of cognition},
+  volume={1},
+  pages={282--317},
+  year={1986}
+}
+@article{winograd1968linguistics,
+  title={Linguistics and the computer analysis of tonal harmony},
+  author={Winograd, Terry},
+  journal={journal of Music Theory},
+  volume={12},
+  number={1},
+  pages={2--49},
+  year={1968},
+  publisher={JSTOR}
+}
+@misc{oswald1973harmony,
+  title={Harmony: Schenkerian Analysis},
+  author={Oswald, J},
+  year={1973},
+  publisher={Translated by E. Mann. Cambridge, MA: MIT Press}
+}
+@misc{lerdahl1983jackendoff,
+  title={Jackendoff. A Generative Theory of Tonal Music},
+  author={Lerdahl, Fred},
+  year={1983},
+  publisher={MIT Press.--1996.--384 p}
+}
+@inproceedings{sutskever2009recurrent,
+  title={The recurrent temporal restricted boltzmann machine},
+  author={Sutskever, Ilya and Hinton, Geoffrey E and Taylor, Graham W},
+  booktitle={Advances in Neural Information Processing Systems},
+  pages={1601--1608},
+  year={2009}
+}
+@book{sutton1998reinforcement,
+  title={Reinforcement learning: An introduction},
+  author={Sutton, Richard S and Barto, Andrew G},
+  volume={1},
+  number={1},
+  year={1998},
+  publisher={MIT press Cambridge}
+}
+@inproceedings{franklin2004predicting,
+  title={Predicting reinforcement of pitch sequences via lstm and td},
+  author={Franklin, Judy A},
+  booktitle={Proc. of International Computer Music Conference, Miami, Florida},
+  volume={306},
+  year={2004}
+}
+@article{franklin2006recurrent,
+  title={Recurrent neural networks for music computation},
+  author={Franklin, Judy A},
+  journal={INFORMS Journal on Computing},
+  volume={18},
+  number={3},
+  pages={321--338},
+  year={2006},
+  publisher={INFORMS}
+}
+@article{spangler1998bach,
+  title={Bach in a Box-Real-Time Harmony},
+  author={Spangler, Randall R and Goodman, Rodney M and Hawkins, Jim},
+  year={1998},
+  publisher={MIT Press}
+}
+@article{cope1992computer,
+  title={Computer modeling of musical intelligence in EMI},
+  author={Cope, David},
+  journal={Computer Music Journal},
+  volume={16},
+  number={2},
+  pages={69--83},
+  year={1992},
+  publisher={JSTOR}
+}
+@article{eck2008learning,
+  title={Learning musical structure directly from sequences of music},
+  author={Eck, Douglas and Lapalme, Jasmin},
+  journal={University of Montreal, Department of Computer Science, CP},
+  volume={6128},
+  year={2008}
+}
+@book{handel1993listening,
+  title={Listening: An introduction to the perception of auditory events.},
+  author={Handel, Stephen},
+  year={1993},
+  publisher={The MIT Press}
+}
+@inproceedings{papadopoulos1999ai,
+  title={AI methods for algorithmic composition: A survey, a critical view and future prospects},
+  author={Papadopoulos, George and Wiggins, Geraint},
+  booktitle={AISB Symposium on Musical Creativity},
+  pages={110--117},
+  year={1999},
+  organization={Edinburgh, UK}
+}
+@article{pearce2002motivations,
+  title={Motivations and methodologies for automation of the compositional process},
+  author={Pearce, Marcus and Meredith, David and Wiggins, Geraint},
+  journal={Musicae Scientiae},
+  volume={6},
+  number={2},
+  pages={119--147},
+  year={2002},
+  publisher={SAGE Publications}
+}
+@inproceedings{pearce2001towards,
+  title={Towards a framework for the evaluation of machine compositions},
+  author={Pearce, Marcus and Wiggins, Geraint},
+  booktitle={Proceedings of the AISB'01 Symposium on Artificial Intelligence and Creativity in the Arts and Sciences},
+  pages={22--32},
+  year={2001},
+  organization={Citeseer}
+}
+@inproceedings{goodfellow2014generative,
+  title={Generative adversarial nets},
+  author={Goodfellow, Ian and Pouget-Abadie, Jean and Mirza, Mehdi and Xu, Bing and Warde-Farley, David and Ozair, Sherjil and Courville, Aaron and Bengio, Yoshua},
+  booktitle={Advances in Neural Information Processing Systems},
+  pages={2672--2680},
+  year={2014}
+}
+@inproceedings{coutinho2005computational,
+  title={Computational musicology: An artificial life approach},
+  author={Coutinho, Eduardo and Gimenes, Marcelo and Martins, Joao M and Miranda, Eduardo R},
+  booktitle={2005 portuguese conference on artificial intelligence},
+  pages={85--93},
+  year={2005},
+  organization={IEEE}
+}
+@article{wanner1980atn,
+  title={The ATN and the sausage machine: Which one is baloney?},
+  author={Wanner, Eric},
+  journal={Cognition},
+  volume={8},
+  number={2},
+  pages={209--225},
+  year={1980},
+  publisher={Elsevier}
+}
+@article{ariza2009interrogator,
+  title={The interrogator as critic: The turing test and the evaluation of generative music systems},
+  author={Ariza, Christopher},
+  journal={Computer Music Journal},
+  volume={33},
+  number={2},
+  pages={48--70},
+  year={2009},
+  publisher={MIT Press}
+}
+@book{ariza2010modeling,
+  title={Modeling beats, accents, beams, and time signatures hierarchically with music21 meter objects},
+  author={Ariza, Christopher and Cuthbert, M},
+  year={2010},
+  publisher={Ann Arbor, MI: Michigan Publishing, University of Michigan Library}
+}
+@article{dannenberg1997machine,
+  title={A machine learning approach to musical style recognition},
+  author={Dannenberg, Roger B and Thom, Belinda and Watson, David},
+  year={1997},
+  publisher={University of Michigan}
+}
+@article{ni2012end,
+  title={An end-to-end machine learning system for harmonic analysis of music},
+  author={Ni, Yizhao and McVicar, Matt and Santos-Rodriguez, Raul and De Bie, Tijl},
+  journal={IEEE Transactions on Audio, Speech, and Language Processing},
+  volume={20},
+  number={6},
+  pages={1771--1783},
+  year={2012},
+  publisher={IEEE}
+}
+@article{mandel2006support,
+  title={Support vector machine active learning for music retrieval},
+  author={Mandel, Michael I and Poliner, Graham E and Ellis, Daniel PW},
+  journal={Multimedia systems},
+  volume={12},
+  number={1},
+  pages={3--13},
+  year={2006},
+  publisher={Springer}
+}
+@article{stamatatos2005automatic,
+  title={Automatic identification of music performers with learning ensembles},
+  author={Stamatatos, Efstathios and Widmer, Gerhard},
+  journal={Artificial Intelligence},
+  volume={165},
+  number={1},
+  pages={37--56},
+  year={2005},
+  publisher={Elsevier}
+}
+@misc{abcstandard,
+  title={abc:standard [abc wiki]},
+  url={http://abcnotation.com/wiki/abc:standard},
+  journal={abc:standard [abc wiki]},
+  publisher={Walshaw},
+  year={2015},month={Jul}
+}
+@article{cho2014learning,
+  title={Learning phrase representations using RNN encoder-decoder for statistical machine translation},
+  author={Cho, Kyunghyun and Van Merri{\"e}nboer, Bart and Gulcehre, Caglar and Bahdanau, Dzmitry and Bougares, Fethi and Schwenk, Holger and Bengio, Yoshua},
+  journal={arXiv preprint arXiv:1406.1078},
+  year={2014}
+}
+@article{greff2015lstm,
+  title={LSTM: A search space odyssey},
+  author={Greff, Klaus and Srivastava, Rupesh Kumar and Koutn{\'\i}k, Jan and Steunebrink, Bas R and Schmidhuber, J{\"u}rgen},
+  journal={arXiv preprint arXiv:1503.04069},
+  year={2015}
+}
+@book{white2002guidelines,
+  title={Guidelines for college teaching of music theory},
+  author={White, John David and Lake, William E},
+  year={2002},
+  publisher={Scarecrow Press}
+}
+@article{butt1999bach,
+  title={Bach-Werke-Verzeichnis},
+  author={Butt, John},
+  journal={Notes},
+  volume={55},
+  number={4},
+  pages={890--893},
+  year={1999},
+  publisher={Music Library Association, Inc.}
+}
+@article{bengio2009learning,
+  title={Learning deep architectures for AI},
+  author={Bengio, Yoshua},
+  journal={Foundations and trends{\textregistered} in Machine Learning},
+  volume={2},
+  number={1},
+  pages={1--127},
+  year={2009},
+  publisher={Now Publishers Inc.}
+}
+@book{krumhansl2001cognitive,
+  title={Cognitive foundations of musical pitch},
+  author={Krumhansl, Carol L},
+  year={2001},
+  publisher={Oxford University Press}
+}
+@book{nattiez1990music,
+  title={Music and discourse: Toward a semiology of music},
+  author={Nattiez, Jean-Jacques},
+  year={1990},
+  publisher={Princeton University Press}
+}
+@article{ramage2007hidden,
+  title={Hidden Markov models fundamentals},
+  author={Ramage, Daniel},
+  journal={Lecture Notes. http://cs229. stanford. edu/section/cs229-hmm. pdf},
+  year={2007}
+}
+@inproceedings{bengio2015scheduled,
+  title={Scheduled sampling for sequence prediction with recurrent neural networks},
+  author={Bengio, Samy and Vinyals, Oriol and Jaitly, Navdeep and Shazeer, Noam},
+  booktitle={Advances in Neural Information Processing Systems},
+  pages={1171--1179},
+  year={2015}
+}
+@inproceedings{downs2010your,
+  title={Are your participants gaming the system?: screening mechanical turk workers},
+  author={Downs, Julie S and Holbrook, Mandy B and Sheng, Steve and Cranor, Lorrie Faith},
+  booktitle={Proceedings of the SIGCHI Conference on Human Factors in Computing Systems},
+  pages={2399--2402},
+  year={2010},
+  organization={ACM}
+}
+@misc{uksurveymonkey,
+  title={Online Research Panel Pricing | SurveyMonkey Audience},
+  url={https://www.surveymonkey.co.uk/mp/audience/audience-pricing/},
+  journal={UK SurveyMonkey},
+  publisher={SurveyMonkey }
+}
+@article{JCC4:JCC411,
+  author = {Wright, Kevin B.},
+  title = {Researching Internet-Based Populations: Advantages and Disadvantages of Online Survey Research, Online Questionnaire Authoring Software Packages, and Web Survey Services},
+  journal = {Journal of Computer-Mediated Communication},
+  volume = {10},
+  number = {3},
+  publisher = {Blackwell Publishing Ltd},
+  issn = {1083-6101},
+  url = {http://dx.doi.org/10.1111/j.1083-6101.2005.tb00259.x},
+  doi = {10.1111/j.1083-6101.2005.tb00259.x},
+  pages = {00--00},
+  year = {2005},
 }
 
-@MISC{prime-number-theorem,
-   author = "Charles Louis Xavier Joseph de la Vall{\'e}e Poussin",
-   note = "A strong form of the prime number theorem, 19th century" }
 
-% ------------------------------------------------------------------------
-
-@BOOK{texbook,
-   author = "Donald E. Knuth",
-   title= "The {{\TeX}book}",
-   publisher = "Addison-Wesley",
-   year = 1984 }
-
-@BOOK{latex,
-   author = "Leslie Lamport",
-   title = "{\LaTeX:} {A} Document Preparation System",
-   publisher = "Addison-Wesley",
-   year = 1986 }
-
-% ------------------------------------------------------------------------
-@article{Ancey1996,
-author = {Ancey, Christophe and Coussot, Philippe and Evesque, Pierre},
-journal = {Mechanics of Cohesive-frictional Materials},
-number = {4},
-pages = {385--403},
-title = {Examination of the possibility of a fluid-mechanics treatment of dense granular flows},
-url = {http://doi.wiley.com/10.1002/(SICI)1099-1484(199610)1:4<385::AID-CFM20>3.0.CO;2-0},
-volume = {1},
-year = {1996}
-}
-
-@BOOK{RR73,
- author={H. Radjavi and P. Rosenthal},
- title={Invariant {Subspaces}},
- publisher={Springer-Verlag},
- address={New York},
- year={1973},
-}
-
-@BOOK{Aup91,
- author={B. Aupetit},
- title={A {Primer} on {Spectral} {Theory}},
- publisher={Springer-Verlag},
- address={New York},
- year={1991},
-}
-
-@BOOK{Dou72,
- author={R. G. Douglas},
- title={Banach {Algebra} {Techniques} in {Operator} {Theory}},
- publisher={Academic Press},
- address={New York},
- year={1972},
-}
-
-@BOOK{Hal82,
- author={P. R. Halmos},
- title={A {Hilbert} {Space} {Problem} {Book}},
- edition={Second},
- publisher={Springer-Verlag},
- address={New York},
- year={1982},
-}
-
-@BOOK{Rud73,
- author={W. Rudin},
- title={Functional {Analysis}},
- publisher={McGraw-Hill},
- address={New York},
- year={1973},
-}
-
-@BOOK{Con90,
- author={J. B. Conway},
- title={A {Course} in {Functional} {Analysis}},
- edition={Second},
- publisher={Springer-Verlag},
- address={New York},
- year={1990},
-}
-
-@BOOK{Con78,
- author={J. B. Conway},
- title={Functions of {One} {Complex} {Variable}},
- publisher={Springer-Verlag},
- address={New York},
- year={1978},
-}
-
-@BOOK{KR83,
- author={R. V. Kadison and J. R. Ringrose},
- title={Fundamentals of the {Theory} of {Operator} {Algebras},
-        {Part} {I}},
- publisher={Academic Press},
- address={New York},
- year={1983},
-}
-
-@BOOK{KR86,
- author={R. V. Kadison and J. R. Ringrose},
- title={Fundamentals of the {Theory} of {Operator} {Algebras},
-        {Part} {II}},
- publisher={Academic Press},
- address={New York},
- year={1986},
-}
-
-@INBOOK{SFPT,
- author={N. Dunford and J. T. Schwartz},
- title={Linear {Operators},
-        {Part} {I}: {General} {Theory}},
- pages={456},
- publisher={Interscience},
- address={New York},
- year={1957},
-}
-
-@BOOK{DS57,
- author={N. Dunford and J. T. Schwartz},
- title={Linear {Operators},
-        {Part} {I}: {General} {Theory}},
- publisher={Interscience},
- address={New York},
- year={1957},
-}
-
-@BOOK{Gan59,
- author={F. R. Gantmacher},
- title={Applications of the {Theory} of {Matrices}},
- publisher={Interscience},
- address={New York},
- year={1959},
-}
-
-@BOOK{Pau86,
- author={Vern I. Paulsen},
- title={Completely bounded maps and dilations},
- series={Pitman Research Notes in Mathematics Series},
- volume={146},
- publisher={Longman Scientific \& Technical},
- address={Harlow UK},
- year={1986},
-}
-
-@BOOK{Dav88,
- author={Kenneth R. Davidson},
- title={Nest algebras},
- series={Pitman Research Notes in Mathematics Series},
- volume={191},
- publisher={Longman Scientific \& Technical},
- address={Harlow UK},
- year={1988},
-}
-
-@BOOK{Spi65,
- author={Michael Spivak},
- title={Calculus on {Manifolds}},
- publisher={The Benjamin/Cummings Publishing Company},
- address={New York},
- year={1965},
-}
-
-@BOOK{Dev68,
- author={Allen Devinaz},
- title={Advanced {Calculus}},
- publisher={Holt, Rinehart and Winston},
- address={New York},
- year={1968},
-}
-
-@BOOK{Gam90,
- editor={R. V. Gamkerlidze},
- title={Analysis {I}{I}: {Convex} {Analysis} and
-        {Approximation} {Theory}},
- series={Encyclopaedia of Mathematical Sciences},
- volume={14},
- publisher={Springer-Verlag},
- address={New York},
- year={1990},
-}
-
-@BOOK{Hen93,
- author={Peter Henderson},
- title={Object-oriented specification and design with {C}$++$},
- publisher={McGraw-Hill},
- address={London},
- year={1993},
-}
-
-% ------------------------------------------------------------------------
-
-@ARTICLE{Rea85,
- author={C. J. Read},
- title={A solution to the invariant subspace problem on the space $l_1$},
- journal={Bull. London Math. Soc.},
- volume={17},
- year={1985},
- pages={305-317},
-}
-
-@ARTICLE{Enf87,
- author={P. Enflo},
- title={On the invariant subspaces problem for {Banach} spaces},
- journal={Acta. Math.},
- note={Seminare Maurey-Schwartz (1975-1976)},
- volume={158},
- year={1987},
- pages={213-313},
-}
-
-@ARTICLE{Dau75,
- author={J. Daughtry},
- title={An invariant subspace theorem},
- journal={Proc. Amer. Math. Soc.},
- volume={49},
- year={1975},
- pages={267-268},
-}
-
-@ARTICLE{KPS75,
- author={H. W. Kim and C. Pearcy and A. L. Shields},
- title={Rank-One Commutators and Hyperinvariant Subspaces},
- journal={Michigan Math. J.},
- volume={22},
- number={3},
- year={1975},
- pages={193-194},
-}
-
-% --------------------------------------------------------------------------
-
-@ARTICLE{Rad87,
- author={H. Radjavi},
- title={The {Engel}-{Jacobson} {Theorem} {Revisited}},
- journal={J. Alg.},
- volume={111},
- year={1987},
- pages={427-430},
-}
-
-@ARTICLE{MOR91,
- author={B. Mathes and M. Omladi\v{c} and H. Radjavi},
- title={Linear {Spaces} of {Nilpotent} {Operators}},
- journal={Linear Algebra Appl.},
- volume={149},
- year={1991},
- pages={215-225},
-}
-
-@ARTICLE{Lom73,
- author={V. I. Lomonosov},
- title={Invariant subspaces for operators commuting with compact
-        operators},
- journal={Functional Anal. Appl.},
- volume=7,
- year=1973,
- pages="213-214",
-}
-
-@ARTICLE{Lom91,
- author={V. I. Lomonosov},
- title={An extension of {Burnside}'s theorem to infinite
-        dimensional spaces},
- journal={Israel J. Math},
- volume=75,
- year=1991,
- pages="329-339",
-}
-
-@ARTICLE{Lom92,
- author={V. I. Lomonosov},
- title={On {Real} {Invariant} {Subspaces} of {Bounded} {Operators} with
-       {Compact} {Imaginary} {Part}},
- journal={Proc. Amer. Math. Soc.},
- volume=115,
- number=3,
- month=jul,
- year=1992,
- pages="775-777",
-}
-
-@ARTICLE{dB59,
- author={L. de Branges},
- title={The {Stone}-{Weierstrass} {Theorem}},
- journal={Proc. Amer. Math. Soc.},
- volume=10,
- year=1959,
- pages="822-824",
-}
-
-@ARTICLE{dB93,
- author={L. de Branges},
- title={A construction of invariant subspaces},
- journal={Math. Nachr.},
- volume=163,
- year=1993,
- pages="163-175",
-}
-
-@ARTICLE{AAB95,
- author={Y. A. Abramovich and C. D. Aliprantis and O. Burkinshaw},
- title={Another Characterization of the Invariant Subspace Problem},
- journal={Operator Theory in Function Spaces and Banach Lattices.
-          {\em The A.C.\,Zaanen Anniversary Volume},
-          Operator Theory: Advances and Applications},
- volume={75},
- year={1995},
- pages={15-31},
- note={Birkh\"auser Verlag},
-}
-
-@ARTICLE{LM65,
- author={Ju. I. Ljubi\v{c} and V. I. Macaev},
- title={On Operators with a Separable Spectrum},
- journal={Amer. Math. Soc. Transl. (2)},
- volume={47},
- year={1965},
- pages={89-129},
-}
-
-% ------------------------------------------------------------------------
-
-@MASTERSTHESIS{Sim90,
- author={A. Simoni\v{c}},
- title={Grupe Operatorjev s Pozitivnim Spektrom},
- school={Univerza v Ljubljani, FNT, Oddelek za Matematiko},
- year={1990},
-}
-
-@UNPUBLISHED{Sim91,
- author={A. Simoni\v{c}},
- title={Notes on {Subharmonic} {Functions}},
- note={Lecture Notes, Dalhousie University,
-       Department of Mathematics, Statistics, \& Computing Science},
- year={1991},
-}
-
-@ARTICLE{Sim92,
- author={A. Simoni\v{c}},
- title={Matrix {Groups} with {Positive} {Spectra}},
- journal={Linear Algebra Appl.},
- volume={173},
- year={1992},
- pages={57-76},
-}
-
-@PHDTHESIS{Sim94,
- author={A. Simoni\v{c}},
- title={An {Extension} of {Lomonosov's} {Techniques} to {Non}-{Compact}
-       {Operators}},
- school={Dalhousie University,
-         Department of Mathematics, Statistics, \& Computing Science},
- year={1994},
-}
-
-@ARTICLE{Sim96a,
- author={A. Simoni\v{c}},
- title={A {Construction} of {Lomonosov} {Functions} and
-       {Applications} to the {Invariant} {Subspace} {Problem}},
- journal={Pacific J. Math.},
- volume={175},
- pages={257-270},
- year={1996},
-}
-
-@ARTICLE{Sim96b,
- author={A. Simoni\v{c}},
- title={An extension of {Lomonosov's} {Techniques} to non-compact
-       {Operators}},
- journal={Trans. Amer. Math. Soc.},
- volume={348},
- pages={975-995},
- year={1996},
-}
-
-% ------------------------------------------------------------------------

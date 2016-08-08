@@ -2,7 +2,7 @@
 %****************************** Second Chapter *********************************
 %*******************************************************************************
 
-\chapter{My second chapter}
+\chapter{Background}
 
 \ifpdf
     \graphicspath{{Chapter2/Figs/Raster/}{Chapter2/Figs/PDF/}{Chapter2/Figs/}}
@@ -11,99 +11,791 @@
 \fi
 
 
-\section[Short title]{Reasonably long section title}
+\mynote{Similarity to language modeling, char-rnn vs word-rnn similar so note-rnn vs chord-rnn should be as well.
+  Benefit is that chord vocabulary MUCH larger than natural language}
 
-% Uncomment this line, when you have siunitx package loaded.
-%The SI Units for dynamic viscosity is \si{\newton\second\per\metre\squared}.
-I'm going to randomly include a picture Figure~\ref{fig:minion}.
+\mynote{Try mimicking \citet{franklin2006recurrent}}.
+
+\mynote{Motivation: Long-term dependencies are at the heart of what defines a style of music, with
+events spanning several notes or bars contributing to the formation of metrical and phrasal
+structure \citet{cooper1963rhythmic}.}
+
+\mynote{Describe automatic composition vs harmonization vs analysis/scoring}
+Generative models are preferrable because they can be:
+\begin{enumerate}
+  \item Conditioned for harmonization
+  \item Sampled for automatic composition
+  \item Queried for analysis/scoring
+\end{enumerate}
+Automatic composition is described by \citet{papadopoulos1999ai} as:
+\begin{quote}
+  a sequence (set) of rules (instructions, operations) for solving (accomplishing) a [particular] problem (task)
+  [in a finite number of steps] of combining musical parts (things, elements) into a whole (composition)
+\end{quote}
+\citet{pearce2002motivations} emphasizes \emph{algorithmic composition} should ``be applied exclusively
+to activities in which the motivations have this artistic character.''
 
 
-If you have trouble viewing this document contact Krishna at: \href{mailto:kks32@cam.ac.uk}{kks32@cam.ac.uk} or raise an issue at \url{https://github.com/kks32/phd-thesis-template/}
+
+\mynote{Describe piano roll vs sheet music}
+\emph{Piano roll} music transcriptions
+(\cref{fig:piano-roll-effects-preproc}) are quantized both in time ($t \in
+T$) and note frequencies ($n \in N$). frequencies quantized to a piano roll.
+\mynote{Motivate quantization with Western music}.
+
+We can represent a piano roll transcription as a high-dimensional vecctor
+$X_{t,n} \in \RR^{|T| \times |N|}$ where $X_{t,n}$ denotes the note
+velocities for note $n$ at time $t$.
+
+\mynote{Describe MIDIs 127 iquantized pitches, isomorphic to musicXML}
+
+\mynote{Describe Bach and chorales, 4 parts, soprano lead with ATB harmony,
+regular phrases, fermatas to denote phrase ends. Background section in chorale harmonization. }
+
+\mynote{Define meter}
+\citet{eck2008learning} first addressed. \emph{Meter} is the sense of a periodic
+pattern of strong and weak beats which arise from periodic articulation of
+notes in common locations. It is implied in Western music, where bars establish
+perodic measures of equal length \citep{handel1993listening}. Meter provides us
+with key information about musical structure which can be used to predict chord
+changes and repepetition boundaries \citep{cooper1963rhythmic}.
 
 
-\begin{figure}[htbp!] 
-\centering    
-\includegraphics[width=1.0\textwidth]{minion}
-\caption[Minion]{This is just a long figure caption for the minion in Despicable Me from Pixar}
-\label{fig:minion}
+
+This chapter provides background information on two topics heavily utilized
+throughout this dissertation: Western music theory and recurrent neural
+networks. It introduce the definitions and notation used in later sections.
+
+\section{A primer on Western music theory}
+
+Music theory is a branch of musicology concerned with the study of the rules
+and practices of music. While the general field includes study of acoustic
+qualities such as dynamics and timbre, we restrict the scope of our research to
+modeling musical \emph{scores} (e.g. \cref{fig:eg-score}) and neglect issues
+related to articulation and performance (e.g. dynamics, accents, changes in
+tempo) as well as synthesis/generation of the physical acoustic waveforms.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\linewidth]{bwv133-6-original-score-1.png}
+    \caption{Sheet music representation of some bars from a musical score (BWV133.6) with articulation instructions removed.}
+    \label{fig:eg-score}
+\end{figure}
+
+This is justified because the phsyical waveforms are more closely related
+to the skill of the performers and instruments used and are likely to vary
+significantly across different performances. Furthermore, articulations in
+the same musical piece may differ across transcriptions and performers.
+Despite these variations, a piece of music is still recognizable from just the
+notes, suggesting that notes are the defining element for a piece of music.
+
+\subsection{Notes: the basic building blocks}
+
+A \emph{note} is the most fundamental element of music composition and
+represents a sound played at a certain \emph{pitch} for a certain
+\emph{duration}. In sheet music such as \cref{fig:eg-score}, the are denoted
+by the filled/unfilled black heads which may also possess protruding stems.
+As a \emph{score} can be viewed as a collection of notes over time, notes are
+the fundamental building blocks for musical compositions.
+
+\subsubsection{Pitch}
+
+Though pitch is closely related to physical frequency of vibration of a
+waveform (as measured in Hertz), pitch its a perceptual property whose semantic
+meaning is derived from a listener's perception. This distinction has been
+scrutinized by
+\citet{:/content/asa/journal/jasa/55/5/10.1121/1.1914648}, whose visual analogy
+in \cref{fig:pitch} illustrates how a pitch can be heard even if its
+percieved frequency is absent just as one may see the word ``PITCH'' despite
+being presented with only a suggestive shadow.
+
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.6\linewidth]{pitch.pdf}
+    \caption{Terhardt's visual analogy for pitch. Similar to how the viewer of this figure may percieve contours not present, pitch describes subjective information received by the listener even when physical frequencies are absent.}
+    \label{fig:pitch}
+\end{figure}
+
+Despite its psychoacoustic nature, it is nevertheless useful to objectively
+quantify pitch as a frequency. To do so, we first need some definitions. The
+difference between two frequencies is called an \emph{interval} and an
+\emph{octave} is an interval corresponding to the distance between a frequency
+$f \in \RR^+$ and its doubling $2f$ or halving $f/2$. Two frequencies spaced
+exactly an octave apart are perceived to be similar, suggesting that music is
+percieved on a logarithmic scale.
+
+Most Western music is based on the \emph{twelve-note chromatic scale}, which
+divides an \emph{octave} into twelve distinct frequencies. The \emph{tuning
+system} employed dictates the precise intervals between subdivisions, with
+\emph{equal temperament tuning} (all subdivisions are equally spaced on a
+logarithmic scale) presently the most widely used
+method \citep{denton1997history}. \mynote{Talk about well-tempered tuning and bach}
+Under twelve-note equal temperament tuning, the distance between two
+consecutive subdivisions ($1/12$ of an octave) is called a \emph{semitone}
+(British) or \emph{half-step} (North American) and two semitones constitutes
+a \emph{tone} or \emph{whole-step}.
+
+When discussing music, \emph{note names} which enable succinct specification of
+a musical pitch are often employed. In \emph{scientific pitch notation},
+\emph{pitch classes} which represent a pitch modulo the octave are specified by
+a letter ranging from $A$ to $G$ and optionally a single \emph{accidental}. Pitch
+classes without accidentals are called \emph{natural} and correspond to the white
+keys on a piano. Two accidentals are possible: sharps ($\#$) raise the natural
+pitch class up one semitone and flats ($\flat$) lower by one semitone.
+\cref{fig:piano-keys} illustrates how these pitch classes map to keys on a
+piano.
+
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.6\linewidth]{piano-keys.pdf}
+    \caption{Illustration of an octave in the 12-note chromatic scale on a piano keyboard.}
+    \label{fig:piano-keys}
+\end{figure}
+
+Since pitch classes represent equivalence class of frequencies spaced an
+integral number of octaves apart, unambiguously specifying a pitch requires not
+only a pitch class but also an octave. In scientific pitch notation, this is
+accomplished by appending an octave number to a pitch class letter (see
+\cref{fig:pitch-class}). Together, a pitch class and octave number uniquely
+specify the notation for a pitch. On sheet music, the pitch of a note is
+indicated by its vertical position with respect to the \emph{stave} (the five
+horizontal lines and four spaces).
+
+\mynote{Cite wiki scientific pitch notation}
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.6\linewidth]{Pitch_notation.png}
+    \caption{Scientific pitch notation and sheet music notation of $C$ notes at ten different octaves.}
+    \label{fig:pitch-class}
+\end{figure}
+
+\subsubsection{Duration}
+
+In addition to pitch, a note also possesses a \emph{duration}. The duration of
+a note indicates how long it is to be played and is measured in fractions of a
+\emph{whole note} (American) or \emph{semibreve} (British). Perhaps the most
+common duration is a \emph{quarter-note} (American) or \emph{crotchet}
+(British). Other note durations are also possible and the most common along
+with their notation in sheet music are enumerated in
+\cref{fig:note-durations}. The relationship between durations and
+physical time intervals is given by the \emph{tempo}, which is usually
+denoted near the start of the piece in beats per minute.
+
+\mynote{Cite wiki Whole note}
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.6\linewidth]{note-durations.png}
+    \caption{Comparison of various note durations.}
+    \label{fig:note-durations}
+\end{figure}
+
+\subsection{Key signature}
+
+\emph{Tonal music} is a genre of music encompassing most of Western classical
+music. It is characterized by the prevalence of one pitch class (the
+\emph{tonic}) around which the remainder of the piece is built.
+
+A basic concept within tonal music is \emph{mode}, which defines a subset of
+pitch classes that are ``in key'' with respect to the tonic.
+\cref{tab:mode-intervals} illustrates the pitch intervals between adjacent
+pitch classes within two important modes: the \emph{major} (Ionian, I) and
+\emph{minor} (Aeolian, VI) modes. The choice of tonic and mode is collectively
+referred to as the \emph{key signature}.
+
+\begin{table}[htpb]
+    \centering
+    \begin{tabular}{lc}
+        \toprule
+        Mode & Pitch Intervals (semitones) \\
+        \midrule
+        Major (Ionian, I) & +2, +2, +1, +2, +2, +2 \\
+        Minor (Aeolian, VI) & +2, +1, +2, +2, +1, +2 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Pitch intervals for the two most important modes\citep{freedman2015correlational}. The pitches in a scale can be found by starting at the tonic and successively offsetting by the given pitch intervals.}
+    \label{tab:mode-intervals}
+\end{table}
+
+\subsection{Polyphony, chords, and chord progressions}
+
+Whereas \emph{monophonic} music is characterized by the presence of a single
+\emph{part} sounding at most one note at any given time, \emph{polyphonic}
+music contains multiple parts potentially sounding multiple pitches at the same
+time. Just as notes form the basis of monophonic music, chords are the fundamental
+building blocks for polyphonic music.
+
+\subsubsection{Chords: basic units for representing simultaneously sounding notes}
+
+A \emph{chord} is a collection of three or more pitches all sounding
+simultaneously\citep{randel1999harvard}. In Western classical music, they
+typically consist of a \emph{root note} whose pitch class forms a base from
+which successive notes are built upon. The intervals between the pitch classes
+in a chord are commonly labeled using \emph{qualities}, which are invariant
+across octaves. Different realizations of the same chord (e.g. octave choices
+for each pitch class) are called \emph{voicings}.
+
+\cref{tab:chord-qualities} lists some common chord qualities and their
+corresponding intervals from the root note. Chord names are given as a root
+pitch class followed by a quality, for example: $C$ major, $A$ minor, or $G$
+half-diminished $7$th.
+
+\begin{table}[htpb]
+    \centering
+    \begin{tabular}{lc}
+        \toprule
+        Chord quality & Intervals from root pitch class \\
+        \midrule
+        Major & +4, +7 \\
+        Major 6th & +4, +7, +8 \\
+        Major 7th & +4, +7, +11 \\
+        Minor & +3, +7 \\
+        Minor 6th & +3, +7, +9 \\
+        Minor 7th & +3, +7, +10 \\
+        Dominant 7th & +4, +7, +10 \\
+        Augmented & +4, +8 \\
+        Diminished & +3, +6 \\
+        Diminished 7th & +3, +6, +9 \\
+        Half-diminished 7th & +3, +6, +10 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Common chord qualities and their corresponding intervals\citep{freedman2015correlational}}
+    \label{tab:chord-qualities}
+\end{table}
+
+The lowest note in a chord is called the \emph{bass} note and is oftentimes the
+root note. However, alternative voicings called \emph{inversions} can place the
+root note on a different octave and cause the bass and root notes to
+differ.
+
+\subsubsection{Chord progressions and phrases}
+
+Sequences of chords are called \emph{chord progressions}, which are oftentimes
+grouped with adjacent progressions within a score into coherent units called
+\emph{phrases}. Many psychoacoustic phenomena such as stability, mood, and
+expectation can be attributed to phrase structure and choice of chord
+progressions. For example, chord progressions called \emph{harmonic cadences}
+are commonly used to conclude a phrase and create a sense of
+resolution\citep{randel1999harvard}. Another important example are
+\emph{modulations}, where a chord progression is used to transition the music
+into a different key signature.
+
+As chords can be overlapping and contain notes straddling between two chords or
+involve uncommon chord qualities, identifying chord progresssions involves a
+degree of subjectivity. A common method for analyzing chord progressions is
+\emph{roman numeral analysis}, where I denotes the tonic pitch class,successive
+roman numerals correspond to successive pitch classes in the key, and
+capitalization is used to denote major/minor. For example, the chord
+progression $C$ major -- $A$ minor -- $D$ major 7th -- $G$ major in the $C$
+major key signature would be represented as $I$ -- $ii$ -- $IImaj7$ -- $V$.
+
+\subsubsection{Transposition invariance}
+
+A common theme throughout our discussion has been ambiguity of the tonic. When
+discussing key signatures, the mode was defined using intervals relative to a
+choice of tonic. Similarly, roman numeral analysis of chord progressions is
+also conducted relative to a tonic. Even if a chord progression and tonic are
+both transposed by arbitrary pitch interval, the roman numeral analysis will
+remain unchanged.
+
+The \emph{transposition invariance} of chord progressions and modes is an
+important property of music. It enables us to offset an entire score by an
+arbitrary pitch interval without affecting the important psychoacoustic
+qualities captured by chord progressions and choice of mode.
+
+\section{Neural sequence probability modeling}
+
+Our work in later sections make heavy use of neural networks. In this section,
+we briefly review the relevant concepts and set up notation.
+
+\subsection{Neurons: the basic computation unit}
+
+Neurons are the basic abstraction which are combined together to form
+neural networks. A \emph{neuron} is a parametric model of a function $f : \RR^D \to
+\RR$ from its $D$-dimensional input $\x$ to its output $y$. Our neurons will be
+defined as
+\begin{equation}
+    f(\x) \coloneqq \sigma( \langle \vec{w}, \x \rangle)
+\end{equation}
+which can be viewed as an inner product with \emph{weights} $\vec{w}$ to
+produce an \emph{activation} $z \coloneqq \langle \vec{w}, \x \rangle
+\in \RR$ which is then squashed to a bounded domain by a non-linear
+\textbf{activation function} $\sigma : \RR \to [L, U]$. This is visually
+depicted in \cref{fig:nn-single}, which also makes apparent the
+interpretation of weight $w_i$ as the sensitivity of the output $y$ to the
+input $x_i$.
+
+\begin{figure}[htpb]
+    \centering
+    \input{Chapter2/Figs/nn-single.pdf_tex}
+    \caption{A single neuron first computes an activation $z$ and then passes it through an activation function $\sigma(\cdot)$}
+    \label{fig:nn-single}
+\end{figure}
+
+\subsection{Feedforward neural networks}
+
+Multiple neurons may share inputs and have their outputs concatenated together
+to form a \emph{layer} modelling a multivariate functions $f :
+\RR^{D_\text{in}} \to \RR^{D_\text{out}}$. Multiple layers can then
+be composed together to form a \emph{feedforwd neural network}.
+
+\begin{figure}[htpb]
+    \centering
+    \input{Chapter2/Figs/nn-ffw.pdf_tex}
+    \caption{Graph depiction of a feedforward neural network with $2$ hidden layers}
+    \label{fig:nn-ffw}
+\end{figure}
+
+Although a single hidden layer is theoretically sufficient for a universal
+function approximator\citep{Cybenko1993}, the number of hidden units to
+guarantee reported theoretical bounds are usually unfeasibly large. Instead,
+recent work in \emph{deep learning} has shown that deep models which contain
+many hidden layers can achieve strong performance across a variety of
+tasks\citep{Bengio2011}.
+
+The improved modeling capacity gained by composing multiple layers is due to
+the composition of multiple non-linear activation functions.
+In fact, it is easy to show that removing activation functions would make
+a deep network equivalent to a single matrix transform: let $\W_{l,l+1}$
+denote the weights between layers $l$ and $l+1$. The original neural network
+computes the function
+\begin{equation}
+    \sigma\left(
+        \W_{L,L-1} \sigma \left(
+            \W_{L-1,L-2}\cdots \sigma \left(
+                \W_{2,1} \x
+            \right) \cdots
+        \right)
+    \right)
+\end{equation}
+After removing the activation functions $\sigma$, we are left with
+\begin{equation}
+    \W_{L,L-1} \W_{L-1,L-2}\cdots \W_{2,1} \x
+    = \x
+    = \tilde{\W} \x
+\end{equation}
+where $\tilde{\W} = \left(\prod_{i=1}^{L-1} \W_{i,i+1} \right)$
+is a matrix transform computing the same function as the neural network with
+activation functions removed.
+
+\subsection{Recurrent neural networks}
+
+While feedforward neural networks provide a flexible model for approximating
+arbitrary functions, they require a fixed-dimension input $\x$ and hence
+cannot be directly applied to sequential data $\x = (\x_t)_{t=1}^T$ where $T$ may
+vary.
+
+A naive method for extending feedforward networks would be to independently
+apply a feedforward network to compute $\y_t = f(\x_t \vec{\theta})$ at each timestep
+$1 \leq t \leq T$. However, this approach is only correct when each output
+$\y_t$ depends only on the input at the current time $\x_t$ and is independent of
+all prior inputs $\{\x_k\}_{k < t}$. This assumption is false in musical data:
+the current musical note usually is highly dependent on the sequence of notes
+leading up to it.
+
+This shortcoming motivates \emph{recurrent neural networks} (RNNs), which
+generalize feedforward networks by introducing time-delayed recurrent
+connections between hidden layers (Elman networks \citep{elman1990finding}) or
+from the output layers to the hidden layers (Jordan networks
+\citep{jordan1997serial}). Mathematically, an (Elman-type) RNN is a discrete time
+dynamical system commonly parameterized as:
+\begin{eqnarray}
+    \h_t &=& \W_{xh} \sigma_{xh} \left( \x_t \right) + \W_{hh} \sigma_{hh} \left( \h_{t-1} \right) \label{eq:rnn-ht}\\
+    \y_t &=& \W_{hy} \sigma_{hy} \left( \h_t \right) \label{eq:rnn-yt}
+\end{eqnarray}
+where $\sigma_{\cdot \cdot}(\cdot)$ are activation functions acting
+element-wise and $\theta = \{ \W_{xh}, \W_{hh}, \W_{hy}\}$ are the learned
+parameters. \cref{fig:nn-rnn} provides a graphical illustration of such a
+network. Notice that apart from the edges between hidden nodes, the network is
+identical to a regular feedforward network (\cref{fig:nn-ffw}).
+
+\mynote{Why do we use Elman}
+
+\begin{figure}[htpb]
+    \centering
+    \input{Chapter2/Figs/nn-rnn.pdf_tex}
+    \caption{Graph representation of an Elman-type RNN.}
+    \label{fig:nn-rnn}
+\end{figure}
+
+To apply the RNN over an input sequence $\x$, the activations of the hidden
+states are first initialized to an initial value $\h \in \RR^{D_{h}}$. Next,
+for each timestep $t$ the hidden layer activations are computed using the
+current input $\x_t$ and the previous hidden state activations $\h_{t-1}$.
+This motivates an alternative perspective on RNNs as a template consisting
+of a feedforward network with inputs $\{\x_t, \h_{t-1}\}$ (see
+\cref{fig:rnn-elman}) replicated across time $t$.
+
+\begin{figure}[htpb]
+    \centering
+    \input{Chapter2/Figs/nn-rnn-elman.pdf_tex}
+    \caption{Equivalent formulation of an Elman-type RNN treating the time-delayed hidden state $\h_{t-1}$ as additional inputs to a feedforward network}
+    \label{fig:rnn-elman}
 \end{figure}
 
 
-\section*{Enumeration}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae laoreet lectus. Donec lacus quam, malesuada ut erat vel, consectetur eleifend tellus. Aliquam non feugiat lacus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Quisque a dolor sit amet dui malesuada malesuada id ac metus. Phasellus posuere egestas mauris, sed porta arcu vulputate ut. Donec arcu erat, ultrices et nisl ut, ultricies facilisis urna. Quisque iaculis, lorem non maximus pretium, dui eros auctor quam, sed sodales libero felis vel orci. Aliquam neque nunc, elementum id accumsan eu, varius eu enim. Aliquam blandit ante et ligula tempor pharetra. Donec molestie porttitor commodo. Integer rutrum turpis ac erat tristique cursus. Sed venenatis urna vel tempus venenatis. Nam eu rhoncus eros, et condimentum elit. Quisque risus turpis, aliquam eget euismod id, gravida in odio. Nunc elementum nibh risus, ut faucibus mauris molestie eu.
- Vivamus quis nunc nec nisl vulputate fringilla. Duis tempus libero ac justo laoreet tincidunt. Fusce sagittis gravida magna, pharetra venenatis mauris semper at. Nullam eleifend felis a elementum sagittis. In vel turpis eu metus euismod tempus eget sit amet tortor. Donec eu rhoncus libero, quis iaculis lectus. Aliquam erat volutpat. Proin id ullamcorper tortor. Fusce vestibulum a enim non volutpat. Nam ut interdum nulla. Proin lacinia felis malesuada arcu aliquet fringilla. Aliquam condimentum, tellus eget maximus porttitor, quam sem luctus massa, eu fermentum arcu diam ac massa. Praesent ut quam id leo molestie rhoncus. Praesent nec odio eget turpis bibendum eleifend non sit amet mi. Curabitur placerat finibus velit, eu ultricies risus imperdiet ut. Suspendisse lorem orci, luctus porta eros a, commodo maximus nisi.
+\subsubsection{Memory cell abstraction}
 
-Nunc et dolor diam. Phasellus eu justo vitae diam vehicula tristique. Vestibulum vulputate cursus turpis nec commodo. Etiam elementum sit amet erat et pellentesque. In eu augue sed tortor mollis tincidunt. Mauris eros dui, sagittis vestibulum vestibulum vitae, molestie a velit. Donec non felis ut velit aliquam convallis sit amet sit amet velit. Aliquam vulputate, elit in lacinia lacinia, odio lacus consectetur quam, sit amet facilisis mi justo id magna. Curabitur aliquet pulvinar eros. Cras metus enim, tristique ut magna a, interdum egestas nibh. Aenean lorem odio, varius a sollicitudin non, cursus a odio. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; 
-\begin{enumerate}
-\item The first topic is dull
-\item The second topic is duller
-\begin{enumerate}
-\item The first subtopic is silly
-\item The second subtopic is stupid
-\end{enumerate}
-\item The third topic is the dullest
-\end{enumerate}
-Morbi bibendum est aliquam, hendrerit dolor ac, pretium sem. Nunc molestie, dui in euismod finibus, nunc enim viverra enim, eu mattis mi metus id libero. Cras sed accumsan justo, ut volutpat ipsum. Nam faucibus auctor molestie. Morbi sit amet eros a justo pretium aliquet. Maecenas tempor risus sit amet tincidunt tincidunt. Curabitur dapibus gravida gravida. Vivamus porta ullamcorper nisi eu molestie. Ut pretium nisl eu facilisis tempor. Nulla rutrum tincidunt justo, id placerat lacus laoreet et. Sed cursus lobortis vehicula. Donec sed tortor et est cursus pellentesque sit amet sed velit. Proin efficitur posuere felis, porta auctor nunc. Etiam non porta risus. Pellentesque lacinia eros at ante iaculis, sed aliquet ipsum volutpat. Suspendisse potenti.
-
-Ut ultrices lectus sed sagittis varius. Nulla facilisi. Nullam tortor sem, placerat nec condimentum eu, tristique eget ex. Nullam pretium tellus ut nibh accumsan elementum. Aliquam posuere gravida tellus, id imperdiet nulla rutrum imperdiet. Nulla pretium ullamcorper quam, non iaculis orci consectetur eget. Curabitur non laoreet nisl. Maecenas lacinia, lorem vel tincidunt cursus, odio lorem aliquet est, gravida auctor arcu urna id enim. Morbi accumsan bibendum ipsum, ut maximus dui placerat vitae. Nullam pretium ac tortor nec venenatis. Nunc non aliquet neque. 
-
-\section*{Itemize}
+Notice that \cref{fig:rnn-elman} delineates the recurrent hidden state from
+the rest of the diagram, introducing an abstraction called a \emph{memory
+cell}. This allows us to abstract away how $\y_t$ and $\h_t$ are computed from
+$\x_t$ and $\h_{t-1}$, enabling discussion of RNNs applicable to many different
+implementations. Concretely, A memory cell is an interface which for each
+timestep $t$:
 \begin{itemize}
-\item The first topic is dull
-\item The second topic is duller
-\begin{itemize}
-\item The first subtopic is silly
-\item The second subtopic is stupid
+    \item Takes inputs
+        \begin{itemize}
+            \item The current element in the input sequence $\x_t$
+            \item The previous hidden state $\h_{t-1}$
+        \end{itemize}
+    \item Produces outputs
+        \begin{itemize}
+            \item The next  hidden state $\h_t = f_h (\x_t, \h_{t-1})$
+            \item The outputs $\y_t = f_y (\h_t)$.
+        \end{itemize}
 \end{itemize}
-\item The third topic is the dullest
-\end{itemize}
+In future diagrams, we will abstractly represent the memory cell
+as a node labelled with $\h$.
 
-\section*{Description}
-\begin{description}
-\item[The first topic] is dull
-\item[The second topic] is duller
-\begin{description}
-\item[The first subtopic] is silly
-\item[The second subtopic] is stupid
-\end{description}
-\item[The third topic] is the dullest
-\end{description}
+\subsubsection{Unrolling into a DAG}
 
+One important operation on RNNs is \emph{unrolling} the template in
+\cref{fig:rnn-elman} into a chain of $T$ replications with connected hidden
+states (\cref{fig:rnn-single-unrolled}). This removes the time-delayed
+recurrent, converting the RNN into a finite directed acyclic graph where nodes
+represent pieces of data and edges $s \to t$ indicate that $t$ is a function of
+$s$. This is identical to a feedforward network, justifying the view of RNNs as
+a dynamically-sized feedforward network with $T$ layers and parameters tied
+across all layers.
 
-\clearpage
+\mynote{Talk about how view of unrolled RNN as DNN inspires cross-polination e.g.
+gating to let information flow deeper: LSTM gates and highway networks, grid
+LSTMS}
 
-\tochide\section{Hidden section}
-\textbf{Lorem ipsum dolor sit amet}, \textit{consectetur adipiscing elit}. In magna nisi, aliquam id blandit id, congue ac est. Fusce porta consequat leo. Proin feugiat at felis vel consectetur. Ut tempus ipsum sit amet congue posuere. Nulla varius rutrum quam. Donec sed purus luctus, faucibus velit id, ultrices sapien. Cras diam purus, tincidunt eget tristique ut, egestas quis nulla. Curabitur vel iaculis lectus. Nunc nulla urna, ultrices et eleifend in, accumsan ut erat. In ut ante leo. Aenean a lacinia nisl, sit amet ullamcorper dolor. Maecenas blandit, tortor ut scelerisque congue, velit diam volutpat metus, sed vestibulum eros justo ut nulla. Etiam nec ipsum non enim luctus porta in in massa. Cras arcu urna, malesuada ut tellus ut, pellentesque mollis risus.Morbi vel tortor imperdiet arcu auctor mattis sit amet eu nisi. Nulla gravida urna vel nisl egestas varius. Aliquam posuere ante quis malesuada dignissim. Mauris ultrices tristique eros, a dignissim nisl iaculis nec. Praesent dapibus tincidunt mauris nec tempor. Curabitur et consequat nisi. Quisque viverra egestas risus, ut sodales enim blandit at. Mauris quis odio nulla. Cras euismod turpis magna, in facilisis diam congue non. Mauris faucibus nisl a orci dictum, et tempus mi cursus.
-
-Etiam elementum tristique lacus, sit amet eleifend nibh eleifend sed \footnote{My footnote goes blah blah blah! \dots}. Maecenas dapibu augue ut urna malesuada, non tempor nibh mollis. Donec sed sem sollicitudin, convallis velit aliquam, tincidunt diam. In eu venenatis lorem. Aliquam non augue porttitor tellus faucibus porta et nec ante. Proin sodales, libero vitae commodo sodales, dolor nisi cursus magna, non tincidunt ipsum nibh eget purus. Nam rutrum tincidunt arcu, tincidunt vulputate mi sagittis id. Proin et nisi nec orci tincidunt auctor et porta elit. Praesent eu dolor ac magna cursus euismod. Integer non dictum nunc.
-
-
-\begin{landscape}
-
-\section*{Subplots}
-I can cite Wall-E (see Fig.~\ref{fig:WallE}) and Minions in despicable me (Fig.~\ref{fig:Minnion}) or I can cite the whole figure as Fig.~\ref{fig:animations}
-
-
-\begin{figure}
-  \centering
-  \begin{subfigure}[b]{0.3\textwidth}
-    \includegraphics[width=\textwidth]{TomandJerry}
-    \caption{Tom and Jerry}
-    \label{fig:TomJerry}   
-  \end{subfigure}             
-  \begin{subfigure}[b]{0.3\textwidth}
-    \includegraphics[width=\textwidth]{WallE}
-    \caption{Wall-E}
-    \label{fig:WallE}
-  \end{subfigure}             
-  \begin{subfigure}[b]{0.3\textwidth}
-    \includegraphics[width=\textwidth]{minion}
-    \caption{Minions}
-    \label{fig:Minnion}
-  \end{subfigure}
-  \caption{Best Animations}
-  \label{fig:animations}
+\begin{figure}[htpb]
+    \centering
+    \resizebox{4.5in}{!}{\input{Chapter2/Figs/rnn-single-unrolled.pdf_tex}}
+    \caption{Signal flow diagram representation of a single-layer RNN and its corresponding directed acyclic graph after unrolling}
+    \label{fig:rnn-single-unrolled}
 \end{figure}
 
+\cref{fig:rnn-single-unrolled} makes it obvious how the hidden state is
+carried along throughout the sequence of computations, giving rise to a useful
+alternative interpretation of the hidden state as a temporal memory mechanism.
+Under this interpretation, we can view the hidden state update $\h_t = f_h
+(\x_t, \h_{t-1})$ as \emph{writing} information extracted from the
+current inputs $\x_t$ to the memory $\h_{t-1}$. Similarly, producing
+the outputs $\y_t = f_y (\h_t)$ can be seen as \emph{reading}
+information from the hidden state.
 
-\end{landscape}
+\mynote{Compare to N-grams; show how it's like an infinite context. One
+    interpretation is to view the hidden state $\h_t$ as an
+    infinite-length prior context window, summarizing all of the prior inputs
+    into into a compact fixed-size vector.}
+
+\subsubsection{Stacking memory cells to form multi-layer RNNs}
+
+Since the RNN outputs $\y$ also form a sequence with the same length as
+the inputs $\x$, they can be used as inputs into another RNN. This
+stacking of multiple memory cells is similar to the layering seen in deep
+neural networks, giving rise to the term \emph{deep neural sequence models}
+\mynote{Cite?}. This is illustrated in \cref{fig:rnn-multi-unrolled}.
+
+\begin{figure}[htpb]
+    \centering
+    \resizebox{4.5in}{!}{\input{Chapter2/Figs/rnn-multi-unrolled.pdf_tex}}
+    \caption{Template and unrolling of a stacked 2-layer RNN}
+    \label{fig:rnn-multi-unrolled}
+\end{figure}
+
+The greater modeling capabilities of multilayer RNNs can be attributed to two
+primary factors: composition of multiple non-linearities and an increase in the
+number of paths through which information can flow. The former is analogous to
+the feedforward case: stacking memory cells increases the number of
+non-linearities in the composite cell just like stacking multiple layers in
+feedforward networks. To understand the latter point, notice that in
+\cref{fig:rnn-single-unrolled} there is only a single path from
+$\x_{t-1}$ to $\y_{t}$ hence the conditional independence
+$\y_{t} \independent \x_{t-1} | \h^{(1)}_t$ is satisfied.
+However, in \cref{fig:rnn-multi-unrolled} there are multiple paths from
+$\x_{t-1}$ to $\y_{t}$ (e.g. passing through either
+$\h^{(2)}_{t-1} \to \h^{(2)}_t$ or $\h^{(1)}_{t-1} \to
+\h^{(1)}_t$) through which information may flow. Additionaly, the
+hidden state transitions occur on two seperate memory cells so parameters
+need not be tied and the stacked RNN can learn different time dynamics
+at each depth.
+
+\subsection{Modeling assumptions}
+
+\mynote{Integrate better}
+
+We make the following assumptions about the sequence $\x_{1:T}$, $\y_{1:T}$, and $\h_{0:T}$:
+\begin{enumerate}
+  \item Modified Markov assumption:
+    \begin{equation}
+      \label{eq:modified-markov}
+      \forall t: P(\h_t | \h_{0:t-1}, \x_{1:t}) = P(\h_t | \h_{t-1}, \x_t)
+    \end{equation}
+  \item Hidden State Stationarity:
+    \begin{equation}
+      \label{eq:hidden-state-stationarity}
+      \forall t_1, t_2: P(\h_{t_1} = \k | \h_{t_{1}-1} = \i, \x_{t_1} = \j) = P(\h_{t_2} = \k | \h_{t_{2}-1} = \i, \x_{t_2} = \j)
+   \end{equation}
+  \item Output Stationarity:
+    \begin{equation}
+      \label{eq:output-stationarity}
+      \forall t_1, t_2: P(\y_{t_1} = \j | \h_{t_1} = \i) = P(\y_{t_2} = \j | \h_{t_2} = \i)
+   \end{equation}
+  \item Output independence:
+   \begin{equation}
+     \label{eq:output-independence}
+     P(\y_{1:T} | \h_{0:T}, \x_{1:T}) = \prod_{t=1}^T P(\y_t | \h_{t}, \x_t)
+   \end{equation}
+\end{enumerate}
+
+These assumptions imply the sequential factorization:
+\begin{align}
+  &P(\y_{1:T}, \h_{1:T} | \h_0, \x_{1:T})  &\\
+  &= P(\y_{1:T} | \h_{0:T}, \x_{1:T}) P(\h_{1:T} | \h_0, \x_{1:T})  &\\
+  &= \left( \prod_{t=1}^T P(\y_t | \h_t) \right) P(\h_{1:T}| \h_0, \x_{1:T}) &\text{\cref{eq:output-independence}}\\
+  &= \left( \prod_{t=1}^T P(\y_t | \h_t) \right) \left(\prod_{t=1}^T P(\h_{t}| \h_{0:t-1}, \x_{1:t})\right) &\\
+  &= \left( \prod_{t=1}^T P(\y_t | \h_t) \right) \left(\prod_{t=1}^T P(\h_{t}| \h_{t-1}, \x_{t})\right) &\text{\cref{eq:modified-markov}}\\
+  &= \prod_{t=1}^T P(\y_t | \h_t, \x_t) P(\h_{t}| \h_{t-1}, \x_{t}) & \\
+\end{align}
+\cref{eq:hidden-state-stationarity} combined with \cref{eq:output-stationarity} imply that $P(\y_t | \h_t)$
+and $P(\h_{t}| \h_{t-1}, \x_{t})$ are time-invariant and can be modelled by the same recurrent function.
+
+In RNNs, the hidden state dynamics $P(\h_t | \h_{t-1}, \x_t)$ are deterministic:
+\begin{equation}
+  \h_t = f_h(\x_t, \h_{t-1})
+\end{equation}
+Which means that $P(\y_{1:T}, \h_{1:T} | \h_0, \x_{1:T}) = P(\y_{1:T} | \h_0, \x_{1:T})$.
+This yields the factorization
+\begin{equation}
+  P(\y_{1:T} | \h_0, \x_{1:T})
+  = P(\y_{1:T}, \h_{1:T} | \h_0, \x_{1:T})
+  = \prod_{t=1}^T P(\y_t | \h_t, \x_t) f_h(\x_t, \h_{t-1})
+\end{equation}
+\mynote{Draw PGM}
+
+However, one minor problem remains. Let $\z_t = f_y(f_h(\x_t, \h_{t-1}))$ (with
+$f_y$ and $f_h$ as defined in \mynote{ref}) denote the outputs of the RNN model
+at time $t$. Note that $\z_t$ can be any real vector in $\RR^{|V|}$
+\mynote{Define $V$ to be the vocabulary}, but $P(\x_{t+1} | \h_{t-1}, \x_{t})$ is
+a probability vector constrained to sum to one.
+
+Fortunately, we can treat $\z_t$ as the \emph{scores} for a \emph{Boltzmann
+distribution} (aka softmax):
+\begin{equation}
+    \label{eq:boltzmann-dist}
+    P( \y_{t} = s | \h_{t-1}, \x_t )
+    = \frac{\exp \left(-\z_{t,s}/T\right) }{ \sum_{k=1}^{K} \left(\exp -\z_{t,k}/T\right)}
+\end{equation}
+where $T \in \RR^+$ is a \emph{temperature} parameter (set to $T=1$ during training and varied during sampling).
+To keep notation compact, we omit writing this explicitly and understand $P(\y_t | \h_{t-1}, \x_t)$ to mean
+the Boltzmann distribution parameterized by the scores $f_y(f_h(\x_t, \h_{t-1}))$.
+
+Note the similarity between \cref{eq:modified-markov}--\cref{eq:output-independence}
+and the assumptions for Hidden Markov models \citep{ramage2007hidden}. Discrepancies are due
+to the presence of an input sequence $\x_{1:T}$ in our sequence-to-sequence model.
+
+\mynote{Discuss validity of assumptions, namely output independence assuming hidden state and input summarize
+all prior context}
+
+
+\subsection{Training RNNs: backpropogation through time}
+
+The parameters $\vec{\theta}$ of a RNN are typically learned from data to
+minimize a cost $\mathcal{E} = \sum_{1 \leq t \leq T} \mathcal{E}_t(\x_t)$
+measuring the performance of the network on some task. This optimization is
+commonly carried out using iterative gradient descent methods, which require
+computation of the gradients $\frac{\pd \mathcal{E}}{\pd \vec{\theta}}$ at each
+iteration.
+
+One approach for computing the necessary gradients is \emph{backpropogation
+through time} (BPTT)\citep{goller1996learning}, an adaptation of the backpropogation
+algorithm\citep{linnainmaa1970representation,rumelhart1988learning} to the unrolled RNN computation
+graph. We can apply the chain rule to the unrolled RNN's computation graph in
+\cref{fig:rnn-bptt} to obtain
+\begin{eqnarray}
+    \frac{\pd \mathcal{E}}{\pd \vec{\theta}} &=& \sum_{1 \leq t \leq T} \frac{\pd \mathcal{E}_t}{\pd \vec{\theta}} \\
+    \frac{\pd \mathcal{E}_t}{\pd \vec{\theta}} &=& \sum_{1 \leq k \leq t} \left(
+        \frac{\pd \mathcal{E}_t}{\pd \y_t}
+        \frac{\pd \y_t}{\pd \h_t}
+        \frac{\pd \h_t}{\pd \h_k}
+        \frac{\pd \h_k}{\pd \vec{\theta}}
+    \right) \label{eq:error-t}\\
+    \frac{\pd \h_t}{\pd \h_k} &=&
+    \prod_{t \geq i > k} \frac{\pd \h_i}{\pd \h_{i-1}}
+    = \prod_{t \geq i > k} \W_{hh}^\tp \diag \left( \sigma_{hh}'( \h_{i-1} ) \right)
+    \label{eq:error-transfer}
+\end{eqnarray}
+
+\begin{figure}[htpb]
+    \centering
+    \input{Chapter2/Figs/rnn-bptt.pdf_tex}
+    \caption{The gradients passed along network edges during BPTT.}
+    \label{fig:rnn-bptt}
+\end{figure}
+
+\cref{eq:error-t} expresses how the error $\mathcal{E}_t$ at time $t$ is a sum
+of \emph{temporal contributions} $
+\frac{\pd \mathcal{E}_t}{\pd \y_t}
+\frac{\pd \y_t}{\pd \h_t}
+\frac{\pd \h_t}{\pd \h_k}
+\frac{\pd \h_k}{\pd \vec{\theta}}$
+measuring how $\theta$'s impact on $\h_k$ affects the cost at some future
+time $t > k$. The factors in \cref{eq:error-transfer} measures the affect
+of the hidden state $\h_k$ on some future state $\h_t$ where $t > k$
+and can be interpreted as transferring the error ``in time'' from step $t$ back
+to step $k$ \citep{Pascanu2012}.
+
+\subsubsection{Vanishing/exploding gradients}
+
+Unfortunately, naive implementations of \cref{eq:rnn-ht} and
+\cref{eq:rnn-yt} oftentimes suffers from two well known problems: the
+\emph{vanishing gradient} and \emph{exploding gradient}\citep{Bengio1994}.
+Broadly speaking, these problems are both related to the product in
+\cref{eq:error-transfer} exponentially growing or shrinking for long
+timespans (i.e. $t \gg k$).
+
+Following \citet{Pascanu2012}, let $\| \cdot \|$ be any
+submultiplicative matrix norm (e.g. Frobenius, spectral, nuclear, Shatten
+$p$-norms). Without loss of generality, we will use the \emph{operator norm}
+defined as
+\begin{equation}
+    \| A \| = \sup_{x \in \RR^n; x \neq 0} \frac{|A x|}{|x|}
+\end{equation}
+where $|\cdot|$ is the standard Euclidian norm.
+
+From submultiplicativity, we have that for any $k$
+\begin{equation}
+    \left\| \frac{\pd \h_k}{\pd \h_{k-1}} \right\|
+    \leq \| \W_{hh}^\tp \| \| \diag\left( \sigma_{hh}'(\h_{k-1}) \right) \|
+    \leq \gamma_{\W} \gamma_\sigma
+\end{equation}
+where we have defined $\gamma_{\W} = \| \W_{hh}^\tp \|$ and
+\begin{align}
+    \gamma_\sigma
+    &\coloneqq \sup_{h \in \RR^n} \| \diag \left( \sigma_{hh}'(\h) \right) \|  &\\
+    &= \sup_{h \in \RR^n} \max_i \sigma_{hh}'(\h)_i &\mbox{Operator norm of diag} \\
+    &= \sup_{x \in \RR} \sigma_{hh}'(x) &\mbox{$\sigma_{hh}$ acts elementwise}
+\end{align}
+
+Substituting back into \cref{eq:error-transfer}, we find that
+\begin{equation}
+    \left\| \frac{\pd \h_t}{\pd \h_k} \right\|
+    = \left\| \prod_{t \geq i > k} \frac{\pd \h_i}{\pd \h_{i-1}} \right\|
+    \leq  \prod_{t \geq i > k} \left\| \frac{\pd \h_i}{\pd \h_{i-1}} \right\|
+    \leq (\gamma_{\W} \gamma_\sigma)^{t-k}
+\end{equation}
+
+Hence, we see that a sufficient condition for vanishing gradients is
+for $\gamma_{\W} \gamma_\sigma < 1$, in which case $\left\| \frac{\pd \h_t}{\pd \h_k} \right\| \to 0$
+exponentially for long timespans $t \gg k$. $\qed$
+
+If $\gamma_\sigma$ is bounded, sufficient
+conditions for vanishing gradients to occur may be written as
+\begin{equation}
+    \gamma_{\W} < \frac{1}{\gamma_\sigma}
+    \label{eq:vanishing-gradients-suff}
+\end{equation}
+This is true for commonly used activation functions (e.g. $\gamma_\sigma = 1$
+for $\sigma_{hh} = \tanh$, $\gamma_\sigma = 0.25$ for $\sigma_{hh} =
+\sigmoid$).
+
+The converse of the proof implies that $\| \W_{hh}^\tp \| \geq
+\frac{1}{\gamma_\sigma}$ are necessary conditions for $\gamma_{\W}
+\gamma_\sigma > 1$ and exploding gradients to occur.
+
+\subsection{Long short term memory: solving the vanishing gradient}
+
+In order to build a model which learns long range dependencies, vanishing
+gradients must be avoided. This requires us to design our memory cells holding
+the hidden state $\h$ such that \cref{eq:vanishing-gradients-suff} does
+not hold.
+
+The \emph{long short term memory} (LSTM) memory cell was proposed by
+\citet{hochreiter1997long} as a method for dealing with the vanishing gradient
+problem. It does so by enforcing \emph{constant error flow} on
+\cref{eq:error-transfer}, that is
+\begin{equation}
+    \W_{hh}^\tp \sigma_{hh}' (\h_{t}) = \matr{I}
+\end{equation}
+where $\matr{I}$ is the identity matrix.
+
+Integrating the above differential equation yields $\W_{hh} \sigma_{hh}(\h_{t}) = \h_{t}$.
+Since this should hold for any hidden state $\h_{t}$, this means that:
+\begin{enumerate}
+    \item $\W_{hh}$ must be full rank
+    \item $\sigma_{hh}$ must be linear
+    \item $\W_{hh} \circ \sigma_{hh} = \matr{I}$
+\end{enumerate}
+
+In the \emph{constant error carousel} (CEC), this is ensured by setting
+$\sigma_{hh} = \W_{hh} = \I$. This may be interpreted as removing time dynamics
+on $\h$ in order to permit error signals to be transferred backwards in time
+(\cref{eq:error-transfer}) without modification (i.e. $\forall t \geq k: \frac{\pd
+\h_t}{\pd \h_k} = \I$).
+
+In addition to using a CEC, a LSTM introduces three gates controlling access to the CEC:
+\begin{itemize}
+    \item \textbf{Input gate}: scales input $\x_t$ elementwise by $\i_t \in [0,1]$, \emph{writes} to $\h_t$
+    \item \textbf{Output gate}: scales output $\y_t$ elementwise by $\o_t \in [0,1]$, \emph{reads} from $\h_t$
+    \item \textbf{Forget gate}: scales previous cell value $\h_{t-1}$ by $\f_t \in [0,1]$, \emph{resets} $\h_t$
+\end{itemize}
+
+Mathematically, the LSTM model is defined by the following set of equations:
+\begin{eqnarray}
+    \i_t &=& \sigmoid(\W_{xi} \x_t + \W_{yi} \y_{t-1} + \b_i) \\
+    \o_t &=& \sigmoid(\W_{xo} \x_t + \W_{yo} \y_{t-1} + \b_o) \\
+    \f_t &=& \sigmoid(\W_{xf} \x_t + \W_{yf} \y_{t-1} + \b_f) \\
+    \h_t &=& \f_t \odot \h_{t-1} + \i_t \odot \tanh(\W_{xh}\x_t + y_{t-1} \W_{yh} + \b_h) \label{eq:lstm-dynamics} \\
+    \y_t &=& \o_t \odot \tanh(\h_t)
+\end{eqnarray}
+where $\odot$ denotes elementwise multiplication of vectors.
+
+Notice that the gates ($\i_t$, $\o_t$, and $\f_t$) controlling flow in and out
+of the CEC are all time varying. This can be interpreted as a mechanism
+enabling LSTM to explicitly learn which error signals to trap in the CEC and
+when to release them \citep{hochreiter1997long}, enabling error signals to
+potentially be transported across long time lags.
+
+\begin{figure}[htpb]
+    \centering
+    \input{Chapter2/Figs/lstm-unit-2.pdf_tex}
+    \caption{Schematic for a single LSTM memory cell. Notice how the gates $\i_t$, $\o_t$, and $\f_t$ control access to the constant error carousel (CEC).}
+    \label{fig:lstm-cell}
+\end{figure}
+
+Some authors define LSTMs such that $\h_t$ is not used to compute gate
+activations, referring to the case where $\h_t$ is connected as ``peephole
+connections''\citep{gers2000recurrent}. We will use LSTM to refer to the
+system of equations as written above.
+
+\subsubsection{Practicalities for successful applications of LSTMs}
+
+Many applications of LSTMs \mynote{cite examples} share some common practical
+techniques for ensuring successful training. Perhaps most important is
+\emph{gradient norm clipping} \citep{Mikolov2012,Pascanu2012} where the
+gradient is rescaled whenever it exceeds a threshold. This is necessary because
+while vanishing gradients are mitigated by the use of CECs, LSTMs do not
+explicitly protect against exploding gradients.
+
+Another common practice is the use of methods for reducing overfitting and
+improving generalization. In particular, \emph{dropout}
+\citep{srivastava2014dropout} can be applied to the connections between memory
+cells in a stacked RNN to regularize the learned features to be more robust to
+noise \citep{zaremba2014recurrent}. Additionally, \emph{batch
+normalization}\citep{ioffe2015batch} can also be applied to to the memory cell
+hidden states to reduce co-variate shifts, accelerate training, and improve
+generalization.
+
+Finally, applications of RNNs to long sequences can incur a prohibitively high
+cost for a single parameter update\citep{citeulike:13881859}. For instance,
+computing the gradient of an RNN on a sequence of length $1000$ costs the
+equivalent of a forward and backward pass on a $1000$ layer feedforward
+network. This issue is typically addressed by only back-propogating error
+signals a fixed number of timesteps back in the unrolled network, a technique
+known as \emph{truncated BPTT}\citep{williams1990efficient}. As the hidden
+states in the unrolled network have nevertheless been exposed to many timesteps,
+learning of long range structure is still possible.

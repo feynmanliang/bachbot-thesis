@@ -1,0 +1,91 @@
+%% Creator: Inkscape inkscape 0.91, www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'rnn-multi-unrolled.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{366.16246501bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.76753915)%
+    \put(0.15352715,0.18913655){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\vec{h}^{(1)}_{t-1}$}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{rnn-multi-unrolled.pdf}}%
+    \put(0.38567548,0.01697123){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{time}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{rnn-multi-unrolled.pdf}}%
+    \put(0.37909991,0.06293234){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\cdots$}}}%
+    \put(0.37909993,0.26578212){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\cdots$}}}%
+    \put(0.85541393,0.06210105){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\cdots$}}}%
+    \put(0.85541393,0.26495088){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\cdots$}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=3]{rnn-multi-unrolled.pdf}}%
+    \put(0.37990271,0.70548905){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\cdots$}}}%
+    \put(0.37990271,0.52651479){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\cdots$}}}%
+    \put(0.85621679,0.70465781){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\cdots$}}}%
+    \put(0.85621679,0.52568355){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\cdots$}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=4]{rnn-multi-unrolled.pdf}}%
+    \put(0.2613143,0.38401929){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Unroll}}}%
+    \put(0.15352715,0.44986923){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\vec{h}^{(2)}_{t-1}$}}}%
+    \put(0.12903665,0.26210084){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$z^{-1}$}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=5]{rnn-multi-unrolled.pdf}}%
+    \put(0.12983945,0.52283351){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$z^{-1}$}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=6]{rnn-multi-unrolled.pdf}}%
+    \put(1.15834231,0.11768564){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{}}}%
+    \put(1.20003926,0.56830532){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.26554371\unitlength}\raggedright \end{minipage}}}%
+    \put(0.71753383,0.06851285){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\vec{x}_{t+1}$}}}%
+    \put(0.71753383,0.2620488){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\vec{h}^{(1)}_{t+1}$}}}%
+    \put(0.71753383,0.52278154){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\vec{h}^{(2)}_{t+1}$}}}%
+    \put(0.71753383,0.70688086){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\vec{y}_{t+1}$}}}%
+    \put(0.61376693,0.06851285){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\vec{x}_{t}$}}}%
+    \put(0.61376693,0.2620488){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\vec{h}^{(1)}_{t}$}}}%
+    \put(0.61376693,0.52278154){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\vec{h}^{(2)}_{t}$}}}%
+    \put(0.61376693,0.70688086){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\vec{y}_{t}$}}}%
+    \put(0.48812736,0.06851285){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\vec{x}_{t-1}$}}}%
+    \put(0.48812736,0.2620488){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\vec{h}^{(1)}_{t-1}$}}}%
+    \put(0.48812736,0.52278154){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\vec{h}^{(2)}_{t-1}$}}}%
+    \put(0.48812736,0.70688086){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\vec{y}_{t-1}$}}}%
+    \put(0.0146839,0.06851285){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\vec{x}_{t}$}}}%
+    \put(0.0146839,0.2620488){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\vec{h}^{(1)}_{t}$}}}%
+    \put(0.0146839,0.52278154){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\vec{h}^{(2)}_{t}$}}}%
+    \put(0.0146839,0.70688086){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\vec{y}_{t}$}}}%
+  \end{picture}%
+\endgroup%

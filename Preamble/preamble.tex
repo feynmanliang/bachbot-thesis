@@ -28,17 +28,17 @@
   %\RequirePackage{helvet}
 
   % For use with XeLaTeX
-  %  \setmainfont[
-  %    Path              = ./libertine/opentype/,
-  %    Extension         = .otf,
-  %    UprightFont = LinLibertine_R,
-  %    BoldFont = LinLibertine_RZ, % Linux Libertine O Regular Semibold
-  %    ItalicFont = LinLibertine_RI,
-  %    BoldItalicFont = LinLibertine_RZI, % Linux Libertine O Regular Semibold Italic
-  %  ]
-  %  {libertine}
-  %  % load font from system font
-  %  \newfontfamily\libertinesystemfont{Linux Libertine O}
+   \setmainfont[
+     Path              = ./libertine/opentype/,
+     Extension         = .otf,
+     UprightFont = LinLibertine_R,
+     BoldFont = LinLibertine_RZ, % Linux Libertine O Regular Semibold
+     ItalicFont = LinLibertine_RI,
+     BoldItalicFont = LinLibertine_RZI, % Linux Libertine O Regular Semibold Italic
+   ]
+   {libertine}
+   % load font from system font
+   \newfontfamily\libertinesystemfont{Linux Libertine O}
 \fi
 
 % *****************************************************************************
@@ -109,16 +109,16 @@
 % *****************************************************************************
 % *************************** Bibliography  and References ********************
 
-%\usepackage{cleveref} %Referencing without need to explicitly state fig /table
+\usepackage{cleveref} %Referencing without need to explicitly state fig /table
 
 % Add `custombib' in the document class option to use this section
 \ifuseCustomBib
-   \RequirePackage[square, sort, numbers, authoryear]{natbib} % CustomBib
+%    \RequirePackage[square, sort, numbers, authoryear]{natbib} % CustomBib
 
 % If you would like to use biblatex for your reference management, as opposed to the default `natbibpackage` pass the option `custombib` in the document class. Comment out the previous line to make sure you don't load the natbib package. Uncomment the following lines and specify the location of references.bib file
 
-%\RequirePackage[backend=biber, style=numeric-comp, citestyle=numeric, sorting=nty, natbib=true]{biblatex}
-%\bibliography{References/references} %Location of references.bib only for biblatex
+\RequirePackage[backend=biber, style=numeric-comp, citestyle=numeric, sorting=nty, natbib=true]{biblatex}
+\bibliography{References/references} %Location of references.bib only for biblatex
 
 \fi
 
@@ -191,12 +191,49 @@
 % ******************************** Todo Notes **********************************
 %% Uncomment the following lines to have todonotes.
 
-%\ifsetDraft
-%	\usepackage[colorinlistoftodos]{todonotes}
-%	\newcommand{\mynote}[1]{\todo[author=kks32,size=\small,inline,color=green!40]{#1}}
-%\else
-%	\newcommand{\mynote}[1]{}
-%	\newcommand{\listoftodos}{}
-%\fi
+\ifsetDraft
+	\usepackage[colorinlistoftodos]{todonotes}
+	\newcommand{\mynote}[1]{\todo[author=fliang,size=\small,inline,color=green!40]{#1}}
+\else
+	\newcommand{\mynote}[1]{}
+	\newcommand{\listoftodos}{}
+\fi
 
 % Example todo: \mynote{Hey! I have a note}
+
+% ******************************** Feynman's Macros *****************************
+\usepackage{amsthm}
+\usepackage[bold]{hhtensor}
+\usepackage{mathtools}
+
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\NN}{\mathbb{N}}
+
+\newcommand{\x}{\vec{x}}
+\newcommand{\h}{\vec{h}}
+\newcommand{\y}{\vec{y}}
+\newcommand{\z}{\vec{z}}
+\newcommand{\W}{\matr{W}}
+\renewcommand{\b}{\vec{b}}
+\renewcommand{\i}{\vec{i}}
+\newcommand{\f}{\vec{f}}
+\renewcommand{\o}{\vec{o}}
+\newcommand{\p}{\vec{p}}
+
+\renewcommand{\j}{\vec{j}}
+\renewcommand{\k}{\vec{k}}
+
+\newcommand{\I}{\matr{I}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\pd}{\partial} % partial derivative
+\newcommand{\tp}{\intercal} % transpose
+
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\softmax}{softmax}
+\DeclareMathOperator*{\sigmoid}{sigmoid}
+\DeclareMathOperator*{\diag}{diag}
+\DeclareMathOperator*{\pool}{pool}
+\newcommand{\ind}{\mathds{1}} % indicator
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
