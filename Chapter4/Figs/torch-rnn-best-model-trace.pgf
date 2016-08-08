@@ -706,23 +706,6 @@
 \pgfusepath{stroke}%
 \end{pgfscope}%
 \begin{pgfscope}%
-\pgfsetroundcap%
-\pgfsetroundjoin%
-\pgfsetlinewidth{1.756562pt}%
-\definecolor{currentstroke}{rgb}{0.298039,0.447059,0.690196}%
-\pgfsetstrokecolor{currentstroke}%
-\pgfsetdash{}{0pt}%
-\pgfpathmoveto{\pgfqpoint{2.264361in}{2.112521in}}%
-\pgfpathlineto{\pgfqpoint{2.486584in}{2.112521in}}%
-\pgfusepath{stroke}%
-\end{pgfscope}%
-\begin{pgfscope}%
-\definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
-\pgfsetstrokecolor{textcolor}%
-\pgfsetfillcolor{textcolor}%
-\pgftext[x=2.575473in,y=2.073632in,left,base]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont loss}%
-\end{pgfscope}%
-\begin{pgfscope}%
 \pgfsetbuttcap%
 \pgfsetmiterjoin%
 \definecolor{currentfill}{rgb}{0.917647,0.917647,0.949020}%
@@ -1408,23 +1391,6 @@
 \pgfpathmoveto{\pgfqpoint{3.597331in}{0.488666in}}%
 \pgfpathlineto{\pgfqpoint{3.597331in}{2.251409in}}%
 \pgfusepath{stroke}%
-\end{pgfscope}%
-\begin{pgfscope}%
-\pgfsetroundcap%
-\pgfsetroundjoin%
-\pgfsetlinewidth{1.756562pt}%
-\definecolor{currentstroke}{rgb}{0.298039,0.447059,0.690196}%
-\pgfsetstrokecolor{currentstroke}%
-\pgfsetdash{}{0pt}%
-\pgfpathmoveto{\pgfqpoint{5.319175in}{2.112521in}}%
-\pgfpathlineto{\pgfqpoint{5.541398in}{2.112521in}}%
-\pgfusepath{stroke}%
-\end{pgfscope}%
-\begin{pgfscope}%
-\definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
-\pgfsetstrokecolor{textcolor}%
-\pgfsetfillcolor{textcolor}%
-\pgftext[x=5.630286in,y=2.073632in,left,base]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont loss}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
