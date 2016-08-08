@@ -1,4 +1,24 @@
-\chapter{My third chapter}
+\chapter{Related Work}
+% This chapter covers relevant (and typically, recent) research
+% which you build upon (or improve upon). There are two complementary
+% goals for this chapter:
+% \begin{enumerate}
+%   \item to show that you know and understand the state of the art; and
+%   \item to put your work in context
+% \end{enumerate}
+
+% Ideally you can tackle both together by providing a critique of
+% related work, and describing what is insufficient (and how you do
+% better!)
+
+% The related work chapter should usually come either near the front or
+% near the back of the dissertation. The advantage of the former is that
+% you get to build the argument for why your work is important before
+% presenting your solution(s) in later chapters; the advantage of the
+% latter is that don't have to forward reference to your solution too
+% much. The correct choice will depend on what you're writing up, and
+% your own personal preference.
+
 
 % **************************** Define Graphics Path **************************
 \ifpdf
@@ -7,146 +27,218 @@
     \graphicspath{{Chapter3/Figs/Vector/}{Chapter3/Figs/}}
 \fi
 
-\section{First section of the third chapter}
-And now I begin my third chapter here \dots
-
-And now to cite some more people~\citet{Rea85,Ancey1996}
-
-\subsection{First subsection in the first section}
-\dots and some more 
-
-\subsection{Second subsection in the first section}
-\dots and some more \dots
-
-\subsubsection{First subsub section in the second subsection}
-\dots and some more in the first subsub section otherwise it all looks the same
-doesn't it? well we can add some text to it \dots
-
-\subsection{Third subsection in the first section}
-\dots and some more \dots
-
-\subsubsection{First subsub section in the third subsection}
-\dots and some more in the first subsub section otherwise it all looks the same
-doesn't it? well we can add some text to it and some more and some more and
-some more and some more and some more and some more and some more \dots
-
-\subsubsection{Second subsub section in the third subsection}
-\dots and some more in the first subsub section otherwise it all looks the same
-doesn't it? well we can add some text to it \dots
-
-\section{Second section of the third chapter}
-and here I write more \dots
-
-\section{The layout of formal tables}
-This section has been modified from ``Publication quality tables in \LaTeX*''
- by Simon Fear.
-
-The layout of a table has been established over centuries of experience and 
-should only be altered in extraordinary circumstances. 
-
-When formatting a table, remember two simple guidelines at all times:
-
+Some common themes
 \begin{enumerate}
-  \item Never, ever use vertical rules (lines).
-  \item Never use double rules.
+  \item Use of domain-specific representations for musical data
+  \item Modeling at multiple resolutions / timescales (i.e. chords vs notes)
+\end{enumerate}
+In contrast, we avoid imposing prior knowledge in order to avoid any biases
+and hope that the model will learn the features relevant for good performance.
+
+\section{Machine learning on musical data}
+
+Computational methods applied to large corpora of music was first described in
+\citep{coutinho2005computational}, which termed the phrase ``computational
+musicology.'' Since then, development modern tools have greatly aided research
+efforts. \texttt{music21} \citep{Scott2015} is a Python programming environment
+for performing computations over musical composition data which has been
+utilized for a variety of computational musicology tasks ranging from
+hierarchical modelling of metrical structure \citep{ariza2010modeling}, feature
+generation for downstream machine learning\citep{Cuthbert2011}, and style
+classification \citep{Herlands2014}.
+
+Focusing on machine learning applications, most research can be
+classified under one or more of the following tasks:
+\begin{enumerate}
+  \item Classification: the style, composer, or other musical attribute is to be classified
+  \item harmonization: a melody is given and the remaining parts are to be generated
+  \item Completion: given the beginning of a score, the remainder is to be generated
+  \item Automatic Composition: a complete unconstrained score is to be generated
 \end{enumerate}
 
-These guidelines may seem extreme but I have
-never found a good argument in favour of breaking them. For
-example, if you feel that the information in the left half of
-a table is so different from that on the right that it needs
-to be separated by a vertical line, then you should use two
-tables instead. Not everyone follows the second guideline:
+There is a vast body of research dealing with music classification tasks,
+including: style classification \citep{Herlands2014}
+\citep{dannenberg1997machine}, automated harmonic analysis \cite{ni2012end},
+information retrieval \citep{mandel2006support}, and performer identification
+\citep{stamatatos2005automatic}. However, it is not straightforward to utilize
+work in this area to solve our research goals of music synthesis\mynote{of what?}.
 
-There are three further guidelines worth mentioning here as they
-are generally not known outside the circle of professional
-typesetters and subeditors:
+\section{Models for music synthesis}
 
-\begin{enumerate}\setcounter{enumi}{2}
-  \item Put the units in the column heading (not in the body of
-          the table).
-  \item Always precede a decimal point by a digit; thus 0.1
-      {\em not} just .1.
-  \item Do not use `ditto' signs or any other such convention to
-      repeat a previous value. In many circumstances a blank
-      will serve just as well. If it won't, then repeat the value.
+Unlike classification, the other tasks (harmonization, completion, automatic
+composition) require synthesis of novel music. One broad classification of
+music synthesis methods \citep{toiviainen2000symbolic} distinguishes between
+symbolic (i.e. rule based) versus connectionist (i.e. neural networks).
+
+\subsection{Symbolic rule-based methods}
+
+CHORAL \citep{ebciouglu1988expert} is one of the first rule based expert system
+for harmonising Bach chorales. It uses 350 manually defined rules as well as
+hand-tuned search heuristics. A later system called \emph{Experiments in Music
+Intelligence} (EMI) \citep{cope1992computer} automatically extracted rules to
+build an augmented transition network\citep{wanner1980atn}. In
+\citep{cruz1998learning}, grammatical inference is used to learn regular
+grammars over chord progressions for modelling musical style.
+\citep{tsang1991harmonizing} applies constraint logic programming for generating
+harmonizations which satisfy certain harmonic constraints.
+
+While symbolic methods can easily incorporate domain-specific knowledge and are
+more interpretable than connectionist models, they are also inherently biased
+by their creators' subjective theories on harmony and music cognition.
+Furthermore, specification of hand-crafted rules is a laborious process which
+requires significant music experience and does not improve when given larger
+amounts of data. Additionally, rule-based methods are brittle to distortion and
+noise and limit creativity by disallowing deviation from the defined rules.
+
+\subsection{Connectionist methods}
+
+Neural networks have been previously applied to music with varying degrees of
+success\citep{griffith1999musical}. The earliest connectionist music models
+utilized note-level Jordan RNNs on melody generation and harmonization tasks
+\citep{todd1988sequential} \cite{todd1989connectionist}
+\citep{bharucha1989modeling}. \mynote{say more}
+
+A landmark connectionist system is Mozer's CONCERT \citep{mozer1994neural}, a
+BPTT RNN for note-by-note composition. CONCERT models music at two
+levels of resolution: notes and chords. Notes utilize a psychologically-based
+representation \citep{shepard1982geometrical} and chords use a distributed
+embedding originally trained for style classification
+\citep{laden1989representation}. The model passes objective evaluations by
+faithfully reproducing scales but ``while the local contours made sense, the
+pieces were not musically coherent, lacking thematic structure and having
+minimal phrase structure and rhythmic organisation`` \citep{mozer1994neural}.
+
+\citep{Boulanger-Lewandowski2012} proposed the RNN-RBM. a time-varying RBM with
+hidden units evolving over time according to a RNN, to model polyphonic music
+on a piano roll representation. However, training the RNN-RBM requires an
+expensive contrastive divergence sampling step at each timestep and a
+nontrivial Hessian-free optimisation routine. Furthermore, the authors
+quantized music to eighth-notes. In contrast, our work uses the well-understood
+truncated BPTT algorithm for training and quantizes to sixteenth-notes to achieve
+two-times higher time resolution.
+
+\citep{Lyu2015} extended the RNN-RBM\cite{Boulanger-Lewandowski2012} to use a
+LSTM instead of a RNN for modelling hidden unit time dynamics. Unfortunately,
+the authors do not evaluate their model beyond stating ``LSTM-RBM could learn
+melody lines\ldots while RNN-RBM generates inconsistent and unpleasant sample
+sequences.''
+
+\subsection{Hybrid methods}
+
+Hybrid approaches which combine both rule-based and connectionist methods have
+also been investigated. One of the first hybrid systems for music synthesis is
+HARMONET \citep{hild1991harmonet}, which combines connectionist neural networks
+with formal rules to specifically harmonize Bach chorales. It implements a
+domain-specific processing pipeline consisting of:
+\begin{enumerate}
+  \item Harmonic modelling: Predict harmonic skeleton (i.e. Roman numerals
+  quantized to quarter-notes) using a neural network
+  \item Expand each Roman numeral to chords using formal rules
+  \item Ornamentation: add eighth-notes using formal rules
 \end{enumerate}
+The specialized architecture of HARMONET makes it unable to generalize
+to other tasks such as automatic composition or composition scoring\mynote{Define this task}.
+Additionally, the use of formal rules makes the system suffer from the same
+problems that rule-based systems suffer from.
 
-A frequently seen mistake is to use `\textbackslash begin\{center\}' \dots `\textbackslash end\{center\}' inside a figure or table environment. This center environment can cause additional vertical space. If you want to avoid that just use `\textbackslash centering'
+MELONET \citep{feulner1994melonet} builds on top of HARMONET's harmonic
+modelling to construct chorale partitas (i.e. variations where one of the
+parts is varied in a harmonically believable way). It first introduced multiple
+ideas which have been rediscovered in recent years, including:
+\begin{enumerate}
+  \item Delayed update units to model multiple timescales (described again in Clockwork
+  RNNs \citep{Koutnik2014})
+  \item Use of Resilient Propagation (RProp) \citep{riedmiller1993direct} for training (
+  described again in \citep{Liu2014})
+\end{enumerate}
+Additionally, MELONET utilizes a motif classification neural network to
+explicitly force motifs to appear multiple times within a partita.
+Follow up work \citep{hornel1996learning} extends MELONET to use a distributed
+representation for motifs and a genetic algorithm for training.
+While MELONET introduces many novel ideas, its limited training set size
+(16 Pachelbel chorales \citep{hornel1997melonet}) and domain-specific
+architecture limit the generalizability of results. \mynote{Better analyze this}
 
+CHIME \citep{franklin2001learning} adopted the Jordan RNN from
+\citep{todd1989connectionist} to add a second training phase using actor-critic
+reinforcement learning \citep{sutton1998reinforcement}. The critic is
+constructed using a collection of ``music rules,'' enabling incorporation of
+prior knowledge.
 
-\begin{table}
-\caption{A badly formatted table}
-\centering
-\label{table:bad_table}
-\begin{tabular}{|l|c|c|c|c|}
-\hline 
-& \multicolumn{2}{c}{Species I} & \multicolumn{2}{c|}{Species II} \\ 
-\hline
-Dental measurement  & mean & SD  & mean & SD  \\ \hline 
-\hline
-I1MD & 6.23 & 0.91 & 5.2  & 0.7  \\
-\hline 
-I1LL & 7.48 & 0.56 & 8.7  & 0.71 \\
-\hline 
-I2MD & 3.99 & 0.63 & 4.22 & 0.54 \\
-\hline 
-I2LL & 6.81 & 0.02 & 6.66 & 0.01 \\
-\hline 
-CMD & 13.47 & 0.09 & 10.55 & 0.05 \\
-\hline 
-CBL & 11.88 & 0.05 & 13.11 & 0.04\\ 
-\hline 
-\end{tabular}
-\end{table}
+\subsection{LSTM music synthesis models}
 
-\begin{table}
-\caption{A nice looking table}
-\centering
-\label{table:nice_table}
-\begin{tabular}{l c c c c}
-\hline 
-\multirow{2}{*}{Dental measurement} & \multicolumn{2}{c}{Species I} & \multicolumn{2}{c}{Species II} \\ 
-\cline{2-5}
-  & mean & SD  & mean & SD  \\ 
-\hline
-I1MD & 6.23 & 0.91 & 5.2  & 0.7  \\
+Prior work has demonstrated LSTM possesses many properties desirable for music
+applications. Their superiority over traditional RNNs has been well
+documented\citep{gers2001lstm}. They can learn to count and measure time
+intervals between events spaced arbitrarily far apart in time
+\citep{gers2000recurrent}, a property $N$-gram language models do not possess.
+\citep{gers2002learning} demonstrated LSTM learning to produce self-sustaining
+oscillations at a regular frequency, suggesting that they are capable of
+discovering periodic structure. \citep{franklin2006recurrent} evaluates various
+RNN architectures on variety of music tasks and concludes: ``while we have
+found a task that challenges a single LSTM network, we do not believe that any
+other recurrent networks we have used would be able to learn these songs.'''
 
-I1LL & 7.48 & 0.56 & 8.7  & 0.71 \\
+One of the first applications of LSTMs to music was to improvise blues melody
+lines \citep{Eck2002}\cite{Eck2002-blues}. Using a LSTM to model blues chord
+progressions and another to model melody lines given chords, the authors
+reported that LSTM can learn long term music structure such as repeated motifs
+can be learned without explicit modelling (e.g. MELONET). However, the music
+representation quantized to eighth notes, used considered pitch classes without
+accounting for octaves, and limited the model to $12$ possible chords.
+Additionally, there was ``no explicit way to determine when a note ends,''
+prohibiting discrimination between four consecutive articulations of a note at
+the same pitch from a single note held for four timesteps. In contrast, our
+model accounts for the octaves in addition to pitch class, does not restrict
+the possible chords, operates at twice the time resolution, and also
+models when a note ends.
 
-I2MD & 3.99 & 0.63 & 4.22 & 0.54 \\
+More recently, \citep{sturm2015folk} \cite{sturm2016music} trained
+character-level LSTMs on 23,000 folk music scores represented in ABC
+notation\citep{abcstandard}, a high-level text format for music. ABC format is
+unsatisfactory for our use case because polyphonic scores are encoded one part
+at a time so notes sounding close together in time may appear very far apart in
+the sequence. As a result, it is unsurprising that the authors do not
+explicitly address polyphony and present exclusively monophonic results.
 
-I2LL & 6.81 & 0.02 & 6.66 & 0.01 \\
+Many variants of the LSTM architecture have been proposed. Perhaps the most
+well known is the gated recurrent unit (GRU)\citep{cho2014learning}, which
+constrains the input and forget gates to sum to $1$. \citep{Mikolov2015}
+proposed the structurally constrained RNN (SCRN), a simple architecture
+achieving comparable performance to LSTMs. Of most relevance to music,
+\citep{Koutnik2014} proposed the clockwork RNN for explicitly modelling phenomena
+occurring at multiple timescales by updating different blocks of the hidden
+state at different periods. Whether these differences matter is not definitive:
+\citep{greff2015lstm} performed 5400 experiments on eight different
+architectures and found no significant difference in performance compared to
+the original LSTM architecture. \citep{Nayebi2015} reports LSTMs significantly
+outperform GRUs in music applications.
 
-CMD & 13.47 & 0.09 & 10.55 & 0.05 \\
+\section{Generative modelling of Bach Chorales}
 
-CBL & 11.88 & 0.05 & 13.11 & 0.04\\ 
-\hline 
-\end{tabular}
-\end{table}
+One of the first generative models for harmonizing Bach chorales is Bellgard
+and Tsaing's effective Boltzmann machine model \citep{bellgard1994harmonizing}. Their model
+uses Boltzmann machines to enforce consistency within local contexts. As a result,
+their model is unable to capture long-range dependencies. Furthermore, they quantize
+to half-notes and only achieve $1/8$ the time resolution of our model.
 
+\citep{Allan2005} used HMMs to harmonize Bach chorales. Their model consists of
+two separate HMM models: one for generating harmonizations and another for
+ornamentation. Their model uses a discrete harmonic encoding of chords for
+hidden states. In contrast, our model uses an unconstrained continuous hidden
+state and requires no separate ornamentation step.
 
-\begin{table}
-\caption{Even better looking table using booktabs}
-\centering
-\label{table:good_table}
-\begin{tabular}{l c c c c}
-\toprule
-\multirow{2}{*}{Dental measurement} & \multicolumn{2}{c}{Species I} & \multicolumn{2}{c}{Species II} \\ 
-\cmidrule{2-5}
-  & mean & SD  & mean & SD  \\ 
-\midrule
-I1MD & 6.23 & 0.91 & 5.2  & 0.7  \\
+\citep{Liu2014} applied LSTMs to Bach chorales and reports significant gains
+using RProp instead of BPTT, a technique previously utilized by
+MELONET\citep{feulner1994melonet}. However, they erroneously use a mean squared
+error training criterion for a classification task, casting doubts on the
+validity of their experiments.
 
-I1LL & 7.48 & 0.56 & 8.7  & 0.71 \\
+\citep{Brien2016} compared RNN models for Bach chorales and found clockwork RNNs to
+yield the lowest validation loss. However, their data format does not permit
+independent articulation of parts. More importantly, the performance margin between
+clockwork RNNs and LSTMs was very small ($6.5$ vs $6.75$ cross-entropy loss) and their
+implementation resets the LSTM state when truncating gradients during BPTT, limiting the
+time-range of learned dynamics to be at most the sequence length.
 
-I2MD & 3.99 & 0.63 & 4.22 & 0.54 \\
-
-I2LL & 6.81 & 0.02 & 6.66 & 0.01 \\
-
-CMD & 13.47 & 0.09 & 10.55 & 0.05 \\
-
-CBL & 11.88 & 0.05 & 13.11 & 0.04\\ 
-\bottomrule
-\end{tabular}
-\end{table}
+\mynote{Tom Collins work}

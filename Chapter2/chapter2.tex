@@ -441,18 +441,18 @@ cell}. This allows us to abstract away how $\y_t$ and $\h_t$ are computed from
 $\x_t$ and $\h_{t-1}$, enabling discussion of RNNs applicable to many different
 implementations. Concretely, A memory cell is an interface which for each
 timestep $t$:
-\begin{itemize}
-    \item Takes inputs
-        \begin{itemize}
-            \item The current element in the input sequence $\x_t$
-            \item The previous hidden state $\h_{t-1}$
-        \end{itemize}
-    \item Produces outputs
-        \begin{itemize}
-            \item The next  hidden state $\h_t = f_h (\x_t, \h_{t-1})$
-            \item The outputs $\y_t = f_y (\h_t)$.
-        \end{itemize}
-\end{itemize}
+\begin{description}
+  \item[Inputs]~
+    \begin{itemize}
+      \item The current element in the input sequence $\x_t$
+      \item The previous hidden state $\h_{t-1}$
+    \end{itemize}
+  \item[Outputs]~
+    \begin{itemize}
+      \item The next  hidden state $\h_t = f_h (\x_t, \h_{t-1})$
+      \item The outputs $\y_t = f_y (\h_t)$.
+    \end{itemize}
+\end{description}
 In future diagrams, we will abstractly represent the memory cell
 as a node labelled with $\h$.
 
@@ -738,11 +738,11 @@ on $\h$ in order to permit error signals to be transferred backwards in time
 \h_t}{\pd \h_k} = \I$).
 
 In addition to using a CEC, a LSTM introduces three gates controlling access to the CEC:
-\begin{itemize}
-    \item \textbf{Input gate}: scales input $\x_t$ elementwise by $\i_t \in [0,1]$, \emph{writes} to $\h_t$
-    \item \textbf{Output gate}: scales output $\y_t$ elementwise by $\o_t \in [0,1]$, \emph{reads} from $\h_t$
-    \item \textbf{Forget gate}: scales previous cell value $\h_{t-1}$ by $\f_t \in [0,1]$, \emph{resets} $\h_t$
-\end{itemize}
+\begin{description}
+  \item[Input gate]: scales input $\x_t$ elementwise by $\i_t \in [0,1]$, \emph{writes} to $\h_t$
+  \item[Output gate]: scales output $\y_t$ elementwise by $\o_t \in [0,1]$, \emph{reads} from $\h_t$
+  \item[Forget gate]: scales previous cell value $\h_{t-1}$ by $\f_t \in [0,1]$, \emph{resets} $\h_t$
+\end{description}
 
 Mathematically, the LSTM model is defined by the following set of equations:
 \begin{eqnarray}
