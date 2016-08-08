@@ -136,15 +136,13 @@ compared against prior work \mynote{cite williams}.
 
 \section{Results}
 
-\nomenclature[z-ter]{$TER$}{Token Error Rate}
-\nomenclature[z-fer]{$FER$}{Frame Error Rate}
+\nomenclature[z-ter]{TER}{Token Error Rate}
+\nomenclature[z-fer]{FER}{Frame Error Rate}
 
-\convertto{mm}{\the\textwidth}
-
-\begin{figure}[htpb]
+\begin{figure}[tb]
   \centering
-  \includegraphics[width=1.0\linewidth]{harmonization-results.png}
-  \caption{harmonization-Results}
+  \input{Chapter5/Figs/harmonization-results.pgf}
+  \caption{Error rates for harmonization tasks}
   \label{fig:harmonization-results}
 \end{figure}
 
@@ -155,14 +153,14 @@ of generating Baroque acompanyments to a variety of pieces. \cref{fig:harm-happy
 shows BachBot's proposed ATB harmonization for happy birthday\mynote{cite? public domain}
 and \cref{fig:harm-twinkle-twinkle} for twinkle twinkle little star\mynote{cite?}.
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
   \centering
   \includegraphics[trim={0 19cm 0 3.7cm},clip,width=0.9\linewidth]{happy-birthday-score.pdf}
   \caption{Happy birthday soprano melody, ATB harmonized by BachBot}
   \label{fig:harm-happy-birthday}
 \end{figure}
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
   \centering
   \includegraphics[trim={0 10cm 0 3.7cm},clip,width=0.9\linewidth]{twinkle-twinkle-score.pdf}
   \caption{Twinkle-twinkle soprano melody, ATB harmonized by BachBot}
