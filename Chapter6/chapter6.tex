@@ -37,7 +37,7 @@ Azure Data Storage and processed in batch MapReduce using Azure HDInsight.
 
 The landing page for \url{http://bachbot.com/} is shown in \cref{fig:bachbot-front-page}.
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
   \centering
   \includegraphics[width=1.0\linewidth]{bachbot-front-page.png}
   \caption{The first page seen by a visitor of \url{http://bachbot.com}}
@@ -48,7 +48,7 @@ Clicking ``Test Yourself'' redirects the participant to a user information form
 (\cref{fig:user-info-form}) where users self-report their age
 group prior music experience into the categories shown.
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
   \centering
   \includegraphics[width=1.0\linewidth]{user-info-form.png}
   \caption{User information form presented after clicking ``Test Yourself''}
@@ -62,7 +62,7 @@ were asked to select the sample which sounds most similar to Bach. Users were
 asked to provide five consecutive answers and then the overall percentage
 correct was reported.
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
   \centering
   \includegraphics[width=1.0\linewidth]{question-screen.png}
   \caption{Question response interface used for all questions}
@@ -78,14 +78,13 @@ replacement from the corpus and paired with a corresponding harmonization.
 SATB sampls were paired with chorales randomly sampled from the corpus. The
 five question answered by any given participant were comprised of one S/A/T/B
 question chosen at random, one AT question, one ATB question, and two original
-compositions. See
-\cref{tab:bachbot-com-question-distribtion} for details.
+compositions. See \cref{tab:bachbot-com-question-distribtion} for details.
 
-\begin{table}[htpb]
+\begin{table}[tb]
   \centering
   \begin{tabular}{lrr}
     \toprule
-    Question Type & \# Questions &  Expected \# responses / participant \\
+    Question type & \# questions available & Expected \# responses per participant \\
     \midrule
     S        & 2  & 0.25 \\
     A        & 2  & 0.25 \\
@@ -111,7 +110,7 @@ our participant is diverse and includes participants from six different continen
 are between $18-45$ and have played an instrument, more than $20\%$\mynote{FIX NUMBER LAST}
 have either formally studied or taught music theory.
 
-\begin{figure}[htpb]
+\begin{figure}[p]
   \centering
   \begin{subfigure}[b]{0.98\textwidth}
     \centering
@@ -129,7 +128,7 @@ have either formally studied or taught music theory.
   \label{fig:user-geographics}
 \end{figure}
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
   \centering
   \input{Chapter6/Figs/responses-ageGroup-musicExperience.pgf}
   \caption{Demographics of participants}
@@ -151,7 +150,7 @@ achieves $50\%$, our findings suggest that {\bf the average participant has only
 $9\%$\mynote{VERIFY LAST} better chance than randomly guessing when
 distinguishing Bach from BachBot correctly}.
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
   \centering
   \input{Chapter6/Figs/responses-mask.pgf}
   \caption{responses-Mask}
@@ -182,21 +181,21 @@ In \cref{fig:responses-mask-musicExperience}, responses are further segmented
 by music experience. Unsurprisingly, we find that the proportion of correct responses
 correlates positively with experience.
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
   \centering
   \input{Chapter6/Figs/responses-mask-musicExperience.pgf}
   \caption{responses-mask-MusicExperience}
   \label{fig:responses-mask-musicExperience}
 \end{figure}
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
   \centering
   \input{Chapter6/Figs/responses-mask-agegroup.pgf}
   \caption{responses-mask-Agegroup}
   \label{fig:responses-mask-agegroup}
 \end{figure}
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
   \centering
   \input{Chapter6/Figs/responses-name.pgf}
   \caption{Proportion of correct responses broken down by individual questions.}
