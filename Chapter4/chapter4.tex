@@ -61,6 +61,7 @@ An example of the effects of our preprocessing steps is provided in
 \cref{fig:piano-roll-effects-preproc} (piano roll) \mynote{Reference
 background}.
 
+\mynote{Find a score that actually suffers from time quantization}
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\linewidth]{bwv133-6-original-score-1.png}
@@ -72,7 +73,7 @@ background}.
     \label{fig:score-effects-preproc}
 \end{figure}
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
     \centering
         \includegraphics[width=1.0\linewidth]{bwv133-6-original-piano-roll.png}
         \includegraphics[width=1.0\linewidth]{bwv133-6-preproc-piano-roll.png}
@@ -95,7 +96,7 @@ this constraint is no longer be satisfied and we see the appearance of
 unrealistically low notes (e.g. A1) outside the range of even the lowest voice
 types.
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
     \centering
     \includegraphics[width=1.0\linewidth]{pitch-usage-original.png}
     \includegraphics[width=1.0\linewidth]{pitch-usage-preproc.png}
@@ -126,7 +127,7 @@ We investigate the effects of time quantization in
 \cref{fig:note-lengths-time-quantization}, which shows histograms of note
 duration usages before and after quantization. \mynote{Update plots... are they affected}.
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
     \centering
     \begin{subfigure}[t]{0.48\textwidth}
         \centering
@@ -140,7 +141,7 @@ duration usages before and after quantization. \mynote{Update plots... are they 
     \label{fig:note-lengths-time-quantization}
 \end{figure}
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
     \centering
     \begin{subfigure}[t]{0.48\textwidth}
         \centering
@@ -254,9 +255,9 @@ through training a RNN with \texttt{num\_layers=1}, \texttt{rnn\_size=130},
 
 90/10 train/test split.
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
     \centering
-    \includegraphics[width=\linewidth]{theanets-architecture.png}
+    \input{Chapter4/Figs/theanets-architecture.pgf}
     \caption{theanets-architecture}
     \label{fig:theanets-architecture}
 \end{figure}
@@ -270,9 +271,10 @@ LSTMs and GRUs trained much faster and achieved lower training loss, suggesting 
 our final choice for GRUs.
 
 \subsection{Optimizing the LSTM architecture}
+\label{sec:lstm-grid-search}
 
-Switched to torch-rnn. \mynote{Discrepancy between above architectures and below losses because
-  we are perturbing about best model}
+Switched to \texttt{torch-rnn}. \mynote{Discrepancy between above architectures
+and below losses because we are perturbing about best model}
 
 We construct multi-layer LSTM models with \texttt{num\_layers} number of
 layers, each containing \texttt{rnn\_size} hidden units. The inputs $x_t$ are
@@ -295,9 +297,9 @@ We use a mini-batch size of $50$.
 
 We identified our best model to be \mynote{what is it?}.
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
   \centering
-  \includegraphics[width=1.0\linewidth]{torch-rnn-best-model-trace.png}
+  \input{Chapter4/Figs/torch-rnn-best-model-trace.pgf}
   \caption{torch-rnn-best-model-Trace}
   \label{fig:torch-rnn-best-model-trace}
 \end{figure}
@@ -306,21 +308,15 @@ In the following sections, we investigate pertubations about this model and the
 effects of various hyperparameters. A complete listing of results are available
 in
 \cref{tab:torch-rnn-config-perfs}.
-\begin{table}[htpb]
-    \centering
-    \caption{Performance of various LSTM configurations}
-    \label{tab:torch-rnn-config-perfs}
-    \input{Chapter4/Figs/torch-rnn-config-perfs.tex}
-\end{table}
 
 \subsubsection{Regularization}
 
 The increasing validation error in \cref{fig:theanets-architecture} confirmed
 that our models were overfitting and required regularization. \texttt{dropout}
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
   \centering
-  \includegraphics[width=1.0\linewidth]{torch-rnn-dropout.png}
+  \input{Chapter4/Figs/torch-rnn-dropout.pgf}
   \caption{torch-rnn-Dropout}
   \label{fig:torch-rnn-dropout}
 \end{figure}
@@ -329,23 +325,23 @@ that our models were overfitting and required regularization. \texttt{dropout}
 
 \subsubsection{Network capacity}
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
     \centering
-    \includegraphics[width=\linewidth]{torch-rnn-network-params.png}
+  \input{Chapter4/Figs/torch-rnn-network-params.pgf}
     \caption{torch-rnn-network-params}
     \label{fig:torch-rnn-network-params}
 \end{figure}
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
   \centering
-  \includegraphics[width=1.0\linewidth]{torch-rnn-network-params-num-layers.png}
+  \input{Chapter4/Figs/torch-rnn-network-params-num-layers.pgf}
   \caption{torch-rnn-network-params-num-Layers}
   \label{fig:torch-rnn-network-params-num-layers}
 \end{figure}
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
   \centering
-  \includegraphics[width=1.0\linewidth]{torch-rnn-network-params-rnn-size.png}
+  \input{Chapter4/Figs/torch-rnn-network-params-rnn-size.pgf}
   \caption{torch-rnn-network-params-rnn-size}
   \label{fig:torch-rnn-network-params-rnn-size}
 \end{figure}
@@ -374,16 +370,16 @@ Sensitivity to network structure: \texttt{num\_layers} and \texttt{rnn\_size}.
 
 \mynote{Is seq\_length an input parameter, or the BPTT parameters?}
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
     \centering
-    \includegraphics[width=\linewidth]{torch-rnn-input-params.png}
+    \input{Chapter4/Figs/torch-rnn-input-params.pgf}
     \caption{torch-rnn-input-params}
     \label{fig:torch-rnn-input-params}
 \end{figure}
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
   \centering
-  \includegraphics[width=1.0\linewidth]{torch-rnn-input-params-wordvec.png}
+    \input{Chapter4/Figs/torch-rnn-input-params-wordvec.pgf}
   \caption{torch-rnn-input-params-Wordvec}
   \label{fig:torch-rnn-input-params-wordvec}
 \end{figure}
