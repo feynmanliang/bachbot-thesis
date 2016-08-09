@@ -52,7 +52,6 @@ Azure Data Storage and processed in batch MapReduce using Azure HDInsight.
 
 \subsection{User interface}
 
-
 The landing page for \url{http://bachbot.com/} is shown in \cref{fig:bachbot-front-page}.
 
 \begin{figure}[tb]
@@ -117,16 +116,31 @@ compositions. See \cref{tab:bachbot-com-question-distribtion} for details.
   \label{tab:bachbot-com-question-distribtion}
 \end{table}
 
+\subsection{Promoting the study}
+
+We promoted the study through solely through social media and personal
+contacts. Participation was voluntary and growth was organic; we did not
+solicit any paid responses or advertising. We found that $52.1\%$\todo{UPDATE}
+of participants were referred from social media, $4.8\%$ through other websites
+and blogs, $2\%$ through search engine results, and the remaining $41.2\%$ had
+directly accessed \url{bachbot.com},
+
 \section{Results}
 
 \subsection{Participant backgrounds and demographics}
 
-We recieved a total of \mynote{FILL THIS IN LAST} responses from \mynote{FILL THIS
-IN LAST} different countries. As evidenced by \cref{fig:user-geographics},
-our participant is diverse and includes participants from six different continents.
-\cref{fig:user-demographics} shows that while the majority of our participants
-are between $18-45$ and have played an instrument, more than $20\%$\mynote{FIX NUMBER LAST}
-have either formally studied or taught music theory.
+\mynote{Update with most recent results before submitting}
+We recieved a total of $695$\todo{UPDATE} participants from \todo{UPDATE}
+different countries. After selecting only the first response per IP address and
+filtering down to participants whom had listened to both choices in every
+question, we are left with $657$\todo{UPDATE} participants answering
+$5$ questions each to yield a total of $3285$\todo{UPDATE} responses.
+
+As evidenced by \vref{fig:user-geographics}, our participant is diverse and
+includes participants from six different continents.
+\vref{fig:user-demographics} shows that while the majority of our participants
+are between $18-45$\todo{UPDATE} and have played an instrument, more than
+$23.7\%$\todo{UPDATE} have either formally studied or taught music theory.
 
 \begin{figure}[p]
   \centering
@@ -154,6 +168,8 @@ have either formally studied or taught music theory.
 \end{figure}
 
 \subsection{BachBot's performance results}
+
+\mynote{Average time per response, average number plays/replays}
 
 \mynote{\cref{fig:responses-mask} suggests performance is weakest on
   harmonizations. Unsurprising because we only do 1-best and don't account
@@ -234,16 +250,62 @@ cannot discern from actual Bach}.
 
 \section{User feedback}
 
-The modulations and part writing were the giveaway for me (and once or twice the phrasing)
+In this section, we showcase some of the particularly helpful feedback we
+received from our users and observe that some common themes are present
+among the features participants used to discriminate synthetic from original Bach.
 
-Got 5/5. The trick is to listen for the unnatural pauses at regular intervals.
+Most critically, we found that lack of convincing phrasing to be one of the most
+cited difference between BachBot and real Back:
 
-Cool project, I scored 100\% so I'm quite pleased with myself ;o) I do
-play an instrument although I'm not classical trained. If I had an
-inkling to why I could choose the background phrasing of the Bach
-pieces is far more elegant than the computer generated pieces.
+\begin{quote}
+  The modulations and part writing were the giveaway for me (and once or twice the phrasing)
+\end{quote}
 
-@samim @feynmanliang really impressive! If I didn't know about counterpoint that quiz would've stumped me
+\begin{quote}
+  Got 5/5. The trick is to listen for the unnatural pauses at regular intervals.
+\end{quote}
+
+\begin{quote}
+  Cool project, I scored 100\% so I'm quite pleased with myself ;o) I do
+  play an instrument although I'm not classical trained. If I had an
+  inkling to why I could choose the background phrasing of the Bach
+  pieces is far more elegant than the computer generated pieces.
+\end{quote}
+
+
+\begin{quote}
+  really impressive! If I didn't know about counterpoint that quiz would've stumped me
+\end{quote}
+
+We also found that certain participants who have studied Bach chorales could recognize
+certain scores despite normalizing key and tempo:
+\begin{quote}
+  [BWV-248.5 ATB]
+  \#2: there was a first inversion at a strong cadence point that just wasn't
+  credible in the non-Bach clip (of course I am sure you can point to a piece
+  of Bach that does end on a first inversion!)
+
+  [BWV-248.5 ATB]
+  \#3: this was the hardest one to judge in my opinion. I went on gut feeling
+  of the first section, before the very slow part that I suspect may be an
+  artefact of the tempo normalisation that you have done. Were there perhaps
+  fewer open chords in the genuine Bach?
+
+  [BWV-11.6 B]
+  \#4: the harmony felt quit wrong in this one - too many weird chromatic
+  harmonies and semitone clashes even for JSB and it ended in the wrong key.
+
+  [BWV-436 SATB]
+  \#5: this one I found quite easy, partly because I recognised it, but also
+  because the algorithm was perhaps trying to be too clever and turn too many
+  harmonic corners in too quick a succession
+
+  Further, although I couldn't quote BWV numbers to you, I recognised samples 2
+  and 5, though the performance of \#2 in particular seemed highly ornamented
+  and embellished.
+
+  The whole thing is really quite impressive overall though\ldots
+\end{quote}
 
 \section{Competitive analysis of large-scale evaluation methodologies}
 
@@ -257,7 +319,7 @@ be very interested in an open-source research project. In contrast, $20\%$
 or taught music theory.
 
 \begin{quote}
-Payments on mTurk are suggested to follow a reasonable hourly rate, with an
+Payments on MTurk are suggested to follow a reasonable hourly rate, with an
 example of \$8 per hour or about 13c per minute. In practice, many mTurk
 tasks pay much less overall, with the median study paying just 5-10c for a task
 taking ``a few minutes,'' like watching and providing feedback on 3 short
@@ -266,6 +328,8 @@ market products. Indeed, ``wages'' this low have been shown to result in lower
 quality output than could be had for no payment at all, by pure volunteers.
 \end{quote}
 \citep{downs2010your}
+
+MTurk is also crestricted to US participants only\cite{quick2014kulitta}.
 
 Paid service providers cost anywhere from \$20 to \$55 per month
 just for authoring tools and server space\citep{JCC4:JCC411} At the time of writing,

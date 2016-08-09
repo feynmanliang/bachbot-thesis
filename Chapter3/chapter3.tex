@@ -71,6 +71,14 @@ automated harmonic analysis \citep{ni2012end}, information retrieval
 work in this area to solve our research goals of music synthesis.
 \mynote{of what?}.
 
+Research interests within automatic composition ranges includes generating
+melody lines
+\citep{conklin1995multiple,todd1988sequential,todd1989connectionist}, producing
+harmonizations or accompaniments
+\citep{ebciouglu1988expert,hild1991harmonet,tsang1991harmonizing,ames1989markov,Allan2005,chuan2007hybrid},
+and generating full-length novel compositions
+\citep{elman1990finding,spangler1998bach,Eck2002,scirea2016metacompose}.
+
 \section{Models for automatic composition}
 
 Unlike classification, the other tasks (harmonization, completion, automatic
@@ -91,13 +99,37 @@ prevalent in automatic composition since the $1960$s
 
 CHORAL \citep{ebciouglu1988expert} is one of the first rule based expert system
 for harmonising Bach chorales. It uses 350 manually defined rules as well as
-hand-tuned search heuristics. A later system called \emph{Experiments in Music
-Intelligence} (EMI) \citep{cope1992computer} automatically extracted rules to
-build an augmented transition network\citep{wanner1980atn}. In
-\citet{cruz1998learning}, grammatical inference is used to learn regular
+hand-tuned search heuristics.
+
+Kulitta \citep{quick2014kulitta} is a recent rule-based system based on
+Schenkerian harmonic theory\cite{schenker1954harmony}. It extends learning
+algorithms for probabilistic context free grammars (PCFGs) to learn a
+``probabilistic temporal graph grammar'' \citep{quick2013temporal} which is
+then used for stylistic composition. They evaluate on MTurk with 237
+participants using a Likert scale rating system \citep{likert1932technique}
+and found their system to be more similar to Bach than a random walk.
+
+\emph{Experiments in Music Intelligence} (EMI)
+\citep{cope1987experiments,cope1992computer} proposed a system which
+automatically extracted rules to build an augmented transition
+network\citep{wanner1980atn}. The system was capable of reproducing music
+to a particular genre or author, suggesting that the extracted rules can
+capture the style of its input data. 
+
+
+Genetic algorithms operating on symbolic encodings of music scores have also
+received significant attention \citet{weinberg2007real,cope2010recombinant}.
+Emily Howell\citep{cope2005computer} is an extension of EMI, which uses EMI as
+a database of compositions to recombine and build novel compositions
+from\cite{cope2010recombinant}.
+
+\mynote{stylistic composition \citet{hornel1997melonet,cruz1998learning,Eck2002-blues,chuan2007hybrid,sturm2015folk,collins2016}}
+
+In \citet{cruz1998learning}, grammatical inference is used to learn regular
 grammars over chord progressions for modelling musical style.
-\citet{tsang1991harmonizing} applies constraint logic programming for generating
-harmonizations which satisfy certain harmonic constraints.
+\citet{tsang1991harmonizing} applies constraint logic programming for
+generating harmonizations which satisfy certain harmonic constraints.
+
 
 While symbolic methods can easily incorporate domain-specific knowledge and are
 more interpretable than connectionist models, they are also inherently biased

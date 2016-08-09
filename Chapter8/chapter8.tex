@@ -43,7 +43,23 @@ While our automatic composition model does surprisingly well in composition
 tasks, it performs underperforms when asked to harmonize fixed melodies: a task
 which music theorists consider significantly easier than automatic composition.
 
-\section{Future work}
+Both the models the and large-scale evaluation frameworks have been open
+sourced. The models are currently being ported to run on Tensorflow and will be
+part of the Google Magenta project. We plan to continue running the evaluation
+study on \url{bachbot.com} and will update the website as more responses are
+collected. A press release on SoftwareEngineeringDaily (>10K daily users) and a
+feature on Cambridge University's front page are both scheduled to go live
+early September, so we expect a significant increase in the amount of
+responses.
+
+\section{Extensions and Future Work}
+
+Looking through \vref{fig:responses-name}, we see that certain
+samples are virtually indistinguishable from Bach while others
+can be identified more than $80\%$ of the time. It would be valuable
+to understand what features are present in the failure cases which
+make them easy to distinguish, a potential extension for any
+interested music theorists.
 
 One significant opportunity for improvement is to account for future
 context during harmonization tasks. Specifically, the requirement that

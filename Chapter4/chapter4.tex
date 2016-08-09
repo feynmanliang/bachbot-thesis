@@ -13,7 +13,6 @@
     \graphicspath{{Chapter4/Figs/Vector/}{Chapter4/Figs/}}
 \fi
 
-
 This chapter describes a generative RNN sequence model for polyphonic music. We
 first describe our process for constructing a training corpus of chorales and
 quantify the impact of our preprocessing procedure over the corpus. Next, we
@@ -177,7 +176,7 @@ duration usages before and after quantization. \mynote{Update plots... are they 
 After preprocessing of the scores, our next step is to encode music into a
 sequence of tokens amenable for processing by RNNs. One design decision is
 whether the tokens in the sequence are comprised of individual notes (as done
-in \citep{mozer1994neural,franklin2004recurrent,surm2016music}) or larger
+in \citep{mozer1994neural,franklin2004recurrent,sturm2016music}) or larger
 harmonic units (e.g. chords \citep{Eck2002,Boulanger-Lewandowski2012},
 ``harmonic context'' \citep{Allan2005}). This tradeoff is similar to one faced
 in RNN language modelling where either individual characters or entire words

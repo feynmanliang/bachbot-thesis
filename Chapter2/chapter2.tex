@@ -453,7 +453,7 @@ timestep $t$:
 In future diagrams, we will abstractly represent the memory cell
 as a node labelled with $\h$.
 
-\subsubsection{Unrolling into a DAG}
+\subsubsection{Unrolling into a directed acyclic computation graph}
 
 One important operation on RNNs is \emph{unrolling} the template in
 \cref{fig:rnn-elman} into a chain of $T$ replications with connected hidden
@@ -601,6 +601,8 @@ all prior context}
 
 \subsection{Training RNNs: backpropogation through time}
 
+\nomenclature[z-BPTT]{BPTT}{Backpropogation Through Time\citep{goller1996learning}}
+
 The parameters $\vec{\theta}$ of a RNN are typically learned from data to
 minimize a cost $\mathcal{E} = \sum_{1 \leq t \leq T} \mathcal{E}_t(\x_t)$
 measuring the performance of the network on some task. This optimization is
@@ -706,7 +708,8 @@ The converse of the proof implies that $\| \W_{hh}^\tp \| \geq
 
 \subsection{Long short term memory: solving the vanishing gradient}
 
-\nomenclature[z-LSTM]{LBM}{Lattice Boltzmann Method}
+\nomenclature[z-LSTM]{LSTM}{Long Short Term Memory}
+\nomenclature[z-CEC]{CEC}{Constant Error Carousel}
 
 In order to build a model which learns long range dependencies, vanishing
 gradients must be avoided. This requires us to design our memory cells holding
