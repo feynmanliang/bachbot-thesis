@@ -1,4 +1,4 @@
-\chapter{Summary and Conclusions}
+\chapter{Discussion, Conclusions, and Future Work}
 % As you might imagine: summarizes the dissertation, and draws
 % any conclusions. Depending on the length of your work, and
 % how well you write, you may not need a summary here.
@@ -13,18 +13,88 @@
     \graphicspath{{Chapter7/Figs/Vector/}{Chapter7/Figs/}}
 \fi
 
-\section{Contributions}
+\section{Discussion}
 
-\section{Findings and conclusions}
+\subsection{Contributions}
+
+\begin{itemize}
+    \item An encoding scheme for representing music with arbitrary degrees of polyphony
+        as ordered sequences of tokens
+    \item Brought together recent methods from deep learning to develop a
+        sequence prediction model which avoids any hand-crafted input features
+        and minimizes domain-specific design choices
+    \item Optimized the performance of the proposed model and quantitatively
+        evaluated its performance on both composition and harmonization tasks
+    \item Performed the largest (as of \today) published musical Turing test of an
+        automatic composition system
+    \item Investigated the internal representations learned by the model, identifying
+        neurons specific to music-theoretic concepts.
+\end{itemize}
+
+\section{Conclusions}
+
+Recall that our journey was prompted by the questions: can the current
+state-of-the-art in deep learning be used to build a pure connectionist
+model which learns to compose in a style indistinguishable from Bach. To
+answer this question, we took numerous ideas from deep learning research
+and built a deep LSTM language model for Bach.
+
+While our automatic composition model does surprisingly well in composition
+tasks, it performs underperforms when asked to harmonize fixed melodies: a task
+which music theorists consider significantly easier than automatic composition.
 
 \section{Future work}
 
-Bidirectional RNNs
+One significant opportunity for improvement is to account for future
+context during harmonization tasks. Specifically, the requirement that
+our model can be sampled to generate compositions constrains its
+architecture to be unidirectional, significantly impacting its
+performance on harmonization tasks where future outputs are constrained.
 
-$N$-best list instead of $1$-best search, RNN lattice rescoring (@Marcin)
+One method to address this is to apply bidirectional
+RNNs\citep{Graves2005} and the sequence to sequence
+framework\citep{sutskever2014sequence} to map the constrained parts to
+the harmonized parts while accounting for both past and future context.
+An attention mechanism similar to \citet{Bahdanau2015} could be
+introduced on top of the bidirectional RNN to both enable the model to
+selectively attend to specific time intervals within the context as well
+as provide insight into what the model deems relevant when generating
+harmonies.
 
-Different ordering of SATB when encoding
+Another way to account for future constraints is using a lookahead
+search. Instead of generating outputs by greedily sampling the RNN's
+predictions at each time, the RNN is expanded for multiple timesteps and
+the overall best path is selected. This approach is significantly
+complicated by an exponential growth in possible states ($O(128^L)$
+states when looking ahead $L$ timesteps), but nevertheless can be made
+computationally tractable using approximation techniques like
+beam search\citep{norvig1992paradigms}.
 
-Bigger data sets, larger degrees of polyphony, different musical styles
+Another interesting area for further exploration is in how the different parts
+are ordered when flattening music scores (where all the notes in a chord are
+played simultaneously) into encoded token sequences (where a sequential
+ordering is imposed on the notes in a chord). Harmonization results from
+\vref{sec:harmonization-results} showed that the Soprano and Alto parts
+achieved significantly higher error rates than Tenor and Bass parts, which
+might be attributed the SATB order imposed when encoding chords. We expect
+ordering the parts to be harmonized last should improve the model as the fixed
+parts can now provide additional context aiding more consistent harmony
+prediction.
 
-Listening test, subjective free-text feedback
+We use the Bach chorales because they are fairly homogeneous, widely available
+in a respectable quantity, and well studied by music theorists. However, our
+proposed encoding scheme extends to arbitrary degrees of polyphony and musical
+style. As evidenced by \vref{fig:harm-twinkle-twinkle}, the learned model is
+already able to plausibly harmonize melodies which differ significantly from
+Bach's baroque style. An interesting extension would be to further investigate
+the limits of of our model's generalality and its failure modes by applying
+the model to other styles of music.
+
+In the criticism of musical Turing tests by \citet{ariza2009interrogator}, one
+of the major points of concern is the difficulty of leveraging feedback to
+improve the system. Instead, they recommend conducting listening tests and
+collecting subjective feedback in natural language as done in
+\citet{collins2016developing}. One direction for future work would be to
+act on their recommendations by conducting listening tests and analyzing
+the responses to identify and prioritize areas for improvement.
+

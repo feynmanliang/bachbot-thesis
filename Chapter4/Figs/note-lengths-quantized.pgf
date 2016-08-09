@@ -402,7 +402,7 @@
 \definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=1.728965in,y=0.238889in,,top]{\color{textcolor}\rmfamily\fontsize{10.000000}{12.000000}\selectfont Note length (crotchets)}%
+\pgftext[x=1.728965in,y=0.238889in,,top]{\color{textcolor}\rmfamily\fontsize{10.000000}{12.000000}\selectfont Note durations (crotchets)}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfpathrectangle{\pgfqpoint{0.685143in}{0.504222in}}{\pgfqpoint{2.087643in}{0.985424in}} %
@@ -882,7 +882,7 @@
 \definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=1.728965in,y=1.559090in,,base]{\color{textcolor}\rmfamily\fontsize{12.000000}{14.400000}\selectfont Note lengths (quantized)}%
+\pgftext[x=1.728965in,y=1.559090in,,base]{\color{textcolor}\rmfamily\fontsize{12.000000}{14.400000}\selectfont Note durations (quantized)}%
 \end{pgfscope}%
 \end{pgfpicture}%
 \makeatother%
