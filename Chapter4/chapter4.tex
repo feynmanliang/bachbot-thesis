@@ -400,6 +400,14 @@ Sensitivity to network inputs: \texttt{seq\_length} and \texttt{wordvec}
 
 \section{Results}
 
+\citet{Allan2005} achieve cross-entropy losses of $2.79-2.80$ on unseen
+test-set scores respectively for their ``harmonic skeleton'' subtask. This task
+involves predictiong a sequence of one of 81 harmonic symbols, which may be
+interpreted as equivalence classes of chords. Even after applying Viterbi
+decoding to find globally optimal sequences, their HMM models achieve cross
+entropies of $0.84-0.87$ on training-set scores (Table 5.2 in
+\citet{Allan2005}).
+
 The baseline results obtained by $N$-grams are shown in
 \vref{tab:baseline-perplexity}. We compare against two widely available
 language modelling software packages, KenLM \citep{Heafield-estimate} and
@@ -416,6 +424,13 @@ than $0.6$ bits lower than any test perplexity obtained by the $N$-gram
 models compared in \href{tab:baseline-perplexity}, providing evidence
 that the additional modelling capacity provided by RNNs is useful
 for encoded music score data.
+
+The best models investigated in \citet{Boulanger-Lewandowski2012} achieved
+$-5.56$ log likelihood and $33.12\%$ accuracy on the symbolic prediction task.
+Note that the log likelihood is significantly lower than the $-0.323$ log
+likelihood implied by our model's cross-entropy loss. This is because the two
+results are not comparable as they utilize different input encodings with
+varying vocabulary sizes.
 
 \mynote{Compare \citep{Brien2016}}.
 
@@ -466,6 +481,14 @@ for encoded music score data.
 
 \mynote{Show speedup when training with multi-GPU, selling point is how fast the model trains}
 
+GPU:
+4762.23s user 852.23s system 99\% cpu 1:33:36.14 total
+Forward / Backward pass took    0.51340484619141
+Using 243MB of memory
+
+CPU:
+
+Forward / Backward pass took    5.4034311771393
 
 \section{Other applications}
 

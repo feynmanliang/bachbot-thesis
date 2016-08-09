@@ -21,7 +21,9 @@ automated analysis.
 \begin{figure}[htpb]
     \centering
     \includegraphics[trim={0 15cm 0 0},clip,width=0.9\linewidth]{model-analysis-input-score.pdf}
-    \includegraphics[width=1.00\linewidth]{model-analysis-input-piano-roll.png}
+    %\includegraphics[width=1.00\linewidth]{model-analysis-input-piano-roll.png}
+    \includegraphics[width=1.00\linewidth]{model-analysis-input-piano-roll.pdf}
+    %\input{Chapter7/Figs/model-analysis-input-piano-roll.pgf}
     \caption{{\it Top}: The preprocessed score (BWV 133.6) used as input stimulus with Roman numeral analysis annotations obtained
         from {\tt music21}; {\it Bottom}: The same stimulus represented on a piano roll}
     \label{fig:model-analysis-stimulus}
@@ -35,12 +37,12 @@ is advanced one frame every time a chord boundary delimiter symbol is output.
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-0.png}
-    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-1.png}
-    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-2.png}
-    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-3.png}
-    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-4.png}
-    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-5.png}
+    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-0.pdf}
+    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-1.pdf}
+    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-2.pdf}
+    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-3.pdf}
+    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-4.pdf}
+    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-5.pdf}
     \caption{Neuron activations over time as the encoded stimulus is processed token-by-token}
     \label{fig:model-analysis-tokens}
 \end{figure}
@@ -89,12 +91,12 @@ not only in the embedding layer but on all LSTM memory cells.
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=1.0\linewidth]{model-analysis-chords-0.png}
-    \includegraphics[width=1.0\linewidth]{model-analysis-chords-1.png}
-    \includegraphics[width=1.0\linewidth]{model-analysis-chords-2.png}
-    \includegraphics[width=1.0\linewidth]{model-analysis-chords-3.png}
-    \includegraphics[width=1.0\linewidth]{model-analysis-chords-4.png}
-    \includegraphics[width=1.0\linewidth]{model-analysis-chords-5.png}
+    \includegraphics[width=1.0\linewidth]{model-analysis-chords-0.pdf}
+    \includegraphics[width=1.0\linewidth]{model-analysis-chords-1.pdf}
+    \includegraphics[width=1.0\linewidth]{model-analysis-chords-2.pdf}
+    \includegraphics[width=1.0\linewidth]{model-analysis-chords-3.pdf}
+    \includegraphics[width=1.0\linewidth]{model-analysis-chords-4.pdf}
+    \includegraphics[width=1.0\linewidth]{model-analysis-chords-5.pdf}
     \caption{Neuron activations over time pooled over frames}
     \label{fig:model-analysis-frames}
 \end{figure}
@@ -109,8 +111,8 @@ consisting of the model's sequence of next-frame predictions as it processes the
 
 \begin{figure}[htpb]
     \centering
-    ~~\includegraphics[width=0.99\linewidth]{model-analysis-input-piano-roll.png}
-    \includegraphics[trim={0 0 0 1.4cm},clip,width=1.0\linewidth]{model-analysis-probabilistic-piano-roll.png}
+    ~~\includegraphics[width=0.99\linewidth]{model-analysis-input-piano-roll.pdf}
+    \includegraphics[trim={0 0 0 1.4cm},clip,width=1.0\linewidth]{model-analysis-probabilistic-piano-roll.pdf}
     \caption{Top: piano roll of stimulus (included for reference); Bottom: probabilistic piano roll}
     \label{fig:model-analysis-probabilistic-piano-roll}
 \end{figure}
