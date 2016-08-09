@@ -207,6 +207,12 @@ numerous reports \citep{bengio2009learning}\citep{Bengio2011} suggesting that
 that a key ingredient in deep learning's success is its ability to learn good
 features from raw data.
 
+\mynote{Describe the dataset}
+Total vocabulary size: 108
+Total tokens in file: 846926
+Training size: 677542+84692
+Val size: 84692
+
 \section{Design and validation of a generative model for music}
 
 In this section, we describe the design and validation process leading to our
@@ -388,16 +394,69 @@ Sensitivity to network structure: \texttt{num\_layers} and \texttt{rnn\_size}.
 Sensitivity to network inputs: \texttt{seq\_length} and \texttt{wordvec}
 \begin{itemize}
     \item Training losses are about the same across all \texttt{wordvec}s
-    \item Validation losses suggest that increasing \texttt{seq\_length} important for
-        good performance \mynote{investigate further}
-    \item \texttt{wordvec=128} overfits for all cases, the other two depend on
-        \texttt{seq\_length} and vary an order of magnitude smaller than the
-        performance gains from increasing \texttt{seq\_length}
+    \item Validation losses suggest that increasing \texttt{seq\_length} important for good performance \mynote{investigate further}
+    \item \texttt{wordvec=128} overfits for all cases, the other two depend on \texttt{seq\_length} and vary an order of magnitude smaller than the performance gains from increasing \texttt{seq\_length}
 \end{itemize}
 
 \section{Results}
 
-\mynote{Compare with \citep{Allan2005} and \citep{Brien2016}}.
+The baseline results obtained by $N$-grams are shown in
+\vref{tab:baseline-perplexity}. We compare against two widely available
+language modelling software packages, KenLM \citep{Heafield-estimate} and
+SRILM \citep{stolcke2002srilm}. KenLM implements an efficient moddified
+Kneser-Ney smoothing language model and while SRILM provides a variety of
+language models we choose choose to use the Good-Turing discounted language
+model for benchmarking against.
+
+In contrast, our best model achieves cross-entropy losses of $0.323$ on
+training data and $0.477$ on held-out test data
+(\vref{tab:torch-rnn-config-perfs}), corresponding to a training perplexity of
+$1.251$ bits and a test perplexity of $1.391$. This is more
+than $0.6$ bits lower than any test perplexity obtained by the $N$-gram
+models compared in \href{tab:baseline-perplexity}, providing evidence
+that the additional modelling capacity provided by RNNs is useful
+for encoded music score data.
+
+\mynote{Compare \citep{Brien2016}}.
+
+\begin{table}[tp]
+  \centering
+  \caption{Perplexities of baseline $N$-gram language models}
+  \label{tab:baseline-perplexity}
+\begin{tabular}{l c c c c}
+  \toprule
+  \multirow{2}{*}{Model Order} & \multicolumn{2}{c}{KenLM (Modified Kneser-Ney)} & \multicolumn{2}{c}{SRILM(Good-Turing)} \\
+  \cmidrule{2-3}
+  & Train & Test & Train & Test\\
+  \midrule
+1  & n/a   & n/a   & 34.84 & 34.807\\
+2  & 9.376 & 8.245 & 9.420 & 9.334 \\
+3  & 6.086 & 5.717 & 6.183 & 6.451 \\
+4  & 3.865 & 4.091 & 4.089 & 4.676 \\
+5  & 2.581 & 3.170 & 2.966 & 3.732 \\
+6  & 1.594 & 2.196 & 2.002 & 2.738 \\
+7  & 1.439 & 2.032 & 1.933 & 2.617 \\
+8  & 1.387 & 2.014 & 1.965 & 2.647 \\
+9  & 1.350 & 2.006 & 1.989 & 2.673 \\
+10 & 1.323 & 2.001 & 1.569 & 2.591 \\
+11 & 1.299 & 1.997 & 1.594 & 2.619 \\
+12 & 1.284 & 2.000 & 1.633 & 2.664 \\
+13 & 1.258 & 1.992 & 1.653 & 2.691 \\
+14 & 1.241 & 1.991 & 1.682 & 2.730 \\
+15 & 1.226 & 1.991 & 1.714 & 2.767 \\
+16 & 1.214 & 1.994 & 1.749 & 2.807 \\
+17 & 1.205 & 1.995 & 1.794 & 2.853 \\
+18 & 1.196 & 1.993 & 1.845 & 2.901 \\
+19 & 1.190 & 1.996 & 1.892 & 2.947 \\
+20 & 1.184 & 1.997 & 1.940 & 2.990 \\
+21 & 1.177 & 1.996 & 1.982 & 3.027 \\
+22 & 1.173 & 1.997 & 2.031 & 3.067 \\
+23 & 1.165 & 1.997 & 2.069 & 3.101 \\
+24 & 1.159 & 1.998 & 2.111 & 3.135 \\
+25 & 1.155 & 2.000 & 2.156 & 3.170 \\
+  \bottomrule
+\end{tabular}
+\end{table}
 
 \mynote{Compare on pitch/pitch class usage, note durations, meter, lengths of compositions}
 
@@ -406,6 +465,7 @@ Sensitivity to network inputs: \texttt{seq\_length} and \texttt{wordvec}
 \nomenclature[z-GPU]{GPU}{Graphics Processing Unit}
 
 \mynote{Show speedup when training with multi-GPU, selling point is how fast the model trains}
+
 
 \section{Other applications}
 
