@@ -1,7 +1,11 @@
-\chapter{Automatic composition}
-\minitoc
-\mynote{Debug minitoc}
-
+\chapter{Automatic composition with deep LSTM}
+\begin{savequote}[75mm]
+  We find ourselves in front of an attempt, as objective as possible, of creating
+  an automated art, without any human interference except at the start, only in
+  order to give the initial impulse and a few premises, like in the case
+  of\ldots nothingness in the Big Bang Theory
+  \qauthor{\citet{hoffmann2002towards}}
+\end{savequote}
 % **************************** Define Graphics Path **************************
 \ifpdf
     \graphicspath{{Chapter4/Figs/Raster/}{Chapter4/Figs/PDF/}{Chapter4/Figs/}}
@@ -161,13 +165,38 @@ duration usages before and after quantization. \mynote{Update plots... are they 
 \subsection{Sequential encoding of musical data}
 
 After preprocessing of the scores, our next step is to encode music into a
-format amenable for sequential processing. Similar to
-\citep{todd1989connectionist}, we represent polyphonic scores using a localist
-frame-based representation where time is discretized into constant timestep
-\emph{frames}. Frame based processing forces the network to learn the relative
-duration of notes, a counting and timing task which \citep{gers2002learning}
-demonstred LSTM is capable of. Consecutive frames are separated by a unique
-delimiter (``$|||$''' in \mynote{Figure of score encoded in text}).
+sequence of tokens amenable for processing by RNNs. One design decision is
+whether the tokens in the sequence are comprised of individual notes (as done
+in \citep{mozer1994neural,franklin2004recurrent,surm2016music}) or larger
+harmonic units (e.g. chords \citep{Eck2002,Boulanger-Lewandowski2012},
+``harmonic context'' \citep{Allan2005}). This tradeoff is similar to one faced
+in RNN language modelling where either individual characters or entire words
+can be used.
+
+We choose to construct our models at the note level for several reasons.
+Firstly, the issue of multiple tokens in the sequence corresponding to the same
+instant of time in the represented music should not be problematic because
+LSTMs have been shown to be able to learn to implement precise timing and
+counting\cite{gers2002learning}. Additionally, the use of a note-level encoding
+partially mitigates the problem of out-of-vocabulary (OOV) tokens in two ways.
+Besides reducing the potential vocabulary size from $O(128^4)$ possible chords
+to $O(128)$ potential notes, the model is now able to capture harmonic
+relationships between notes within the LSTM model weights ($\W_{xx}$,
+$\W_{xh}$, $\W_{hh}$ in \mynote{reference}) and may generalize better to unseen
+chords. Furthermore, \citet{graves2013generating} showed comparable performance
+between LSTM language models that operate on individual characters versus words
+(perplexities of $1.24$ bits vs $1.23$ bits per character respectively),
+suggesting that the choice is not too significant at least for English language
+modelling.
+
+
+Similar to \citep{todd1989connectionist}, we represent polyphonic scores using
+a localist frame-based representation where time is discretized into constant
+timestep \emph{frames}. Frame based processing forces the network to learn the
+relative duration of notes, a counting and timing task which
+\citep{gers2002learning} demonstred LSTM is capable of. Consecutive frames are
+separated by a unique delimiter (``$|||$''' in \mynote{Figure of score encoded
+in text}).
 
 Each frame consists of a sequence of $\langle \text{Note}, \text{Tie} \rangle$
 tuples where $\text{Note} \in \{0,1,\cdots,127\}$ represents the MIDI pitch of
@@ -220,10 +249,10 @@ generative model. Unlike many prior models for music data, we intentially avoid
 injection of domain-specific knowledge into our model architectures such as
 distinguishing between chords versus notes
 \citep{hild1991harmonet}\citep{mozer1994neural} \citep{Eck2002} and explicitly
-modelling of meter \citep{eck2008learning} or motifs \citep{feulner1994melonet}.
-Through this fundamental connectionist approach, we aim to minimize biases
-introduced by prior assumptions and force the model itself to learn musical
-structure from data.
+modelling of meter \citep{eck2008learning} or motifs
+\citep{feulner1994melonet}. Through this fundamental connectionist approach, we
+aim to minimize biases introduced by prior assumptions and force the model
+itself to learn musical structure from data.
 
 \subsection{Training and evaluation criteria}
 

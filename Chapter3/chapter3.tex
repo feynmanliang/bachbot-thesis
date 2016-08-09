@@ -1,4 +1,11 @@
 \chapter{Related Work}
+\begin{savequote}[75mm]
+  Supposing, for instance, that the fundamental relations of pitched sound in the
+  signs of harmony and of musical composition were susceptible of such expression and
+  adaptations, the engine might compose elaborate and scientific pieces of music
+  of any degree of complexity or extent
+  \qauthor{Ada Lovelace \citep{bowles1970musicke}}
+\end{savequote}
 % This chapter covers relevant (and typically, recent) research
 % which you build upon (or improve upon). There are two complementary
 % goals for this chapter:
@@ -72,6 +79,14 @@ symbolic (i.e. rule based) versus connectionist (i.e. neural networks).
 
 \subsection{Symbolic rule-based methods}
 
+Symbolic methods are popular due to their high degree of interpretability. As
+described by \citet{todd1989connectionist}, symbolic methods enable composers
+to write down the compositional rules employed in their own creative process
+and then use a computer to execute these instructions, enabling assessment of
+whether the results of the rules held artistic merit. This approach has been
+prevalent in automatic composition since the $1960$s
+\citep{todd1989connectionist}.
+
 CHORAL \citep{ebciouglu1988expert} is one of the first rule based expert system
 for harmonising Bach chorales. It uses 350 manually defined rules as well as
 hand-tuned search heuristics. A later system called \emph{Experiments in Music
@@ -91,6 +106,12 @@ amounts of data. Additionally, rule-based methods are brittle to distortion and
 noise and limit creativity by disallowing deviation from the defined rules.
 
 \subsection{Connectionist methods}
+
+Connectionism, also known as parallel distributed processing, is performed by a
+collection of several simple processing units connected in a network and acting
+in cooperation \citep{pdp1986parallel}. This shift in paradigm replaces strict
+rule-following behavior with regularity-learning and generalization
+\citep{dolson1989machine}.
 
 Neural networks have been previously applied to music with varying degrees of
 success\citep{griffith1999musical}. The earliest connectionist music models
