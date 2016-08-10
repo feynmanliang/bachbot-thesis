@@ -392,18 +392,17 @@ for resolving this discrepancy and may help the model better learn to predict
 using generated symbols rather than relying on ground truth to be always
 provided as input.
 
-\subsection{Comparing memory cells for music data}
+\subsection{Comparison of memory cells on music data}
 
-Using theanets
+\mynote{Diagram of the model?}
 
-One-hot encoding, 64 dimensional vector embedding, RNN layer, fully connected layer, softmax.
-\mynote{Diagram of the model}
-
-In \cref{fig:theanets-architecture}, we compare various RNN architectures on
-our data. All models utilized a RNN with \texttt{num\_layers=1},
-\texttt{rnn\_size=130}, \texttt{wordvec=64} and differed only in memory cell
-implementation. The periods for the clockwork RNN \citep{cho2014learning} were
-set to $(1, 2, 4, 8, 16)$.
+To rapidly compare a large number of memory cell implementations, we leveraged
+\texttt{theanets}\footnote{https://github.com/lmjohns3/theanets}: a Python
+software library for high-level specification of neural network models. \Cref{fig:theanets-architecture}
+shows thes results of exploring a range of RNN memory cell implementation and
+holding \texttt{num\_layers=1}, \texttt{rnn\_size=130}, and \texttt{wordvec=64}
+constant. The periods for the clockwork RNN \citep{cho2014learning} were set to
+$(1, 2, 4, 8, 16)$.
 
 \begin{figure}[tb]
     \centering
@@ -419,8 +418,10 @@ yielded comparable validation loss which increased over time, motivating
 regularization.
 
 LSTM and GRUs trained much faster and achieved lower training loss, suggesting
-higher capacity. \citep{Nayebi2015} reports that LSTM outperform GRUs in music
-applications, motivating our final choice for LSTM.
+higher capacity. However, \citet{zaremba2015empirical} reports adding a bias unit to LSTM empirically
+resolves any performane discrepancies compared to GRUs. Furthermore, \citet{Nayebi2015} reports
+that LSTM outperform GRUs in music applications. This motivates our final choice for
+for using LSTM.
 
 \subsection{Optimizing the LSTM architecture}
 \label{sec:lstm-grid-search}
@@ -512,6 +513,7 @@ Sensitivity to network structure: \texttt{num\_layers} and \texttt{rnn\_size}.
     \item Training curves about the same wrt \texttt{num\_layers}, validation curves have interesting story
         \begin{itemize}
             \item Depth matters: small 64 and 128 hidden unit RNNs saw improvements up to 0.09
+            \item Unsurprising, \citet{pascanu2013construct} already observed deep RNNs dominated polyphonic modelling.
             \item Expressivity gained from depth furthers overfitting: 256
                 hidden unit RNN has some of the best validation performance at
                 depth 1 but is the worst generalizing model for depths 2
@@ -547,6 +549,10 @@ Sensitivity to network inputs: \texttt{seq\_length} and \texttt{wordvec}
 \end{itemize}
 
 \section{Results}
+
+As precedented by \citep{bayer2013fast,Boulanger-Lewandowski2012}, we
+quantitatively evaluate our models using cross entropies and
+perplexities on a 10\% held-out validation set.
 
 \citet{Allan2005} achieve cross-entropy losses of $2.79-2.80$ on unseen
 test-set scores respectively for their ``harmonic skeleton'' subtask. This task

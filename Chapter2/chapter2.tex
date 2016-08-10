@@ -6,353 +6,33 @@
     \graphicspath{{Chapter2/Figs/Vector/}{Chapter2/Figs/}}
 \fi
 
-\mynote{Try mimicking \citet{franklin2006recurrent}}.
+\mynote{Do we actually do sequence probability modeling?}
 
-In this chapter, we provide background information on two topics heavily
-utilized throughout this dissertation: Western music theory and recurrent
-neural networks. In addition, we introduce definitions and notation used
-throughout later chapters.
+The goal of this chapter is to provide a selective background in recurrent neural
+networks and generative probabilistic sequence modeling required for understanding
+our experiments and results. It also introduces some common definitions and
+notation used throughout later chapters. We assume a basic understanding of
+Western music theory. Readers unfamiliar with concepts such as piano rolls,
+Roman numeral analysis, and cadences, should consult
+\vref{sec:music-theory-primer} for a quick primer and
+\citet{piston1978harmony,denny1960oxford} for more thorough coverage.
 
-\section{A primer on Western music theory}
-
-This section provides a primer on the music theory relevant for understanding
-the following chapters. It synthesizes material originally presented in
-\citet{franklin2006recurrent,nagler2014schubot,quick2014kulitta,freedman2015correlational}.
-Readers with a strong music background may wish to skip to
-\vref{sec:automatic-composition}.
-
-Music theory is a branch of musicology concerned with the study of the rules
-and practices of music. While the general field includes study of acoustic
-qualities such as dynamics and timbre, we restrict the scope of our research to
-modeling musical \emph{scores} (\eg \cref{fig:eg-score}) and neglect issues
-related to articulation and performance (\eg dynamics, accents, changes in
-tempo) as well as synthesis/generation of the physical acoustic waveforms.
-
-\begin{figure}[tb]
-    \centering
-    \includegraphics[trim={0 23cm 0 0},clip,width=1.0\linewidth]{bwv133-6-eg-score.pdf}
-    \caption{Sheet music representation of the first four bars of BWV 133.6}
-    \label{fig:eg-score}
-\end{figure}
-
-This is justified because the physical waveforms are more closely related
-to the skill of the performers and instruments used and are likely to vary
-significantly across different performances. Furthermore, articulations in
-the same musical piece may differ across transcriptions and performers.
-Despite these variations, a piece of music is still recognizable from just the
-notes, suggesting that notes are the defining element for a piece of music.
-
-\subsection{Notes: the basic building blocks}
-
-A \emph{note} is the most fundamental element of music score and
-represents a sound played at a certain \emph{pitch} for a certain
-\emph{duration}. In sheet music such as \cref{fig:eg-score}, the notes are
-denoted by the filled/unfilled black heads with protruding stems. As a can be
-viewed as a collection of notes over time, notes are the fundamental building
-blocks for musical scores.
-
-\subsubsection{Pitch}
-
-Though pitch is closely related to physical frequency of vibration of a
-waveform (as measured in Hertz), pitch is a perceptual property whose semantic
-meaning is derived from a listener's perception. This distinction has been
-scrutinized by \citet{:/content/asa/journal/jasa/55/5/10.1121/1.1914648}, whose
-visual analogy in \cref{fig:pitch} illustrates how a pitch can be heard even if
-its percieved frequency is absent just as one may see the word ``PITCH''
-despite being presented with only a suggestive shadow.
-
-\begin{figure}[tb]
-    \centering
-    \includegraphics[width=0.6\linewidth]{pitch.pdf}
-    \caption{Terhardt's visual analogy for pitch. Similar to how the viewer of this figure may percieve contours not present, pitch describes subjective information received by the listener even when physical frequencies are absent.}
-    \label{fig:pitch}
-\end{figure}
-
-Despite its psychoacoustic nature, it is nevertheless useful to objectively
-quantify pitch as a frequency. To do so, we first need some definitions. The
-difference between two frequencies is called an \emph{interval} and an
-\emph{octave} is an interval corresponding to the distance between a frequency
-$f \in \RR^+$ and its doubling $2f$ or halving $f/2$. Two frequencies spaced
-exactly an octave apart are perceived to be similar, suggesting that music is
-percieved on a logarithmic scale.
-
-Most Western music is based on the \emph{twelve-note chromatic scale}, which
-divides an \emph{octave} into twelve distinct frequencies. The \emph{tuning
-system} employed dictates the precise intervals between subdivisions, with
-\emph{equal temperament tuning} (all subdivisions are equally spaced on a
-logarithmic scale) the most widely used in common practice music
-\citep{denton1997history}. Under twelve-note equal temperament tuning, the
-distance between two consecutive subdivisions ($1/12$ of an octave) is called a
-\emph{semitone} (British) or \emph{half-step} (North American) and two
-semitones constitutes a \emph{tone} or \emph{whole-step}.
-
-When discussing music, \emph{note names} which enable succinct specification of
-a musical pitch are often employed. In \emph{scientific pitch notation},
-\emph{pitch classes} which represent a pitch modulo the octave are specified by
-a letter ranging from $A$ to $G$ and optionally a single \emph{accidental}. Pitch
-classes without accidentals are called \emph{natural} and correspond to the white
-keys on a piano. Two accidentals are possible: sharps ($\#$) raise the natural
-pitch class up one semitone and flats ($\flat$) lower by one semitone.
-\cref{fig:piano-keys} illustrates how these pitch classes map to keys on a
-piano.
-
-\begin{figure}[tb]
-    \centering
-    \includegraphics[width=0.6\linewidth]{piano-keys.pdf}
-    \caption{Illustration of an octave in the 12-note chromatic scale on a piano keyboard.}
-    \label{fig:piano-keys}
-\end{figure}
-
-Since pitch classes represent equivalence class of frequencies spaced an
-integral number of octaves apart, unambiguously specifying a pitch requires not
-only a pitch class but also an octave. In scientific pitch notation, this is
-accomplished by appending an octave number to a pitch class letter (see
-\cref{fig:pitch-class}). Together, a pitch class and octave number uniquely
-specify the notation for a pitch. On sheet music, the pitch of a note is
-indicated by its vertical position with respect to the \emph{stave} (the five
-horizontal lines and four spaces).
-
-\begin{figure}[tb]
-    \centering
-    \includegraphics[width=0.6\linewidth]{Pitch_notation.png}
-    \caption{Scientific pitch notation and sheet music notation of $C$ notes at ten different octaves.}
-    \label{fig:pitch-class}
-\end{figure}
-
-\subsubsection{Duration}
-
-In addition to pitch, a note also possesses a \emph{duration}. The duration of
-a note indicates how long it is to be played and is measured in fractions of a
-\emph{whole note} (American) or \emph{semibreve} (British). Perhaps the most
-common duration is a \emph{quarter-note} (American) or \emph{crotchet}
-(British). Other note durations are also possible and the most common along
-with their notation in sheet music are enumerated in
-\cref{fig:note-durations}. The relationship between durations and
-physical time intervals is given by the \emph{tempo}, which is usually
-denoted near the start of the piece in beats per minute.
-
-\begin{figure}[tb]
-    \centering
-    \includegraphics[width=0.6\linewidth]{note-durations.png}
-    \caption{Comparison of various note durations \citep{wiki-note-durations}}
-    \label{fig:note-durations}
-\end{figure}
-
-\subsubsection{Offset, Measures, and Meter}
-
-The final property a note possess is an \emph{offset} indicating the time at
-which a note is articulated. The offset is measured with respect to a fixed
-reference point in time, such as the start of a score.
-
-Another common reference point for measuring offsets is with respect to the
-preceding \emph{bar}. Bars are denoted by vertical lines through the
-stave in sheet music and are used to subdivide a piece into smaller temporal
-units called \emph{measures}. Except for the notes preceeding the first bar
-(\ie the \emph{anacrusis}), most measures within a score all have the same
-duration.
-
-In \vref{fig:eg-score}, the crotchet preceding the first bar provides an
-example of an anacrusis. Notice that all other measures in the score are four
-crotchets in duration. In addition, observe that the offsets of notes within a
-measure is highly repetitive. There is always a note articulated on the first
-crotchet of a measure and articulations occuring between crotchets (\ie
-quavers) are only present the last two crotchets of a measure.
-
-This repetition of the same pattern of offsets across multiple measure helps
-establish a periodic pattern of strong and weak beats, a concept known as
-\emph{meter} \cite{grove-meter}. Meter is implied in Western music, where bars
-establish perodic measures of equal length \citep{handel1993listening}. The
-meter of a score provides information about musical structure which can be used
-to predict chord changes and repepetition boundaries
-\citep{cooper1963rhythmic}.
-
-\subsubsection{Piano roll notation}
-
-\begin{figure}[tb]
-    \centering
-    \input{Chapter2/Figs/bwv133-6-eg-piano.pgf}
-    \caption{Piano roll notation of the music in \cref{fig:eg-score}}
-    \label{fig:eg-piano-roll}
-\end{figure}
-
-\Cref{fig:eg-piano-roll} shows the the same score from
-\vref{fig:eg-score} in \emph{piano roll notation}, a format which is convenient
-for visualization purposes. The horizontal and vertical axes represent time and
-pitch respectively. A solid horizontal bar signifies the presence of a note at
-the corresponding pitch and offset and the length of the bar corresponds to the
-note's duration.
-
-\subsection{Tonality in common practice music}
-
-\emph{Tonality} refers to ``the orientation of melodies and harmonies towards a
-referential (or \emph{tonic}) pitch class`` \citep{grove-tonality}. One way to
-characterize tonality is with \emph{scales}, which defines a subset of pitch
-classes that are ``in key'' with respect to the tonic. \Cref{tab:key-intervals}
-shows the pitch intervals between adjacent pitch classes within two important
-scales: the \emph{major} and the \emph{minor}. The choice of tonic and scale is
-collectively referred to as the \emph{key}.
-
-\begin{table}[tb]
-    \centering
-    \caption{Pitch intervals for the two most important keys \citep{freedman2015correlational}. The pitches in a scale can be found by starting at the tonic and successively offsetting by the given pitch intervals.}
-    \label{tab:key-intervals}
-    \begin{tabular}{lc}
-        \toprule
-        Key & Pitch Intervals (semitones) \\
-        \midrule
-        Major (Ionian, I) & +2, +2, +1, +2, +2, +2 \\
-        Minor (Aeolian, VI) & +2, +1, +2, +2, +1, +2 \\
-        \bottomrule
-    \end{tabular}
-\end{table}
-
-\subsection{Polyphony, chords, and chord progressions}
-
-Whereas \emph{monophonic} music is characterized by the presence of a single
-\emph{part} sounding at most one note at any given time, \emph{polyphonic}
-music contains multiple parts potentially sounding multiple pitches at the same
-time. Just as notes form the basis of monophonic music, chords are the fundamental
-building blocks for polyphonic music.
-
-\subsubsection{Chords: basic units for representing simultaneously sounding notes}
-
-A \emph{chord} is a collection of three or more pitches all sounding
-simultaneously \citep{randel1999harvard}. In Western classical music, they
-typically consist of a \emph{root note} whose pitch class forms a base from
-which successive notes are built upon. The intervals between the pitch classes
-in a chord are commonly labeled using \emph{qualities}, which are invariant
-across octaves. Different realizations of the same chord (\eg octave choices
-for each pitch class) are called \emph{voicings}.
-
-\cref{tab:chord-qualities} lists some common chord qualities and their
-corresponding intervals from the root note. Chord names are given as a root
-pitch class followed by a quality, for example: $C$ major, $A$ minor, or $G$
-half-diminished $7$th.
-
-\begin{table}[tb]
-    \centering
-    \caption{Common chord qualities and their corresponding intervals \citep{freedman2015correlational}}
-    \label{tab:chord-qualities}
-    \begin{tabular}{lc}
-        \toprule
-        Chord quality & Intervals from root pitch class \\
-        \midrule
-        Major & +4, +7 \\
-        Major 6th & +4, +7, +8 \\
-        Major 7th & +4, +7, +11 \\
-        Minor & +3, +7 \\
-        Minor 6th & +3, +7, +9 \\
-        Minor 7th & +3, +7, +10 \\
-        Dominant 7th & +4, +7, +10 \\
-        Augmented & +4, +8 \\
-        Diminished & +3, +6 \\
-        Diminished 7th & +3, +6, +9 \\
-        Half-diminished 7th & +3, +6, +10 \\
-        \bottomrule
-    \end{tabular}
-\end{table}
-
-The lowest note in a chord is called the \emph{bass} note and is oftentimes the
-root note. However, alternative voicings called \emph{inversions} can place the
-root note on a different octave and cause the bass and root notes to
-differ.
-
-\subsubsection{Chord progressions, phrases, and cadences}
-
-Sequences of chords are called \emph{chord progressions}, which are oftentimes
-grouped with adjacent progressions into coherent units called \emph{phrases}.
-Many psychoacoustic phenomena such as stability, mood, and expectation can be
-attributed choice of chord progressions and phrase structure. For example,
-chord progressions can be used to create \emph{modulations} which transition
-the music into a different key.
-
-Analyzing chord progresssions involves a degree of subjectivity as chords can
-be overlapping and contain extraneous notes or involve uncommon chord
-qualities. A common method for analyzing chord progressions is \emph{Roman
-numeral analysis}, where \RN{1} is used for denoting the tonic pitch class,
-successive Roman numerals for successive pitch classes in the key, and
-capitalization is used to distinguish major and minor qualities. For example,
-the chord progression $C$ major -- $A$ minor -- $D$ major 7th -- $G$ major in
-the $C$ major key would be represented in Roman numerals as \RN{1} -- \Rn{2} --
-\RN{2}maj$7$ -- \RN{5}.
-
-A common use case for Roman numeral analysis is identifying and classifying
-chord progressions called \emph{harmonic cadences}, which are commonly used for
-effects such as eliciting a sense of incompleteness
-\citep{jonas1982introduction} or establishing a sense of conclusion at the end
-of phrases \citep{randel1999harvard}. The most important cadences include:
-\mynote{Review that these definitions are actually necessary}
-\begin{description}
-  \item[Perfect cadence]: \RN{5} -- \RN{1}. The perfect cadence is described by
-    \citet{randel1999harvard} as ``a microcosm of the tonal system, and is the
-    most direct means of establishing a pitch as tonic. It is virtually
-    obligatory as the final structural cadence of a tonal work''
-  \item[Imperfect cadence]: Any cadence ending on \RN{5}, including
-    \RN{1}--\RN{5}, \Rn{2}--\RN{5}, \RN{4}--\RN{5}, \RN{5}--\RN{5}, and \Rn{6}
-    -- \RN{5}. The imperfect cadence sounds incomplete and is considered
-    a \emph{weak} cadence which call for continuation \citep{jonas1982introduction}
-  \item[Plagal cadence]: \RN{4}--\RN{1}
-  \item[Interrupted cadepnce]: \RN{5}--\Rn{6}. Also considered a weak cadence
-    which invokes a ``hanging'' sensation prompting continuation
-    \cite{piston1978harmony}.
-\end{description}
-
-\subsubsection{Transposition invariance}\label{sec:transposition-invariance}
-
-Notice that the discussion thus far has remained ambiguous on the choice of
-tonic. This is intentional: most of the concepts discussed do not depend on the
-choice of tonic. When discussing tonality, the scale was defined using
-intervals relative to a choice of tonic. Similarly, Roman numeral analysis of
-chord progressions and cadences is also conducted relative to a tonic. Neither
-the scale nor the Roman numeral analysis is affected when a score is transposed
-by an arbitrary pitch interval.
-
-The \emph{transposition invariance} of chord progressions and keys is an
-important property of music. It enables us to offset an entire score by an
-arbitrary pitch interval without affecting many important psychoacoustic
-qualities.
-
-\section{Automatic composition}\label{sec:automatic-composition}
-
-\emph{Automatic composition} broadly refers to the use of algorithms to
-generate music. \citet{papadopoulos1999ai} gives the following definition for
-automatic composition:
-\begin{quote}
-  a sequence (set) of rules (instructions, operations) for solving
-  (accomplishing) a [particular] problem (task) [in a finite number of steps]
-  of combining musical parts (things, elements) into a whole (composition)
-\end{quote}
-Of the many tasks within automatic composition, two are most relevant to us:
-\begin{description}
-  \item[Harmonization] Given a fixed part (\eg a melody), generate the notes for
-    one or more accompanying parts
-  \item[Composition] Generate all the parts for a score of music
-\end{description}
-In addition, our work primarily on \emph{automatic stylistic composition} where
-we impose the additional constraint that the generated music should be
-stylistically similar to a particular genre or artist.
-
-\section{Recurrent neural networks for generative sequence modelling}
+\section{Recurrent neural networks}
 
 \nomenclature[z-RNN]{RNN}{Recurrent Neural Network}
 
-Our work in later sections make heavy use of recurrent neural networks (RNNs).
-In this section, we clarify terminology and review the relevant ideas.
-While we assume a basic understanding of neural networks, readers lacking
-such a background may be interested in first reviewing \vref{sec:primer-nn}
-before proceeding.
+In this section, we clarify terminology and provide important background in
+recurrent neural networks (RNNs). While a basic understanding of neural
+networks is assumed, readers lacking such a background may be interested in
+reviewing \vref{sec:primer-nn} before proceeding.
 
 \subsection{Notation}
 
 \nomenclature[r-input]{$\x^{(l)}_t$}{Input to layer $l$ at time $t$}
 \nomenclature[r-hidden-state]{$\h^{(l)}_t$}{Hidden state of layer $l$ at time $t$}
 \nomenclature[r-output]{$\y^{(l)}_t$}{Output of layer $l$ at time $t$}
-\nomenclature[r-Wxh]{$\W_{xh}$}{Weight matrix between input and hidden state}
-\nomenclature[r-Wxh]{$\W_{hh}$}{Weight matrix between previous and current and hidden states}
-\nomenclature[r-Wxh]{$\W_{hy}$}{Weight matrix between hidden state and output}
-\nomenclature[g-sxh]{$\sigma_{xh}$}{Activation function between input and hidden state}
-\nomenclature[g-shh]{$\sigma_{hh}$}{Activation function between previous and current hidden states}
-\nomenclature[g-shy]{$\sigma_{hy}$}{Activation function between hidden state and output}
+\nomenclature[r-Wxh]{$\W_{st}$}{Weight matrix from source $s$ to target $t$}
+\nomenclature[g-sxh]{$\sigma_{st}$}{Elementwise activation function from source $s$ to target $t$}
 
 We first clarify the basic notation and conventions used to describe multilayer
 RNNs. Unless otherwise specified, unintroduced notation appearing in the
@@ -462,21 +142,24 @@ in the stack are used as inputs for the current memory cell (see
 \begin{figure}[tb]
     \centering
     \resizebox{4.5in}{!}{\input{Chapter2/Figs/rnn-multi-unrolled.pdf_tex}}
-    \caption{Stacking multiple memory cells to form a deep RNN.}
+    \caption{Block diagram representation of a -layer RNN (left) and its
+    corresponding DAG (right) after unrolling. The blocks labeled
+    with $\h_t$ represent memory cells whose parameters are shared across all times
+  $t$.}
     \label{fig:rnn-multi-unrolled}
 \end{figure}
 
 The greater modeling capabilities of multilayer RNNs can be attributed to three
-primary factors: composition of multiple non-activation functions and an
-increase in the number of paths for information can flow.
-The former reason is analogous to the case in deep belief networks, which
-is well documented \citep{bengio2009learning}. To understand the latter, notice
-that in \cref{fig:rnn-single-unrolled} there is only a single path from
-$\x_{t-1}$ to $\y_{t}$ hence the conditional independence $\y_{t} \independent
-\x_{t-1} | \h^{(1)}_t$ is satisfied. However, in \cref{fig:rnn-multi-unrolled}
-there are multiple paths from $\x_{t-1}$ to $\y_{t}$ (\eg passing through
-either $\h^{(2)}_{t-1} \to \h^{(2)}_t$ or $\h^{(1)}_{t-1} \to \h^{(1)}_t$)
-through which information may flow.
+primary factors: composition of multiple non-linear activation functions and an
+increase in the number of paths for information to flow. The former reason is
+analogous to the case in deep belief networks, which is well documented
+\citep{bengio2009learning}. To understand the latter, notice that in
+\cref{fig:rnn-single-unrolled} there is only a single path from $\x_{t-1}$ to
+$\y_{t}$ hence the conditional independence $\y_{t} \independent \x_{t-1} |
+\h^{(1)}_t$ is satisfied. However, in \cref{fig:rnn-multi-unrolled} there are
+multiple paths from $\x_{t-1}$ to $\y_{t}$ (\eg passing through either
+$\h^{(2)}_{t-1} \to \h^{(2)}_t$ or $\h^{(1)}_{t-1} \to \h^{(1)}_t$) through
+which information may flow.
 
 % Additionally, parameters need not be shared
 % across different layers so the stacked RNN can learn different time dynamics
@@ -487,6 +170,7 @@ through which information may flow.
 \nomenclature[z-BPTT]{BPTT}{Backpropagation Through Time}
 \nomenclature[g-th]{$\theta$}{Model Parameters}
 \nomenclature[r-E]{$\mathcal{E}$}{Error or Loss}
+\nomenclature[r-Et]{$\mathcal{E}_t$}{Error or Loss at time $t$}
 
 The parameters $\vec{\theta}$ of a RNN are typically learned from data to
 minimize some \emph{cost} $\mathcal{E} = \sum_{1 \leq t \leq T} \mathcal{E}_t(\x_t)$
@@ -551,19 +235,18 @@ significantly less variables and hence is easier to compute.
 
 \subsubsection{Vanishing/exploding gradients}
 
-Unfortunately, naive implementations of RNNs (specifically
-\cref{eq:rnn-dynamics}) often suffer from two well known problems: the
-\emph{vanishing gradient} and \emph{exploding gradient} \citep{Bengio1994}.
-These problems are both related to the product in \cref{eq:error-transfer}
-exponentially growing or shrinking over long timespans (\ie $t \gg k$). A
-sufficient condition (proved in \vref{sec:vanishing-exploding-gradients}) for
-vanishing gradients is
+Naive implementations of RNNs (specifically \cref{eq:rnn-dynamics}) often
+suffer from two well known problems: the \emph{vanishing gradient} and
+\emph{exploding gradient} \citep{Bengio1994}. These problems are both related
+to the product in \cref{eq:error-transfer} exponentially growing or shrinking
+over long timespans (\ie $t \gg k$). A sufficient condition (proved in
+\vref{sec:vanishing-exploding-gradients}) for vanishing gradients is
 \begin{equation}\label{eq:vanishing-gradients-suff}
   \left\| \W_{hh} \right\| < \frac{1}{\gamma_\sigma}
 \end{equation}
 where $\| \cdot \|$ is the matrix operator norm (see \vref{eq:operator-norm}),
 $\W_{hh}$ is defined in \vref{eq:rnn-dynamics},
-and $\gamma_\sigma$ is a constant depending on choice of activation function
+and $\gamma_\sigma$ is a constant depending on the choice of activation function
 (\eg $\gamma_\sigma = 1$ for $\sigma_{hh} = \tanh$, $\gamma_\sigma = 0.25$ for
 $\sigma_{hh} = \sigmoid$).
 
@@ -580,15 +263,10 @@ presents a signficant challenge for music applications. As noted by
 
 \nomenclature[z-LSTM]{LSTM}{Long Short Term Memory}
 \nomenclature[z-CEC]{CEC}{Constant Error Carousel}
-\nomenclature[r-input-gate]{$\i_t$}{Input gate values}
-\nomenclature[r-forget-gate]{$\f_t$}{Forget gate values}
-\nomenclature[r-output-gate]{$\o_t$}{Output gate values}
-\nomenclature[r-Wxh]{$\W_{xh}$}{Weight matrix between input and hidden state}
-\nomenclature[r-Wxh]{$\W_{hh}$}{Weight matrix between previous and current and hidden states}
-\nomenclature[r-Wxh]{$\W_{hy}$}{Weight matrix between hidden state and output}
-\nomenclature[g-sxh]{$\sigma_{xh}$}{Activation function between input and hidden state}
-\nomenclature[g-shh]{$\sigma_{hh}$}{Activation function between previous and current hidden states}
-\nomenclature[g-shy]{$\sigma_{hy}$}{Activation function between hidden state and output}
+\nomenclature[r-input-gate]{$\i_t$}{Input gate values at time $t$}
+\nomenclature[r-forget-gate]{$\f_t$}{Forget gate values at time $t$}
+\nomenclature[r-output-gate]{$\o_t$}{Output gate values at time $t$}
+\nomenclature[x-odot]{$\odot$}{Elementwise multiplication}
 
 In order to build a model which learns long range dependencies, vanishing
 gradients must be avoided. A popular memory cell architecture which does so is
@@ -663,21 +341,21 @@ system of equations as written above.
 
 \subsubsection{Practicalities for successful applications of LSTM}
 
-Many applications of LSTM \mynote{cite examples} share some common practical
-techniques for ensuring successful training. Perhaps most important is
-\emph{gradient norm clipping} \citep{Mikolov2012,Pascanu2012} where the
-gradient is rescaled whenever it exceeds a threshold. This is necessary because
-while vanishing gradients are mitigated by the use of CECs, LSTM do not
+Many applications of LSTM
+\citep{devlin2014fast,zaremba2015empirical,pascanu2013construct} share some
+common practical techniques for ensuring successful training. Perhaps most
+important is \emph{gradient norm clipping} \citep{Mikolov2012,Pascanu2012}
+where the gradient is rescaled whenever it exceeds a threshold. This is
+necessary because while vanishing gradients are mitigated by CECs, LSTM do not
 explicitly protect against exploding gradients.
 
 Another common practice is the use of methods for reducing overfitting and
 improving generalization. In particular, \emph{dropout}
 \citep{srivastava2014dropout} can be applied to the connections between memory
 cells in a stacked RNN to regularize the learned features to be more robust to
-noise \citep{zaremba2014recurrent}. Additionally, \emph{batch
-normalization} \citep{ioffe2015batch} can also be applied to to the memory cell
-hidden states to reduce co-variate shifts, accelerate training, and improve
-generalization.
+noise \citep{zaremba2014recurrent}. Additionally, \emph{batch normalization}
+\citep{ioffe2015batch} can also be applied to to the memory cell hidden states
+to reduce co-variate shifts, accelerate training, and improve generalization.
 
 Finally, applications of RNNs to long sequences can incur a prohibitively high
 cost for a single parameter update \citep{citeulike:13881859}. For instance,
@@ -686,5 +364,5 @@ equivalent of a forward and backward pass on a $1000$ layer feedforward
 network. This issue is typically addressed by only back-propogating error
 signals a fixed number of timesteps back in the unrolled network, a technique
 known as \emph{truncated BPTT} \citep{williams1990efficient}. As the hidden
-states in the unrolled network have nevertheless been exposed to many timesteps,
-learning of long range structure is still possible.
+states in the unrolled network have nevertheless been exposed to many
+timesteps, learning of long range structure is still possible.

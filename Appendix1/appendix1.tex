@@ -2,10 +2,311 @@
 \chapter{Appendix A}
 
 \ifpdf
-    \graphicspath{{Appendix1/Raster/}{Appendix1/PDF/}{Appendix1/}}
+    \graphicspath{{Appendix1/Figs/Raster/}{Appendix1/Figs/PDF/}{Appendix1/Figs/}}
 \else
-    \graphicspath{{Appendix1/Vector/}{Appendix1/}}
+    \graphicspath{{Appendix1/Figs/Vector/}{Appendix1/Figs/}}
 \fi
+
+\section{A primer on Western music theory}\label{sec:music-theory-primer}
+
+This section provides a primer on the music theory relevant for understanding
+the following chapters. It synthesizes material originally presented in
+\citet{franklin2006recurrent,nagler2014schubot,quick2014kulitta,freedman2015correlational}.
+Readers with a strong music background may wish to skip to
+\vref{sec:automatic-composition}.
+
+Music theory is a branch of musicology concerned with the study of the rules
+and practices of music. While the general field includes study of acoustic
+qualities such as dynamics and timbre, we restrict the scope of our research to
+modeling musical \emph{scores} (\eg \cref{fig:eg-score}) and neglect issues
+related to articulation and performance (\eg dynamics, accents, changes in
+tempo) as well as synthesis/generation of the physical acoustic waveforms.
+
+\begin{figure}[tb]
+    \centering
+    \includegraphics[trim={0 23cm 0 0},clip,width=1.0\linewidth]{bwv133-6-eg-score.pdf}
+    \caption{Sheet music representation of the first four bars of BWV 133.6}
+    \label{fig:eg-score}
+\end{figure}
+
+This is justified because the physical waveforms are more closely related
+to the skill of the performers and instruments used and are likely to vary
+significantly across different performances. Furthermore, articulations in
+the same musical piece may differ across transcriptions and performers.
+Despite these variations, a piece of music is still recognizable from just the
+notes, suggesting that notes are the defining element for a piece of music.
+
+\subsection{Notes: the basic building blocks}
+
+A \emph{note} is the most fundamental element of music score and
+represents a sound played at a certain \emph{pitch} for a certain
+\emph{duration}. In sheet music such as \cref{fig:eg-score}, the notes are
+denoted by the filled/unfilled black heads with protruding stems. As a can be
+viewed as a collection of notes over time, notes are the fundamental building
+blocks for musical scores.
+
+\subsubsection{Pitch}
+
+Though pitch is closely related to physical frequency of vibration of a
+waveform (as measured in Hertz), pitch is a perceptual property whose semantic
+meaning is derived from a listener's perception. This distinction has been
+scrutinized by \citet{:/content/asa/journal/jasa/55/5/10.1121/1.1914648}, whose
+visual analogy in \cref{fig:pitch} illustrates how a pitch can be heard even if
+its percieved frequency is absent just as one may see the word ``PITCH''
+despite being presented with only a suggestive shadow.
+
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=0.6\linewidth]{pitch.pdf}
+    \caption{Terhardt's visual analogy for pitch. Similar to how the viewer of this figure may percieve contours not present, pitch describes subjective information received by the listener even when physical frequencies are absent.}
+    \label{fig:pitch}
+\end{figure}
+
+Despite its psychoacoustic nature, it is nevertheless useful to objectively
+quantify pitch as a frequency. To do so, we first need some definitions. The
+difference between two frequencies is called an \emph{interval} and an
+\emph{octave} is an interval corresponding to the distance between a frequency
+$f \in \RR^+$ and its doubling $2f$ or halving $f/2$. Two frequencies spaced
+exactly an octave apart are perceived to be similar, suggesting that music is
+percieved on a logarithmic scale.
+
+Most Western music is based on the \emph{twelve-note chromatic scale}, which
+divides an \emph{octave} into twelve distinct frequencies. The \emph{tuning
+system} employed dictates the precise intervals between subdivisions, with
+\emph{equal temperament tuning} (all subdivisions are equally spaced on a
+logarithmic scale) the most widely used in common practice music
+\citep{denton1997history}. Under twelve-note equal temperament tuning, the
+distance between two consecutive subdivisions ($1/12$ of an octave) is called a
+\emph{semitone} (British) or \emph{half-step} (North American) and two
+semitones constitutes a \emph{tone} or \emph{whole-step}.
+
+When discussing music, \emph{note names} which enable succinct specification of
+a musical pitch are often employed. In \emph{scientific pitch notation},
+\emph{pitch classes} which represent a pitch modulo the octave are specified by
+a letter ranging from $A$ to $G$ and optionally a single \emph{accidental}. Pitch
+classes without accidentals are called \emph{natural} and correspond to the white
+keys on a piano. Two accidentals are possible: sharps ($\#$) raise the natural
+pitch class up one semitone and flats ($\flat$) lower by one semitone.
+\cref{fig:piano-keys} illustrates how these pitch classes map to keys on a
+piano.
+
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=0.6\linewidth]{piano-keys.pdf}
+    \caption{Illustration of an octave in the 12-note chromatic scale on a piano keyboard.}
+    \label{fig:piano-keys}
+\end{figure}
+
+Since pitch classes represent equivalence class of frequencies spaced an
+integral number of octaves apart, unambiguously specifying a pitch requires not
+only a pitch class but also an octave. In scientific pitch notation, this is
+accomplished by appending an octave number to a pitch class letter (see
+\cref{fig:pitch-class}). Together, a pitch class and octave number uniquely
+specify the notation for a pitch. On sheet music, the pitch of a note is
+indicated by its vertical position with respect to the \emph{stave} (the five
+horizontal lines and four spaces).
+
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=0.6\linewidth]{Pitch_notation.png}
+    \caption{Scientific pitch notation and sheet music notation of $C$ notes at ten different octaves.}
+    \label{fig:pitch-class}
+\end{figure}
+
+\subsubsection{Duration}
+
+In addition to pitch, a note also possesses a \emph{duration}. The duration of
+a note indicates how long it is to be played and is measured in fractions of a
+\emph{whole note} (American) or \emph{semibreve} (British). Perhaps the most
+common duration is a \emph{quarter-note} (American) or \emph{crotchet}
+(British). Other note durations are also possible and the most common along
+with their notation in sheet music are enumerated in
+\cref{fig:note-durations}. The relationship between durations and
+physical time intervals is given by the \emph{tempo}, which is usually
+denoted near the start of the piece in beats per minute.
+
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=0.6\linewidth]{note-durations.png}
+    \caption{Comparison of various note durations \citep{wiki-note-durations}}
+    \label{fig:note-durations}
+\end{figure}
+
+\subsubsection{Offset, Measures, and Meter}
+
+The final property a note possess is an \emph{offset} indicating the time at
+which a note is articulated. The offset is measured with respect to a fixed
+reference point in time, such as the start of a score.
+
+Another common reference point for measuring offsets is with respect to the
+preceding \emph{bar}. Bars are denoted by vertical lines through the
+stave in sheet music and are used to subdivide a piece into smaller temporal
+units called \emph{measures}. Except for the notes preceeding the first bar
+(\ie the \emph{anacrusis}), most measures within a score all have the same
+duration.
+
+In \vref{fig:eg-score}, the crotchet preceding the first bar provides an
+example of an anacrusis. Notice that all other measures in the score are four
+crotchets in duration. In addition, observe that the offsets of notes within a
+measure is highly repetitive. There is always a note articulated on the first
+crotchet of a measure and articulations occuring between crotchets (\ie
+quavers) are only present the last two crotchets of a measure.
+
+This repetition of the same pattern of offsets across multiple measure helps
+establish a periodic pattern of strong and weak beats, a concept known as
+\emph{meter} \cite{grove-meter}. Meter is implied in Western music, where bars
+establish perodic measures of equal length \citep{handel1993listening}. The
+meter of a score provides information about musical structure which can be used
+to predict chord changes and repepetition boundaries
+\citep{cooper1963rhythmic}.
+
+\subsubsection{Piano roll notation}
+
+\begin{figure}[tb]
+    \centering
+    \input{Appendix1/Figs/bwv133-6-eg-piano.pgf}
+    \caption{Piano roll notation of the music in \cref{fig:eg-score}}
+    \label{fig:eg-piano-roll}
+\end{figure}
+
+\Cref{fig:eg-piano-roll} shows the the same score from
+\vref{fig:eg-score} in \emph{piano roll notation}, a format which is convenient
+for visualization purposes. The horizontal and vertical axes represent time and
+pitch respectively. A solid horizontal bar signifies the presence of a note at
+the corresponding pitch and offset and the length of the bar corresponds to the
+note's duration.
+
+\subsection{Tonality in common practice music}
+
+\emph{Tonality} refers to ``the orientation of melodies and harmonies towards a
+referential (or \emph{tonic}) pitch class`` \citep{grove-tonality}. One way to
+characterize tonality is with \emph{scales}, which defines a subset of pitch
+classes that are ``in key'' with respect to the tonic. \Cref{tab:key-intervals}
+shows the pitch intervals between adjacent pitch classes within two important
+scales: the \emph{major} and the \emph{minor}. The choice of tonic and scale is
+collectively referred to as the \emph{key}.
+
+\begin{table}[tb]
+    \centering
+    \caption{Pitch intervals for the two most important keys \citep{freedman2015correlational}. The pitches in a scale can be found by starting at the tonic and successively offsetting by the given pitch intervals.}
+    \label{tab:key-intervals}
+    \begin{tabular}{lc}
+        \toprule
+        Key & Pitch Intervals (semitones) \\
+        \midrule
+        Major (Ionian, I) & +2, +2, +1, +2, +2, +2 \\
+        Minor (Aeolian, VI) & +2, +1, +2, +2, +1, +2 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Polyphony, chords, and chord progressions}
+
+Whereas \emph{monophonic} music is characterized by the presence of a single
+\emph{part} sounding at most one note at any given time, \emph{polyphonic}
+music contains multiple parts potentially sounding multiple pitches at the same
+time. Just as notes form the basis of monophonic music, chords are the fundamental
+building blocks for polyphonic music.
+
+\subsubsection{Chords: basic units for representing simultaneously sounding notes}
+
+A \emph{chord} is a collection of three or more pitches all sounding
+simultaneously \citep{randel1999harvard}. In Western classical music, they
+typically consist of a \emph{root note} whose pitch class forms a base from
+which successive notes are built upon. The intervals between the pitch classes
+in a chord are commonly labeled using \emph{qualities}, which are invariant
+across octaves. Different realizations of the same chord (\eg octave choices
+for each pitch class) are called \emph{voicings}.
+
+\cref{tab:chord-qualities} lists some common chord qualities and their
+corresponding intervals from the root note. Chord names are given as a root
+pitch class followed by a quality, for example: $C$ major, $A$ minor, or $G$
+half-diminished $7$th.
+
+\begin{table}[tb]
+    \centering
+    \caption{Common chord qualities and their corresponding intervals \citep{freedman2015correlational}}
+    \label{tab:chord-qualities}
+    \begin{tabular}{lc}
+        \toprule
+        Chord quality & Intervals from root pitch class \\
+        \midrule
+        Major & +4, +7 \\
+        Major 6th & +4, +7, +8 \\
+        Major 7th & +4, +7, +11 \\
+        Minor & +3, +7 \\
+        Minor 6th & +3, +7, +9 \\
+        Minor 7th & +3, +7, +10 \\
+        Dominant 7th & +4, +7, +10 \\
+        Augmented & +4, +8 \\
+        Diminished & +3, +6 \\
+        Diminished 7th & +3, +6, +9 \\
+        Half-diminished 7th & +3, +6, +10 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The lowest note in a chord is called the \emph{bass} note and is oftentimes the
+root note. However, alternative voicings called \emph{inversions} can place the
+root note on a different octave and cause the bass and root notes to
+differ.
+
+\subsubsection{Chord progressions, phrases, and cadences}
+
+Sequences of chords are called \emph{chord progressions}, which are oftentimes
+grouped with adjacent progressions into coherent units called \emph{phrases}.
+Many psychoacoustic phenomena such as stability, mood, and expectation can be
+attributed choice of chord progressions and phrase structure. For example,
+chord progressions can be used to create \emph{modulations} which transition
+the music into a different key.
+
+Analyzing chord progresssions involves a degree of subjectivity as chords can
+be overlapping and contain extraneous notes or involve uncommon chord
+qualities. A common method for analyzing chord progressions is \emph{Roman
+numeral analysis}, where \RN{1} is used for denoting the tonic pitch class,
+successive Roman numerals for successive pitch classes in the key, and
+capitalization is used to distinguish major and minor qualities. For example,
+the chord progression $C$ major -- $A$ minor -- $D$ major 7th -- $G$ major in
+the $C$ major key would be represented in Roman numerals as \RN{1} -- \Rn{2} --
+\RN{2}maj$7$ -- \RN{5}.
+
+A common use case for Roman numeral analysis is identifying and classifying
+chord progressions called \emph{harmonic cadences}, which are commonly used for
+effects such as eliciting a sense of incompleteness
+\citep{jonas1982introduction} or establishing a sense of conclusion at the end
+of phrases \citep{randel1999harvard}. The most important cadences include:
+\mynote{Review that these definitions are actually necessary}
+\begin{description}
+  \item[Perfect cadence]: \RN{5} -- \RN{1}. The perfect cadence is described by
+    \citet{randel1999harvard} as ``a microcosm of the tonal system, and is the
+    most direct means of establishing a pitch as tonic. It is virtually
+    obligatory as the final structural cadence of a tonal work''
+  \item[Imperfect cadence]: Any cadence ending on \RN{5}, including
+    \RN{1}--\RN{5}, \Rn{2}--\RN{5}, \RN{4}--\RN{5}, \RN{5}--\RN{5}, and \Rn{6}
+    -- \RN{5}. The imperfect cadence sounds incomplete and is considered
+    a \emph{weak} cadence which call for continuation \citep{jonas1982introduction}
+  \item[Plagal cadence]: \RN{4}--\RN{1}
+  \item[Interrupted cadepnce]: \RN{5}--\Rn{6}. Also considered a weak cadence
+    which invokes a ``hanging'' sensation prompting continuation
+    \cite{piston1978harmony}.
+\end{description}
+
+\subsubsection{Transposition invariance}\label{sec:transposition-invariance}
+
+Notice that the discussion thus far has remained ambiguous on the choice of
+tonic. This is intentional: most of the concepts discussed do not depend on the
+choice of tonic. When discussing tonality, the scale was defined using
+intervals relative to a choice of tonic. Similarly, Roman numeral analysis of
+chord progressions and cadences is also conducted relative to a tonic. Neither
+the scale nor the Roman numeral analysis is affected when a score is transposed
+by an arbitrary pitch interval.
+
+The \emph{transposition invariance} of chord progressions and keys is an
+important property of music. It enables us to offset an entire score by an
+arbitrary pitch interval without affecting many important psychoacoustic
+qualities.
+
+
 
 \section{An introduction to neural networks}\label{sec:primer-nn}
 
@@ -28,7 +329,7 @@ input $x_i$.
 
 \begin{figure}[tb]
     \centering
-    \input{Appendix1/nn-single.pdf_tex}
+    \input{Appendix1/Figs/nn-single.pdf_tex}
     \caption{A single neuron first computes an activation $z$ and then passes it through an activation function $\sigma(\cdot)$}
     \label{fig:nn-single}
 \end{figure}
@@ -42,7 +343,7 @@ be composed together to form a \emph{feedforwd neural network}.
 
 \begin{figure}[tb]
     \centering
-    \input{Appendix1/nn-ffw.pdf_tex}
+    \input{Appendix1/Figs/nn-ffw.pdf_tex}
     \caption{Graph depiction of a feedforward neural network with $2$ hidden layers}
     \label{fig:nn-ffw}
 \end{figure}
@@ -120,7 +421,7 @@ identical to a regular feedforward network (\cref{fig:nn-ffw}).
 
 \begin{figure}[tb]
     \centering
-    \input{Appendix1/nn-rnn.pdf_tex}
+    \input{Appendix1/Figs/nn-rnn.pdf_tex}
     \caption{Graph representation of an Elman-type RNN.}
     \label{fig:nn-rnn}
 \end{figure}
