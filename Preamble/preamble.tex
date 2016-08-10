@@ -109,7 +109,7 @@
 % *****************************************************************************
 % *************************** Bibliography  and References ********************
 
-\usepackage{cleveref} %Referencing without need to explicitly state fig /table
+%\usepackage{cleveref} %Referencing without need to explicitly state fig /table
 
 % Add `custombib' in the document class option to use this section
 \ifuseCustomBib
@@ -206,12 +206,16 @@
 % \usepackage{epigraph}
 \usepackage{quotchap}
 
-\usepackage{varioref}
-
-\usepackage{amsthm}
+\usepackage[amsmath,thmmarks]{ntheorem}
 \usepackage[bold]{hhtensor}
 \usepackage{mathtools}
 \usepackage{pgf}
+
+\usepackage{varioref}
+% Must be loaded after varioref
+\newcommand\numberthis{\refstepcounter{equation}\tag{\theequation}} % for numbering in  the align* environment
+\usepackage[nameinlink]{cleveref}
+
 
 \usepackage{tikz,ifthen} % TODO: eliminate when graveyard removed
 \usetikzlibrary{positioning}

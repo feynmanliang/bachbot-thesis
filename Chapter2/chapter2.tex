@@ -395,10 +395,17 @@ connections between hidden layers (Elman networks \citep{elman1990finding}) or
 from the output layers to the hidden layers (Jordan networks
 \citep{jordan1997serial}). Mathematically, an (Elman-type) RNN is a discrete time
 dynamical system commonly parameterized as:
-\begin{eqnarray}
-    \h_t &=& \W_{xh} \sigma_{xh} \left( \x_t \right) + \W_{hh} \sigma_{hh} \left( \h_{t-1} \right) \label{eq:rnn-ht}\\
-    \y_t &=& \W_{hy} \sigma_{hy} \left( \h_t \right) \label{eq:rnn-yt}
-\end{eqnarray}
+\begin{equation}
+ \left.\begin{aligned}
+          \h_t &=& \W_{xh} \sigma_{xh} \left( \x_t \right) + \W_{hh} \sigma_{hh} \left( \h_{t-1} \right)\\
+          \y_t &=& \W_{hy} \sigma_{hy} \left( \h_t \right)
+       \end{aligned}
+ \right\}
+ \qquad \text{RNN Dynamics}
+ \label{eq:rnn-dynamics}
+\end{equation}
+\begin{align}
+\end{align}
 where $\sigma_{\cdot \cdot}(\cdot)$ are activation functions acting
 element-wise and $\theta = \{ \W_{xh}, \W_{hh}, \W_{hy}\}$ are the learned
 parameters. \cref{fig:nn-rnn} provides a graphical illustration of such a
@@ -615,7 +622,7 @@ through time} (BPTT)\citep{goller1996learning}, an adaptation of the backpropoga
 algorithm\citep{linnainmaa1970representation,rumelhart1988learning} to the unrolled RNN computation
 graph. We can apply the chain rule to the unrolled RNN's computation graph in
 \cref{fig:rnn-bptt} to obtain
-\begin{eqnarray}
+\begin{align}
     \frac{\pd \mathcal{E}}{\pd \vec{\theta}} &=& \sum_{1 \leq t \leq T} \frac{\pd \mathcal{E}_t}{\pd \vec{\theta}} \\
     \frac{\pd \mathcal{E}_t}{\pd \vec{\theta}} &=& \sum_{1 \leq k \leq t} \left(
         \frac{\pd \mathcal{E}_t}{\pd \y_t}
@@ -627,7 +634,7 @@ graph. We can apply the chain rule to the unrolled RNN's computation graph in
     \prod_{t \geq i > k} \frac{\pd \h_i}{\pd \h_{i-1}}
     = \prod_{t \geq i > k} \W_{hh}^\tp \diag \left( \sigma_{hh}'( \h_{i-1} ) \right)
     \label{eq:error-transfer}
-\end{eqnarray}
+\end{align}
 
 \begin{figure}[htpb]
     \centering
@@ -650,8 +657,7 @@ to step $k$ \citep{Pascanu2012}.
 
 \subsubsection{Vanishing/exploding gradients}
 
-Unfortunately, naive implementations of \cref{eq:rnn-ht} and
-\cref{eq:rnn-yt} oftentimes suffers from two well known problems: the
+Unfortunately, naive implementations of \cref{eq:rnn-dynamics} oftentimes suffers from two well known problems: the
 \emph{vanishing gradient} and \emph{exploding gradient}\citep{Bengio1994}.
 Broadly speaking, these problems are both related to the product in
 \cref{eq:error-transfer} exponentially growing or shrinking for long
@@ -747,13 +753,13 @@ In addition to using a CEC, a LSTM introduces three gates controlling access to 
 \end{description}
 
 Mathematically, the LSTM model is defined by the following set of equations:
-\begin{eqnarray}
+\begin{align}
     \i_t &=& \sigmoid(\W_{xi} \x_t + \W_{yi} \y_{t-1} + \b_i) \\
     \o_t &=& \sigmoid(\W_{xo} \x_t + \W_{yo} \y_{t-1} + \b_o) \\
     \f_t &=& \sigmoid(\W_{xf} \x_t + \W_{yf} \y_{t-1} + \b_f) \\
     \h_t &=& \f_t \odot \h_{t-1} + \i_t \odot \tanh(\W_{xh}\x_t + y_{t-1} \W_{yh} + \b_h) \label{eq:lstm-dynamics} \\
     \y_t &=& \o_t \odot \tanh(\h_t)
-\end{eqnarray}
+\end{align}
 where $\odot$ denotes elementwise multiplication of vectors.
 
 Notice that the gates ($\i_t$, $\o_t$, and $\f_t$) controlling flow in and out

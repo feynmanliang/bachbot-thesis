@@ -106,14 +106,14 @@ types.
 \begin{landscape}
   \begin{figure}[p]
     \centering
-    \begin{subfigure}[c]{0.7\textwidth}
+    \begin{subfigure}[c]{1.0\textwidth}
         \centering
         \input{Chapter4/Figs/pitch-usage-original.pgf}
-        \input{Chapter4/Figs/pitch-usage-preproc.pgf}
-    \end{subfigure}
-    \begin{subfigure}[c]{0.28\textwidth}
-        \centering
         \input{Chapter4/Figs/pitch-class-usage-original.pgf}
+    \end{subfigure}
+    \begin{subfigure}[c]{1.0\textwidth}
+        \centering
+        \input{Chapter4/Figs/pitch-usage-preproc.pgf}
         \input{Chapter4/Figs/pitch-class-usage-preproc.pgf}
     \end{subfigure}
     \caption{Distribution of pitches used over Bach chorales corpus.
@@ -549,12 +549,12 @@ varying vocabulary sizes.
   \label{tab:label}
   \begin{tabular}{l c c c}
     \toprule
-    \multirow{2}{*}{} & \multicolumn{2}{c}{Single Batch (seconds)} & 100 Epochs (seconds) \\
+    \multirow{2}{*}{} & \multicolumn{2}{c}{Single Batch} & 100 Epochs (seconds) \\
     \cmidrule{2-4}
-    & mean & std & \\
+    & mean (sec) & std (sec) & (hours:minutes)\\
     \midrule
-    CPU & 4.287 & 0.311 & ??  \\
-    GPU & 0.513 & 0.001 & 5614 \\
+    CPU & 4.287 & 0.311 & 14:16 \\
+    GPU & 0.513 & 0.001 & 01:35\\
     \bottomrule
   \end{tabular}
 \end{table}
