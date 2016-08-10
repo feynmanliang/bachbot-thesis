@@ -187,7 +187,7 @@ In contrast to most language models which operate at the word level, we choose
 to construct our models at the note level for several reasons.
 Firstly, the issue of multiple tokens in the sequence corresponding to the same
 instant of time in the represented music should not be problematic because
-LSTMs have been shown to be able to learn to implement precise timing and
+LSTM have been shown to be able to learn to implement precise timing and
 counting\cite{gers2002learning}. Additionally, the use of a note-level encoding
 partially mitigates the problem of out-of-vocabulary (OOV) tokens in two ways.
 Besides reducing the potential vocabulary size from $O(128^4)$ possible chords
@@ -258,10 +258,10 @@ of Zipf's law in our data.
 Notice that our encoding is sparse: unarticulated notes are not encoded. It is
 also variable length as anywhere from zero to four (in the case of chorales,
 more for arbitrary polyphonic scores) notes. Finally, the explicit
-representation of tied notes vs articulated notes solves the problem plaguing
-\citep{Eck2002}\citep{eck2008learning} \citep{Liu2014} \citep{Brien2016} where
+representation of tied notes vs articulated notes solves the problem where
 multiple articulations at the same pitch are indistinguishable from a single
-note with the same duration.
+note with the same duration, an issue present in many prior works
+\citep{Eck2002,eck2008learning,Liu2014,Brien2016}.
 
 Additionally, notice that our encoding avoids hand-engineered features such as
 pitch representations which are psychochologically-based \citep{mozer1994neural}
@@ -324,7 +324,7 @@ implementation. The clockwork RNN periods were set to $(1, 2, 4, 8, 16)$.
 \begin{figure}[tb]
     \centering
     \input{Chapter4/Figs/theanets-architecture.pgf}
-    \caption{LSTMs and GRUs yield the lowest training loss. Validation loss
+    \caption{LSTM and GRUs yield the lowest training loss. Validation loss
       traces show all architectures exhibit signs of significant overfitting}
     \label{fig:theanets-architecture}
 \end{figure}
@@ -334,9 +334,9 @@ with expectations since these architectures have the most parameters. All
 yielded comparable validation loss which increased over time, motivating
 regularization.
 
-LSTMs and GRUs trained much faster and achieved lower training loss, suggesting
-higher capacity. \citep{Nayebi2015} reports that LSTMs outperform GRUs in music
-applications, motivating our final choice for GRUs.
+LSTM and GRUs trained much faster and achieved lower training loss, suggesting
+higher capacity. \citep{Nayebi2015} reports that LSTM outperform GRUs in music
+applications, motivating our final choice for LSTM.
 
 \subsection{Optimizing the LSTM architecture}
 \label{sec:lstm-grid-search}
@@ -353,7 +353,7 @@ between LSTM connections in both depth and time dimensions all with dropout
 probability $\texttt{dropout} \in [0,1]$.
 
 We build our models using the \texttt{torch7} framework and
-an optimized implementation of LSTMs provided by \texttt{torch-rnn} \mynote{citep}.
+an optimized implementation of LSTM provided by \texttt{torch-rnn} \mynote{citep}.
 
 Models were trained using RMSProp \mynote{citep} with batch normalization \mynote{citep}
 and an initial learning rate of $2 \times 10^{-3}$ decayed by $0.5$ every $5$
@@ -475,7 +475,7 @@ entropies of $0.84-0.87$ on training-set scores (Table 5.2 in
 The baseline results obtained by $N$-grams are shown in
 \vref{tab:baseline-perplexity}. We compare against two widely available
 language modelling software packages, KenLM \citep{Heafield-estimate} and
-SRILM \citep{stolcke2002srilm}. KenLM implements an efficient moddified
+SRILM \citep{stolcke2002srilm}. KenLM implements an efficient modified
 Kneser-Ney smoothing language model and while SRILM provides a variety of
 language models we choose choose to use the Good-Turing discounted language
 model for benchmarking against.
@@ -485,7 +485,7 @@ training data and $0.477$ on held-out test data
 (\vref{tab:torch-rnn-config-perfs}), corresponding to a training perplexity of
 $1.251$ bits and a test perplexity of $1.391$. This is more
 than $0.6$ bits lower than any test perplexity obtained by the $N$-gram
-models compared in \href{tab:baseline-perplexity}, providing evidence
+models compared in \vref{tab:baseline-perplexity}, providing evidence
 that the additional modelling capacity provided by RNNs is useful
 for encoded music score data.
 

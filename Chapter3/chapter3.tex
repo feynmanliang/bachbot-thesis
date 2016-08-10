@@ -58,7 +58,7 @@ Focusing on machine learning applications, most research can be
 classified under one or more of the following tasks:
 \begin{enumerate}
   \item Classification: the style, composer, or other musical attribute is to be classified
-  \item harmonization: a melody is given and the remaining parts are to be generated
+  \item Harmonization: a melody is given and the remaining parts are to be generated
   \item Completion: given the beginning of a score, the remainder is to be generated
   \item Automatic Composition: a complete unconstrained score is to be generated
 \end{enumerate}
@@ -113,9 +113,10 @@ and found their system to be more similar to Bach than a random walk.
 \citep{cope1987experiments,cope1992computer} proposed a system which
 automatically extracted rules to build an augmented transition
 network\citep{wanner1980atn}. The system was capable of reproducing music
-to a particular genre or author, suggesting that the extracted rules can
-capture the style of its input data. 
+to a particular genre or author, suggesting that the rules extracted by the
+system can capture a sense of musical style.
 
+\mynote{stylistic composition \citet{hornel1997melonet,cruz1998learning,Eck2002-blues,chuan2007hybrid,sturm2015folk,collins2016developing}}
 
 Genetic algorithms operating on symbolic encodings of music scores have also
 received significant attention \citet{weinberg2007real,cope2010recombinant}.
@@ -123,13 +124,10 @@ Emily Howell\citep{cope2005computer} is an extension of EMI, which uses EMI as
 a database of compositions to recombine and build novel compositions
 from\cite{cope2010recombinant}.
 
-\mynote{stylistic composition \citet{hornel1997melonet,cruz1998learning,Eck2002-blues,chuan2007hybrid,sturm2015folk,collins2016developing}}
-
 In \citet{cruz1998learning}, grammatical inference is used to learn regular
 grammars over chord progressions for modelling musical style.
 \citet{tsang1991harmonizing} applies constraint logic programming for
 generating harmonizations which satisfy certain harmonic constraints.
-
 
 While symbolic methods can easily incorporate domain-specific knowledge and are
 more interpretable than connectionist models, they are also inherently biased
@@ -137,7 +135,8 @@ by their creators' subjective theories on harmony and music cognition.
 Furthermore, specification of hand-crafted rules is a laborious process which
 requires significant music experience and does not improve when given larger
 amounts of data. Additionally, rule-based methods are brittle to distortion and
-noise and limit creativity by disallowing deviation from the defined rules.
+noise. Furthermore, they limit creativity by disallowing deviation from the
+defined rules.
 
 \subsection{Connectionist methods}
 
@@ -174,9 +173,10 @@ two-times higher time resolution.
 
 \citet{Lyu2015} extended the RNN-RBM\citep{Boulanger-Lewandowski2012} to use a
 LSTM instead of a RNN for modelling hidden unit time dynamics. Unfortunately,
-the authors do not evaluate their model beyond stating ``LSTM-RBM could learn
-melody lines\ldots while RNN-RBM generates inconsistent and unpleasant sample
-sequences.''
+it suffers from many of the same problems such as lack of meaningful evaluation.
+\mynote{We should have a subsection on evaluation of automatic composition systems}
+
+\mynote{\citet{goel2014polyphonic} tackles polyphonic modeling with RNN-DBN}
 
 \subsection{Hybrid methods}
 
@@ -220,6 +220,9 @@ reinforcement learning \citep{sutton1998reinforcement}. The critic is
 constructed using a collection of ``music rules,'' enabling incorporation of
 prior knowledge.
 
+\citet{eck2008learning} extends the connectionist model from \citet{Eck2002}
+to explicitly account for meter using an autocorrelation-based predictor.
+
 \subsection{LSTM music synthesis models}
 
 Prior work has demonstrated LSTM possesses many properties desirable for music
@@ -234,7 +237,7 @@ RNN architectures on variety of music tasks and concludes: ``while we have
 found a task that challenges a single LSTM network, we do not believe that any
 other recurrent networks we have used would be able to learn these songs.'''
 
-One of the first applications of LSTMs to music was by
+One of the first applications of LSTM to music was by
 \citet{Eck2002,Eck2002-blues}. Using a LSTM to model blues chord progressions
 and another to model melody lines given chords, the authors reported that LSTM
 can learn long term music structure such as repeated motifs can be learned
@@ -248,7 +251,7 @@ octaves in addition to pitch class, does not restrict the possible chords,
 operates at twice the time resolution, and also models when a note ends.
 
 More recently, \citet{sturm2015folk,sturm2016music} trained
-character-level LSTMs on 23,000 folk music scores represented in ABC
+character-level LSTM on 23,000 folk music scores represented in ABC
 notation\citep{abcstandard}, a high-level text format for music. ABC format is
 unsatisfactory for our use case because polyphonic scores are encoded one part
 at a time so notes sounding close together in time may appear very far apart in
@@ -259,13 +262,13 @@ Many variants of the LSTM architecture have been proposed. Perhaps the most
 well known is the gated recurrent unit (GRU)\citep{cho2014learning}, which
 constrains the input and forget gates to sum to $1$. \citet{Mikolov2015}
 proposed the structurally constrained RNN (SCRN), a simple architecture
-achieving comparable performance to LSTMs. Of most relevance to music,
+achieving comparable performance to LSTM. Of most relevance to music,
 \citet{Koutnik2014} proposed the clockwork RNN for explicitly modelling phenomena
 occurring at multiple timescales by updating different blocks of the hidden
 state at different periods. Whether these differences matter is not definitive:
 \citet{greff2015lstm} performed 5400 experiments on eight different
 architectures and found no significant difference in performance compared to
-the original LSTM architecture. \citet{Nayebi2015} reports LSTMs significantly
+the original LSTM architecture. \citet{Nayebi2015} reports LSTM significantly
 outperform GRUs in music applications.
 
 \section{Generative modelling of Bach Chorales}
@@ -282,7 +285,7 @@ ornamentation. Their model uses a discrete harmonic encoding of chords for
 hidden states. In contrast, our model uses an unconstrained continuous hidden
 state and requires no separate ornamentation step.
 
-\citet{Liu2014} applied LSTMs to Bach chorales and reports significant gains
+\citet{Liu2014} applied LSTM to Bach chorales and reports significant gains
 using RProp instead of BPTT, a technique previously utilized by
 MELONET\citep{feulner1994melonet}. However, they erroneously use a mean squared
 error training criterion for a classification task, casting doubts on the
@@ -291,7 +294,7 @@ validity of their experiments.
 \citet{Brien2016} compared RNN models for Bach chorales and found clockwork RNNs to
 yield the lowest validation loss. However, their data format does not permit
 independent articulation of parts. More importantly, the performance margin between
-clockwork RNNs and LSTMs was very small ($6.5$ vs $6.75$ cross-entropy loss) and their
+clockwork RNNs and LSTM was very small ($6.5$ vs $6.75$ cross-entropy loss) and their
 implementation resets the LSTM state when truncating gradients during BPTT, limiting the
 time-range of learned dynamics to be at most the sequence length.
 
@@ -300,4 +303,4 @@ The authors propose a model called \emph{Racchmaninof} (RAndom Constrained
 CHain of MArkovian Nodes with INheritance Of Form) and evaluate it on 25
 participants with a mean of $8.56$ years of formal music training. They
 impressively find that only $20\%$ of participants performed significantly
-better than chance. 
+better than chance.

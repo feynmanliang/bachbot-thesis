@@ -18,14 +18,14 @@ Unlike automatic composition, in harmonization tasks we are given the entire seq
 for one or more parts. As one of the parts is now fixed, the model is no longer able to freely
 compose and harmonic deviations from the fixed parts will result in dissonances and conflicting
 expectations. This lack of accountability for future expectations is one of the failure modes of our models.
-One potential method for mitigating this is bidirectional LSTMs\citep{Graves2005}, which account
+One potential method for mitigating this is bidirectional LSTM \citep{Graves2005}, which account
 for both the future and prior contexts. However, a bidirectional LSTM cannot be sequentially
 sampled to perform automatic composition.
 
 \section{Background}
 
 A chorale consists of four parts: soprano, alto, tenor, and bass. Chorale harmonization
-involves producing the alto, tenor, and bass parts given a fixed soprany melody. As described
+involves producing the alto, tenor, and bass parts given a fixed soprano melody. As described
 by Walter Piston \citep{piston1978harmony}:
 
 \begin{quote}
@@ -41,9 +41,10 @@ considerations for voice leading \citep{piston1978harmony}.
 For a music student studying chorale harmonization, a common pedagogical
 exercise \citep{denny1960oxford}\citep{piston1978harmony} is a sequence of tasks increasing in difficulty:
 \begin{enumerate}
-  \item Providing either alto and tenor given fixed soprano and bass
+  \item Providing either alto or tenor given fixed soprano and bass
   \item Providing both alto and tenor parts given fixed soprano and bass
-  \item Providing all remaining parts given only the soprano line
+  \item Harmonization: provide all remaining parts given only the soprano line
+  \item Composition: provide all four parts with nothing given in advance
 \end{enumerate}
 
 There are no definitive formalization of the harmonization process, making
@@ -54,22 +55,20 @@ exist, but involve human analytical process.
 
 \section{Harmonizing}
 
-
 For chorale harmonization, we are interested in predicting the notes for a part
 given the other parts. Concretely, suppose we wish to predict a $L \in \NN$
 length sequence $w_{1:L}$. Let $\alpha \subset [1,T]$ be a multi-index,
-$\alpha^c \coloneqq [1,T] \setminus \alpha$, and $w_\alpha$ the tokens
+$\alpha^c \coloneqq [1,T] \setminus \{\alpha\}$, and $w_\alpha$ the tokens
 corresponding to the given parts. We are interested in finding
 \begin{equation}
   w_{1:L}^* = \argmax_{w_{1:L}} P(w_{1:L} | w_{\alpha})
 \end{equation}
 
-
-``Clamp'' the generative model and have it ``fill-in'' missing bits
-\citep{hinton1986learning}. We can constrain the set of candidate sequences by
-first noting any solution $\hat{w_{1:L}}$ must satisfy $\hat{w}_\alpha =
-w_\alpha$. We can apply this constraint and greedily sample from our generative
-model to approximately solve the problem:
+We can constrain the set of candidate sequences by first noting any solution
+$\hat{w_{1:L}}$ must satisfy $\hat{w}_\alpha = w_\alpha$. In
+\citet{hinton1986learning}, this is referred to as ``clamping'' the generative
+model. Next, we can ``fill in'' the unconstrained indices in the sequence by
+greedily sample from our generative model to arrive at an approximate solution:
 \begin{equation}
   \hat{w_{t}} = \begin{cases}
     w_{\alpha_t} &\text{if}~t \in \alpha \\

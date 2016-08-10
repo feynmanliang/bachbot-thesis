@@ -312,7 +312,7 @@ styles. However, they focus on the discriminative task and do not consider
 how to generate novel scores.
 
 
-\section{LSTMs: background and motivation}
+\section{LSTM: background and motivation}
 
 Two prominent methods for training RNNs include real-time recurrent learning (RTRL)
 \cite{robinson1987utility} and backpropogation through time (BPTT) \cite{williams1995gradient}.
@@ -325,7 +325,7 @@ The first LSTM models, which did not include forget gates, was introduced in
 to include forget gates in order to prevent hidden states from growing
 indefinitely.
 
-LSTMs have been demonstrated to outperform traditional RNNs on a variety of
+LSTM have been demonstrated to outperform traditional RNNs on a variety of
 tasks. \cite{gers2001lstm} demonstrates a LSTM correctly recognizing $1000$
 instances from the context-free grammar $A^n B^n$ while an Elman RNN achieves
 only $20\%$ accuracy.
@@ -397,8 +397,8 @@ into GPU memory.
 Model parameters are broadcast out to all GPUs on each \texttt{forward} pass
 and gradients are accumulated during each \texttt{backward} pass.
 
-Research in grid LSTMs suggests that we can go deeper by introducing
-gates along the depth dimension to help permit information flow \mynote{cite gird LSTMs}.
+Research in grid LSTM suggests that we can go deeper by introducing
+gates along the depth dimension to help permit information flow \mynote{cite gird LSTM}.
 
 \section{Token-level embeddings}
 
