@@ -254,5 +254,12 @@
 \makeatletter
 \def\convertto#1#2{\strip@pt\dimexpr #2*65536/\number\dimexpr 1#1}
 \makeatother
+% To get the textwidth in mm
 % \convertto{mm}{\the\textwidth}
 
+\makeatletter
+% Redefine emph to be bold
+\DeclareRobustCommand{\em}{%
+  \@nomath\em \if b\expandafter\@car\f@series\@nil
+  \normalfont \else \bfseries \fi}
+\makeatother

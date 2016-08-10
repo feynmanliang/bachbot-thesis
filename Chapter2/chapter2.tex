@@ -6,41 +6,20 @@
     \graphicspath{{Chapter2/Figs/Vector/}{Chapter2/Figs/}}
 \fi
 
-\mynote{Similarity to language modeling, char-rnn vs word-rnn similar so note-rnn vs chord-rnn should be as well.
-  Benefit is that chord vocabulary MUCH larger than natural language}
-
 \mynote{Try mimicking \citet{franklin2006recurrent}}.
 
-\mynote{Motivation: Long-term dependencies are at the heart of what defines a style of music, with
-events spanning several notes or bars contributing to the formation of metrical and phrasal
-structure \citet{cooper1963rhythmic}.}
-
-\mynote{Describe automatic composition vs harmonization vs analysis/scoring}
-Generative models are preferrable because they can be:
-\begin{enumerate}
-  \item Conditioned for harmonization
-  \item Sampled for automatic composition
-  \item Queried for analysis/scoring
-\end{enumerate}
-Automatic composition is described by \citet{papadopoulos1999ai} as:
-\begin{quote}
-  a sequence (set) of rules (instructions, operations) for solving (accomplishing) a [particular] problem (task)
-  [in a finite number of steps] of combining musical parts (things, elements) into a whole (composition)
-\end{quote}
-\citet{pearce2002motivations} emphasizes \emph{algorithmic composition} should ``be applied exclusively
-to activities in which the motivations have this artistic character.''
-
-\mynote{Describe MIDIs 127 iquantized pitches, isomorphic to musicXML}
-
-\mynote{Describe Bach and chorales, 4 parts, soprano lead with ATB harmony,
-regular phrases, fermatas to denote phrase ends. Background section in chorale harmonization. }
-
-
-This chapter provides background information on two topics heavily utilized
-throughout this dissertation: Western music theory and recurrent neural
-networks. It introduce the definitions and notation used in later sections.
+In this chapter, we provide background information on two topics heavily
+utilized throughout this dissertation: Western music theory and recurrent
+neural networks. In addition, we introduce definitions and notation used
+throughout later chapters.
 
 \section{A primer on Western music theory}
+
+This section provides a primer on the music theory relevant for understanding
+the following chapters. It synthesizes material originally presented in
+\citet{franklin2006recurrent,nagler2014schubot,quick2014kulitta,freedman2015correlational}.
+Readers with a strong music background may wish to skip to
+\vref{sec:automatic-composition}.
 
 Music theory is a branch of musicology concerned with the study of the rules
 and practices of music. While the general field includes study of acoustic
@@ -49,10 +28,10 @@ modeling musical \emph{scores} (\eg \cref{fig:eg-score}) and neglect issues
 related to articulation and performance (\eg dynamics, accents, changes in
 tempo) as well as synthesis/generation of the physical acoustic waveforms.
 
-\begin{figure}[htbp]
+\begin{figure}[tb]
     \centering
-    \includegraphics[width=0.8\linewidth]{bwv133-6-original-score-1.png}
-    \caption{Sheet music representation of some bars from a musical score (BWV133.6).}
+    \includegraphics[trim={0 23cm 0 0},clip,width=1.0\linewidth]{bwv133-6-eg-score.pdf}
+    \caption{Sheet music representation of the first four bars of BWV 133.6}
     \label{fig:eg-score}
 \end{figure}
 
@@ -65,12 +44,12 @@ notes, suggesting that notes are the defining element for a piece of music.
 
 \subsection{Notes: the basic building blocks}
 
-A \emph{note} is the most fundamental element of music composition and
+A \emph{note} is the most fundamental element of music score and
 represents a sound played at a certain \emph{pitch} for a certain
 \emph{duration}. In sheet music such as \cref{fig:eg-score}, the notes are
 denoted by the filled/unfilled black heads with protruding stems. As a can be
 viewed as a collection of notes over time, notes are the fundamental building
-blocks for musical compositions.
+blocks for musical scores.
 
 \subsubsection{Pitch}
 
@@ -82,7 +61,7 @@ visual analogy in \cref{fig:pitch} illustrates how a pitch can be heard even if
 its percieved frequency is absent just as one may see the word ``PITCH''
 despite being presented with only a suggestive shadow.
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
     \centering
     \includegraphics[width=0.6\linewidth]{pitch.pdf}
     \caption{Terhardt's visual analogy for pitch. Similar to how the viewer of this figure may percieve contours not present, pitch describes subjective information received by the listener even when physical frequencies are absent.}
@@ -101,12 +80,11 @@ Most Western music is based on the \emph{twelve-note chromatic scale}, which
 divides an \emph{octave} into twelve distinct frequencies. The \emph{tuning
 system} employed dictates the precise intervals between subdivisions, with
 \emph{equal temperament tuning} (all subdivisions are equally spaced on a
-logarithmic scale) presently the most widely used
-method \citep{denton1997history}. \mynote{Talk about well-tempered tuning and bach}
-Under twelve-note equal temperament tuning, the distance between two
-consecutive subdivisions ($1/12$ of an octave) is called a \emph{semitone}
-(British) or \emph{half-step} (North American) and two semitones constitutes
-a \emph{tone} or \emph{whole-step}.
+logarithmic scale) the most widely used in common practice music
+\citep{denton1997history}. Under twelve-note equal temperament tuning, the
+distance between two consecutive subdivisions ($1/12$ of an octave) is called a
+\emph{semitone} (British) or \emph{half-step} (North American) and two
+semitones constitutes a \emph{tone} or \emph{whole-step}.
 
 When discussing music, \emph{note names} which enable succinct specification of
 a musical pitch are often employed. In \emph{scientific pitch notation},
@@ -118,7 +96,7 @@ pitch class up one semitone and flats ($\flat$) lower by one semitone.
 \cref{fig:piano-keys} illustrates how these pitch classes map to keys on a
 piano.
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
     \centering
     \includegraphics[width=0.6\linewidth]{piano-keys.pdf}
     \caption{Illustration of an octave in the 12-note chromatic scale on a piano keyboard.}
@@ -135,7 +113,7 @@ indicated by its vertical position with respect to the \emph{stave} (the five
 horizontal lines and four spaces).
 
 \mynote{Cite wiki scientific pitch notation}
-\begin{figure}[htpb]
+\begin{figure}[tb]
     \centering
     \includegraphics[width=0.6\linewidth]{Pitch_notation.png}
     \caption{Scientific pitch notation and sheet music notation of $C$ notes at ten different octaves.}
@@ -155,33 +133,51 @@ physical time intervals is given by the \emph{tempo}, which is usually
 denoted near the start of the piece in beats per minute.
 
 \mynote{Cite wiki Whole note}
-\begin{figure}[htpb]
+\begin{figure}[tb]
     \centering
     \includegraphics[width=0.6\linewidth]{note-durations.png}
     \caption{Comparison of various note durations.}
     \label{fig:note-durations}
 \end{figure}
 
-\subsubsection{Offset}
+\subsubsection{Offset, Measures, and Meter}
 
-\mynote{Do we define barline?}
+The final property a note possess is an \emph{offset} indicating the time at
+which a note is articulated. The offset is measured with respect to a fixed
+reference point in time, such as the start of a score.
 
-The final property a note possess is an \emph{offset} indicating the time
-at which a note is articulated. The offset is relative to a fixed
-reference such as the start of the score or measure.
+Another common reference point for measuring offsets is with respect to the
+preceding \emph{bar}. Bars are denoted by vertical lines through the
+stave in sheet music and are used to subdivide a piece into smaller temporal
+units called \emph{measures}. Except for the notes preceeding the first bar
+(\ie the \emph{anacrusis}), most measures within a score all have the same
+duration.
 
-\mynote{Cite mark's research on meter}
+In \vref{fig:eg-score}, the crotchet preceding the first bar provides an
+example of an anacrusis. Notice that all other measures in the score are four
+crotchets in duration. In addition, observe that the offsets of notes within a
+measure is highly repetitive. There is always a note articulated on the first
+crotchet of a measure and articulations occuring between crotchets (\ie
+quavers) are only present the last two crotchets of a measure.
 
-Repetition of the same pattern of offsets within a measure helps establish a
-periodic pattern of strong and weak beats, a concept known as meter as
-\emph{meter} \cite{grove-meter}. Meter is implied in Western music, where bars establish perodic
-measures of equal length \citep{handel1993listening}. The meter of a score
-provides us with key information about musical structure which can be used to
-predict chord changes and repepetition boundaries \citep{cooper1963rhythmic}.
+This repetition of the same pattern of offsets across multiple measure helps
+establish a periodic pattern of strong and weak beats, a concept known as
+\emph{meter} \cite{grove-meter}. Meter is implied in Western music, where bars
+establish perodic measures of equal length \citep{handel1993listening}. The
+meter of a score provides information about musical structure which can be used
+to predict chord changes and repepetition boundaries
+\citep{cooper1963rhythmic}.
 
 \subsubsection{Piano roll notation}
 
-\Cref{fig:piano-roll-effects-preproc} shows the the same score from
+\begin{figure}[tb]
+    \centering
+    \input{Chapter2/Figs/bwv133-6-eg-piano.pgf}
+    \caption{Piano roll notation of the music in \cref{fig:eg-score}}
+    \label{fig:eg-piano-roll}
+\end{figure}
+
+\Cref{fig:eg-piano-roll} shows the the same score from
 \vref{fig:eg-score} in \emph{piano roll notation}, a format which is convenient
 for visualization purposes. The horizontal and vertical axes represent time and
 pitch respectively. A solid horizontal bar signifies the presence of a note at
@@ -198,7 +194,7 @@ shows the pitch intervals between adjacent pitch classes within two important
 scales: the \emph{major} and the \emph{minor}. The choice of tonic and scale is
 collectively referred to as the \emph{key}.
 
-\begin{table}[htpb]
+\begin{table}[tb]
     \centering
     \begin{tabular}{lc}
         \toprule
@@ -235,7 +231,7 @@ corresponding intervals from the root note. Chord names are given as a root
 pitch class followed by a quality, for example: $C$ major, $A$ minor, or $G$
 half-diminished $7$th.
 
-\begin{table}[htpb]
+\begin{table}[tb]
     \centering
     \begin{tabular}{lc}
         \toprule
@@ -263,47 +259,89 @@ root note. However, alternative voicings called \emph{inversions} can place the
 root note on a different octave and cause the bass and root notes to
 differ.
 
-\subsubsection{Chord progressions and phrases}
+\subsubsection{Chord progressions, phrases, and cadences}
 
 Sequences of chords are called \emph{chord progressions}, which are oftentimes
-grouped with adjacent progressions within a score into coherent units called
-\emph{phrases}. Many psychoacoustic phenomena such as stability, mood, and
-expectation can be attributed to phrase structure and choice of chord
-progressions. For example, chord progressions called \emph{harmonic cadences}
-are commonly used to conclude a phrase and create a sense of
-resolution \citep{randel1999harvard}. Another important example are
-\emph{modulations}, where a chord progression is used to transition the music
-into a different key.
+grouped with adjacent progressions into coherent units called \emph{phrases}.
+Many psychoacoustic phenomena such as stability, mood, and expectation can be
+attributed choice of chord progressions and phrase structure. For example,
+chord progressions can be used to create \emph{modulations} which transition
+the music into a different key.
 
-As chords can be overlapping and contain notes straddling between two chords or
-involve uncommon chord qualities, identifying chord progresssions involves a
-degree of subjectivity. A common method for analyzing chord progressions is
-\emph{roman numeral analysis}, where I denotes the tonic pitch class, successive
-roman numerals correspond to successive pitch classes in the key, and
-capitalization is used to denote major/minor. For example, the chord
-progression $C$ major -- $A$ minor -- $D$ major 7th -- $G$ major in the $C$
-major key would be represented as $I$ -- $ii$ -- $IImaj7$ -- $V$.
+Analyzing chord progresssions involves a degree of subjectivity as chords can
+be overlapping and contain extraneous notes or involve uncommon chord
+qualities. A common method for analyzing chord progressions is \emph{Roman
+numeral analysis}, where \RN{1} is used for denoting the tonic pitch class,
+successive Roman numerals for successive pitch classes in the key, and
+capitalization is used to distinguish major and minor qualities. For example,
+the chord progression $C$ major -- $A$ minor -- $D$ major 7th -- $G$ major in
+the $C$ major key would be represented in Roman numerals as \RN{1} -- \Rn{2} --
+\RN{2}maj$7$ -- \RN{5}.
 
 \mynote{Talk about cadences (will be used when describing neuron specificites)}
+
+A common use case for Roman numeral analysis is identifying and classifying
+chord progressions called \emph{harmonic cadences}, which are commonly used for
+effects such as eliciting a sense of incompleteness
+\citep{jonas1982introduction} or establishing a sense of conclusion at the end
+of phrases \citep{randel1999harvard}. The most important cadences include:
+\mynote{Review that these definitions are actually necessary}
+\begin{definition}
+  \item[Perfect cadence]: \RN{5} -- \RN{1}. The perfect cadence is described by
+    \citet{randel1999harvard} as ``a microcosm of the tonal system, and is the
+    most direct means of establishing a pitch as tonic. It is virtually
+    obligatory as the final structural cadence of a tonal work''
+  \item[Imperfect cadence]: Any cadence ending on \RN{5}, including
+    \RN{1}--\RN{5}, \Rn{2}--\RN{5}, \RN{4}--\RN{5}, \RN{5}--\RN{5}, and \Rn{6}
+    -- \RN{5}. The imperfect cadence sounds incomplete and is considered
+    a \emph{weak} cadence which call for continuation \citep{jonas1982introduction}
+  \item[Plagal cadence]: \RN{4}--\RN{1}
+  \item[Interrupted cadepnce]: \RN{5}--\Rn{6}. Also considered a weak cadence
+    which invokes a ``hanging'' sensation prompting continuation
+    \cite{piston1978harmony}.
+\end{definition}
 
 \subsubsection{Transposition invariance}
 
 A common theme throughout our discussion has been ambiguity of the tonic. When
-discussing key, the key was defined using intervals relative to a
-choice of tonic. Similarly, roman numeral analysis of chord progressions is
-also conducted relative to a tonic. Even if a chord progression and tonic are
-both transposed by arbitrary pitch interval, the roman numeral analysis will
-remain unchanged.
+discussing key, the key was defined using intervals relative to a choice of
+tonic. Similarly, Roman numeral analysis of chord progressions is also
+conducted relative to a tonic. Even if a chord progression and tonic are both
+transposed by arbitrary pitch interval, the Roman numeral analysis will remain
+unchanged.
 
 The \emph{transposition invariance} of chord progressions and keys is an
 important property of music. It enables us to offset an entire score by an
 arbitrary pitch interval without affecting the important psychoacoustic
 qualities captured by chord progressions and choice of key.
 
+\section{Automatic composition}\label{sec:automatic-composition}
+
+Automatic composition is described by \citet{papadopoulos1999ai} as:
+\begin{quote}
+  a sequence (set) of rules (instructions, operations) for solving (accomplishing) a [particular] problem (task)
+  [in a finite number of steps] of combining musical parts (things, elements) into a whole (composition)
+\end{quote}
+\citet{pearce2002motivations} emphasizes \emph{algorithmic composition} should ``be applied exclusively
+to activities in which the motivations have this artistic character.''
+
+\mynote{Generate melody, harmonize, complete generation, style imitation}
+
+\subsection{Generative models}
+
+\mynote{Describe automatic composition vs harmonization vs analysis/scoring}
+Generative models are desirable because they can be used for a variety of
+automatic composition tasks:
+\begin{enumerate}
+  \item Conditioned for harmonization
+  \item Sampled for automatic composition
+\end{enumerate}
+In addition, they can also be used for scoring.
+
 \section{Neural sequence probability modeling}
 
-Our work in later sections make heavy use of neural networks. In this section,
-we briefly review the relevant concepts and set up notation.
+Our work in later sections make heavy use of neural networks as a generative
+model for sequences. In this section, we briefly review the relevant concepts and set up notation.
 
 \subsection{Neurons: the basic computation unit}
 
@@ -322,7 +360,7 @@ depicted in \cref{fig:nn-single}, which also makes apparent the
 interpretation of weight $w_i$ as the sensitivity of the output $y$ to the
 input $x_i$.
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
     \centering
     \input{Chapter2/Figs/nn-single.pdf_tex}
     \caption{A single neuron first computes an activation $z$ and then passes it through an activation function $\sigma(\cdot)$}
@@ -336,7 +374,7 @@ to form a \emph{layer} modelling a multivariate functions $f :
 \RR^{D_\text{in}} \to \RR^{D_\text{out}}$. Multiple layers can then
 be composed together to form a \emph{feedforwd neural network}.
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
     \centering
     \input{Chapter2/Figs/nn-ffw.pdf_tex}
     \caption{Graph depiction of a feedforward neural network with $2$ hidden layers}
@@ -416,7 +454,7 @@ identical to a regular feedforward network (\cref{fig:nn-ffw}).
 
 \mynote{Why do we use Elman}
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
     \centering
     \input{Chapter2/Figs/nn-rnn.pdf_tex}
     \caption{Graph representation of an Elman-type RNN.}
@@ -431,7 +469,7 @@ This motivates an alternative perspective on RNNs as a template consisting
 of a feedforward network with inputs $\{\x_t, \h_{t-1}\}$ (see
 \cref{fig:rnn-elman}) replicated across time $t$.
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
   \centering
   \input{Chapter2/Figs/nn-rnn-elman.pdf_tex}
   \caption{Equivalent formulation of an Elman-type RNN treating the
@@ -479,7 +517,7 @@ across all layers.
 gating to let information flow deeper: LSTM gates and highway networks, grid
 LSTMS}
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
   \centering
   \resizebox{4.5in}{!}{\input{Chapter2/Figs/rnn-single-unrolled.pdf_tex}}
   \caption{Signal flow diagram representation of a single-layer RNN and its
@@ -509,7 +547,7 @@ stacking of multiple memory cells is similar to the layering seen in deep
 neural networks, giving rise to the term \emph{deep neural sequence models}
 \mynote{Cite?}. This is illustrated in \cref{fig:rnn-multi-unrolled}.
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
     \centering
     \resizebox{4.5in}{!}{\input{Chapter2/Figs/rnn-multi-unrolled.pdf_tex}}
     \caption{Template and unrolling of a stacked 2-layer RNN}
@@ -593,7 +631,7 @@ at time $t$. Note that $\z_t$ can be any real vector in $\RR^{|V|}$
 a probability vector constrained to sum to one.
 
 Fortunately, we can treat $\z_t$ as the \emph{scores} for a \emph{Boltzmann
-distribution} (aka softmax):
+distribution}
 \begin{equation}\label{eq:boltzmann-dist}
     P( \y_{t} = s | \h_{t-1}, \x_t )
     = \frac{\exp \left(-\z_{t,s}/T\right) }{ \sum_{k=1}^{K} \left(\exp -\z_{t,k}/T\right)}
@@ -640,7 +678,7 @@ graph. We can apply the chain rule to the unrolled RNN's computation graph in
     \label{eq:error-transfer}
 \end{align}
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
     \centering
     \input{Chapter2/Figs/rnn-bptt.pdf_tex}
     \caption{The gradients passed along network edges during BPTT.}
@@ -661,75 +699,31 @@ to step $k$ \citep{Pascanu2012}.
 
 \subsubsection{Vanishing/exploding gradients}
 
-Unfortunately, naive implementations of \cref{eq:rnn-dynamics} oftentimes suffers from two well known problems: the
-\emph{vanishing gradient} and \emph{exploding gradient} \citep{Bengio1994}.
-Broadly speaking, these problems are both related to the product in
-\cref{eq:error-transfer} exponentially growing or shrinking for long
-timespans (\ie $t \gg k$).
+Unfortunately, naive implementations of \cref{eq:rnn-dynamics} oftentimes
+suffers from two well known problems: the \emph{vanishing gradient} and
+\emph{exploding gradient} \citep{Bengio1994}. Broadly speaking, these problems
+are both related to the product in \cref{eq:error-transfer} exponentially
+growing or shrinking for long timespans (\ie $t \gg k$). A rigorous
+proof is provided in \vref{sec:vanishing-exploding-gradients}.
 
-Following \citet{Pascanu2012}, let $\| \cdot \|$ be any
-submultiplicative matrix norm (\eg Frobenius, spectral, nuclear, Shatten
-$p$-norms). Without loss of generality, we will use the \emph{operator norm}
-defined as
-\begin{equation}
-    \| A \| = \sup_{x \in \RR^n; x \neq 0} \frac{|A x|}{|x|}
-\end{equation}
-where $|\cdot|$ is the standard Euclidian norm.
-
-From submultiplicativity, we have that for any $k$
-\begin{equation}
-    \left\| \frac{\pd \h_k}{\pd \h_{k-1}} \right\|
-    \leq \| \W_{hh}^\tp \| \| \diag\left( \sigma_{hh}'(\h_{k-1}) \right) \|
-    \leq \gamma_{\W} \gamma_\sigma
-\end{equation}
-where we have defined $\gamma_{\W} = \| \W_{hh}^\tp \|$ and
-\begin{align}
-    \gamma_\sigma
-    &\coloneqq \sup_{h \in \RR^n} \| \diag \left( \sigma_{hh}'(\h) \right) \|  &\\
-    &= \sup_{h \in \RR^n} \max_i \sigma_{hh}'(\h)_i &\mbox{Operator norm of diag} \\
-    &= \sup_{x \in \RR} \sigma_{hh}'(x) &\mbox{$\sigma_{hh}$ acts elementwise}
-\end{align}
-
-Substituting back into \cref{eq:error-transfer}, we find that
-\begin{equation}
-    \left\| \frac{\pd \h_t}{\pd \h_k} \right\|
-    = \left\| \prod_{t \geq i > k} \frac{\pd \h_i}{\pd \h_{i-1}} \right\|
-    \leq  \prod_{t \geq i > k} \left\| \frac{\pd \h_i}{\pd \h_{i-1}} \right\|
-    \leq (\gamma_{\W} \gamma_\sigma)^{t-k}
-\end{equation}
-
-Hence, we see that a sufficient condition for vanishing gradients is
-for $\gamma_{\W} \gamma_\sigma < 1$, in which case $\left\| \frac{\pd \h_t}{\pd \h_k} \right\| \to 0$
-exponentially for long timespans $t \gg k$. %$\qed$
-
-If $\gamma_\sigma$ is bounded, sufficient
-conditions for vanishing gradients to occur may be written as
-\begin{equation}
-    \gamma_{\W} < \frac{1}{\gamma_\sigma}
-    \label{eq:vanishing-gradients-suff}
-\end{equation}
-This is true for commonly used activation functions (\eg $\gamma_\sigma = 1$
-for $\sigma_{hh} = \tanh$, $\gamma_\sigma = 0.25$ for $\sigma_{hh} =
-\sigmoid$).
-
-The converse of the proof implies that $\| \W_{hh}^\tp \| \geq
-\frac{1}{\gamma_\sigma}$ are necessary conditions for $\gamma_{\W}
-\gamma_\sigma > 1$ and exploding gradients to occur.
+This difficulty learning relationships between events spaced far apart in time
+presents a signficant challenge for music applications. As noted by
+\citet{cooper1963rhythmic}:
+\begin{quote}
+  Long-term dependencies are at the heart of what defines a style of music, with
+  events spanning several notes or bars contributing to the formation of metrical and phrasal
+  structure.
+\end{quote}
 
 \subsection{Long short term memory: solving the vanishing gradient}
-
 \nomenclature[z-LSTM]{LSTM}{Long Short Term Memory}
 \nomenclature[z-CEC]{CEC}{Constant Error Carousel}
 
 In order to build a model which learns long range dependencies, vanishing
-gradients must be avoided. This requires us to design our memory cells holding
-the hidden state $\h$ such that \cref{eq:vanishing-gradients-suff} does
-not hold.
-
-The \emph{long short term memory} (LSTM) memory cell was proposed by
-\citet{hochreiter1997long} as a method for dealing with the vanishing gradient
-problem. It does so by enforcing \emph{constant error flow} on
-\cref{eq:error-transfer}, that is
+gradients must be avoided. A popular memory cell architecture which does so is
+\emph{long short term memory} (LSTM). Proposed by \citet{hochreiter1997long},
+LSTM solves the vanishing gradient problem by enforcing \emph{constant error
+flow} on \cref{eq:error-transfer}, that is
 \begin{equation}
     \W_{hh}^\tp \sigma_{hh}' (\h_{t}) = \matr{I}
 \end{equation}
@@ -772,7 +766,7 @@ enabling LSTM to explicitly learn which error signals to trap in the CEC and
 when to release them \citep{hochreiter1997long}, enabling error signals to
 potentially be transported across long time lags.
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
     \centering
     \input{Chapter2/Figs/lstm-unit-2.pdf_tex}
     \caption{Schematic for a single LSTM memory cell. Notice how the gates $\i_t$, $\o_t$, and $\f_t$ control access to the constant error carousel (CEC).}

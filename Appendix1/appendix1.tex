@@ -1,9 +1,53 @@
 % ******************************* Thesis Appendix A ****************************
 \chapter{Appendix A}
 
-\begin{center}
-  \captionof{figure}{Results of grid search (see \Cref{sec:lstm-grid-search}) over LSTM sequence model hyperparameters}
-  \label{tab:torch-rnn-config-perfs}
-  \input{Chapter4/Figs/torch-rnn-config-perfs.tex}
-  \addtocounter{table}{-1}%
-\end{center}
+\section{Vanishing/exploding gradients}\label{sec:vanishing-exploding-gradients}
+
+Following \citet{Pascanu2012}, let $\| \cdot \|$ be any
+submultiplicative matrix norm (\eg Frobenius, spectral, nuclear, Shatten
+$p$-norms). Without loss of generality, we will use the \emph{operator norm}
+defined as
+\begin{equation}
+    \| A \| = \sup_{x \in \RR^n; x \neq 0} \frac{|A x|}{|x|}
+\end{equation}
+where $|\cdot|$ is the standard Euclidian norm.
+
+From submultiplicativity, we have that for any $k$
+\begin{equation}
+    \left\| \frac{\pd \h_k}{\pd \h_{k-1}} \right\|
+    \leq \| \W_{hh}^\tp \| \| \diag\left( \sigma_{hh}'(\h_{k-1}) \right) \|
+    \leq \gamma_{\W} \gamma_\sigma
+\end{equation}
+where we have defined $\gamma_{\W} = \| \W_{hh}^\tp \|$ and
+\begin{align}
+    \gamma_\sigma
+    &\coloneqq \sup_{h \in \RR^n} \| \diag \left( \sigma_{hh}'(\h) \right) \|  &\\
+    &= \sup_{h \in \RR^n} \max_i \sigma_{hh}'(\h)_i &\mbox{Operator norm of diag} \\
+    &= \sup_{x \in \RR} \sigma_{hh}'(x) &\mbox{$\sigma_{hh}$ acts elementwise}
+\end{align}
+
+Substituting back into \cref{eq:error-transfer}, we find that
+\begin{equation}
+    \left\| \frac{\pd \h_t}{\pd \h_k} \right\|
+    = \left\| \prod_{t \geq i > k} \frac{\pd \h_i}{\pd \h_{i-1}} \right\|
+    \leq  \prod_{t \geq i > k} \left\| \frac{\pd \h_i}{\pd \h_{i-1}} \right\|
+    \leq (\gamma_{\W} \gamma_\sigma)^{t-k}
+\end{equation}
+
+Hence, we see that a sufficient condition for vanishing gradients is
+for $\gamma_{\W} \gamma_\sigma < 1$, in which case $\left\| \frac{\pd \h_t}{\pd \h_k} \right\| \to 0$
+exponentially for long timespans $t \gg k$. %$\qed$
+
+If $\gamma_\sigma$ is bounded, sufficient
+conditions for vanishing gradients to occur may be written as
+\begin{equation}
+    \gamma_{\W} < \frac{1}{\gamma_\sigma}
+    \label{eq:vanishing-gradients-suff}
+\end{equation}
+This is true for commonly used activation functions (\eg $\gamma_\sigma = 1$
+for $\sigma_{hh} = \tanh$, $\gamma_\sigma = 0.25$ for $\sigma_{hh} =
+\sigmoid$).
+
+The converse of the proof implies that $\| \W_{hh}^\tp \| \geq
+\frac{1}{\gamma_\sigma}$ are necessary conditions for $\gamma_{\W}
+\gamma_\sigma > 1$ and exploding gradients to occur.

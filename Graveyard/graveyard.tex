@@ -63,7 +63,7 @@ graphs (\mynote{CITE: fig:nn-layer}). Here, each node denotes a data value and
 an edge from $s$ to $t$ notates that the value at $s$ is used to compute the
 value at $t$.
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
     \centering
     \input{Graveyard/Figs/nn-layer.tikz}
     \caption{Single feedfoward neural network layer}
@@ -76,7 +76,7 @@ feedforward neural network where the outputs of the first layer are used as the
 inputs to the second layer (\ie $x^{(1)} = y^{(0)}$).
 
 
-\begin{figure}[htbp]
+\begin{figure}[tb]
     \centering
     \input{Graveyard/Figs/ffw-nn.tikz}
     \caption{2-layer feedforward neural network}
@@ -274,7 +274,7 @@ next frames given the previous context. However, RNNs additionally pass along
 infinite context window.
 
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
     \centering
     \input{Graveyard/Figs/lstm-unit.pdf_tex}
     \caption{Single LSTM unit}
@@ -406,14 +406,14 @@ gates along the depth dimension to help permit information flow \mynote{cite gir
 
 Filter to notes
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
     \centering
     \includegraphics[width=1.0\linewidth]{PCA-notes.png}
     \caption{PCA embedding of note tokens}
     \label{fig:pca-notes}
 \end{figure}
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
     \centering
     \includegraphics[width=1.0\linewidth]{tSNE-notes.png}
     \caption{tSNE embedding of note tokens}

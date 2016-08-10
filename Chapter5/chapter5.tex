@@ -17,7 +17,7 @@ We use as stimulus the music score shown in
 theory, chords are annotated with Roman numerals obtained using {\tt music21}'s
 automated analysis.
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
     \centering
     \includegraphics[trim={0 15cm 0 0},clip,width=0.9\linewidth]{model-analysis-input-score.pdf}
     %\includegraphics[width=1.00\linewidth]{model-analysis-input-piano-roll.png}
@@ -34,7 +34,7 @@ variable-length encoding format described in \mynote{ref}, the horizontal axis
 (number of tokens processed) does correspond directly to time. Rather, time
 is advanced one frame every time a chord boundary delimiter symbol is output.
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
     \centering
     \includegraphics[width=1.0\linewidth]{model-analysis-tokens-0.pdf}
     \includegraphics[width=1.0\linewidth]{model-analysis-tokens-1.pdf}
@@ -88,7 +88,7 @@ the vector embedding corresponding to rests (\eg near frames $30$ and $90$ in
 \cref{fig:model-analysis-frames} top) are sparse, showing up as white smears
 not only in the embedding layer but on all LSTM memory cells.
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
     \centering
     \includegraphics[width=1.0\linewidth]{model-analysis-chords-0.pdf}
     \includegraphics[width=1.0\linewidth]{model-analysis-chords-1.pdf}
@@ -108,7 +108,8 @@ index within the vocabulary. As the tokens correspond to pitches, they can be so
 according to pitch to reconstruct a {\bf probabilistic piano roll}\citep{eck2008learning}
 consisting of the model's sequence of next-frame predictions as it processes the input.
 
-\begin{figure}[htpb]
+\mynote{Align these}
+\begin{figure}[tb]
     \centering
     ~~\includegraphics[width=0.99\linewidth]{model-analysis-input-piano-roll.pdf}
     \includegraphics[trim={0 0 0 1.4cm},clip,width=1.0\linewidth]{model-analysis-probabilistic-piano-roll.pdf}
@@ -155,7 +156,7 @@ discover certain neurons whose activities are correlated to specific motifs,
 chord progression, and phrase structures. The activity profiles of these
 neurons are shown in \cref{fig:model-analysis-cells-individual}.
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
     \centering
     \includegraphics[width=1.0\linewidth]{model-analysis-cells-individual.png}
     \caption{Activation profiles of neurons within our model which have learned
