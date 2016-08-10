@@ -1,1 +1,4 @@
-.gitignore
+*.eps
+*.pgf
+*.pdf
+*.ipynb

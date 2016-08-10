@@ -73,7 +73,7 @@ value at $t$.
 Multiple layers can be composed together by treating the outputs from the previous layer
 as the inputs to the next layer. \mynote{CITE: fig:ffw-nn} illustrates this on a 2-layer
 feedforward neural network where the outputs of the first layer are used as the
-inputs to the second layer (i.e. $x^{(1)} = y^{(0)}$).
+inputs to the second layer (\ie $x^{(1)} = y^{(0)}$).
 
 
 \begin{figure}[htbp]
@@ -100,7 +100,7 @@ network can only model affine transformations.}
 
 A neural network can be used to model the distribution of a categorical random
 variable $o$ by treating the final layer activations $\vec{z}^{(L)}$ as the
-energies of a Boltzmann distribution (i.e.\ $\softmax$). This implies a
+energies of a Boltzmann distribution (\ie\ $\softmax$). This implies a
 probability mass function on $o$ given by \mynote{CITE: eq:softmax}.
 
 \begin{equation}
@@ -162,7 +162,7 @@ across training examples and use \textbf{cross-entropy loss}
     &= \sum_i \sum_k \delta_{\hat{o}_i,k} \log \frac{1}{P(o=k | \vec{y}_i^{(L)})} & \label{eq:cross-entropy-loss}
 \end{align}
 
-Gradient descent proceeds by using the Jacobian (i.e.\ gradient) $\nabla_\theta
+Gradient descent proceeds by using the Jacobian (\ie\ gradient) $\nabla_\theta
 L(\vec{z}^{(L)}_{1:N}, \hat{o}_{1:N})$ to iteratively update the network
 parameters using successive first-order approximations (\mynote{CITE: eq:nn-training-iteration-scheme}).
 

@@ -45,8 +45,8 @@ networks. It introduce the definitions and notation used in later sections.
 Music theory is a branch of musicology concerned with the study of the rules
 and practices of music. While the general field includes study of acoustic
 qualities such as dynamics and timbre, we restrict the scope of our research to
-modeling musical \emph{scores} (e.g. \cref{fig:eg-score}) and neglect issues
-related to articulation and performance (e.g. dynamics, accents, changes in
+modeling musical \emph{scores} (\eg \cref{fig:eg-score}) and neglect issues
+related to articulation and performance (\eg dynamics, accents, changes in
 tempo) as well as synthesis/generation of the physical acoustic waveforms.
 
 \begin{figure}[htbp]
@@ -227,7 +227,7 @@ simultaneously \citep{randel1999harvard}. In Western classical music, they
 typically consist of a \emph{root note} whose pitch class forms a base from
 which successive notes are built upon. The intervals between the pitch classes
 in a chord are commonly labeled using \emph{qualities}, which are invariant
-across octaves. Different realizations of the same chord (e.g. octave choices
+across octaves. Different realizations of the same chord (\eg octave choices
 for each pitch class) are called \emph{voicings}.
 
 \cref{tab:chord-qualities} lists some common chord qualities and their
@@ -475,7 +475,7 @@ $s$. This is identical to a feedforward network, justifying the view of RNNs as
 a dynamically-sized feedforward network with $T$ layers and parameters tied
 across all layers.
 
-\mynote{Talk about how view of unrolled RNN as DNN inspires cross-polination e.g.
+\mynote{Talk about how view of unrolled RNN as DNN inspires cross-polination \eg
 gating to let information flow deeper: LSTM gates and highway networks, grid
 LSTMS}
 
@@ -526,7 +526,7 @@ feedforward networks. To understand the latter point, notice that in
 $\x_{t-1}$ to $\y_{t}$ hence the conditional independence
 $\y_{t} \independent \x_{t-1} | \h^{(1)}_t$ is satisfied.
 However, in \cref{fig:rnn-multi-unrolled} there are multiple paths from
-$\x_{t-1}$ to $\y_{t}$ (e.g. passing through either
+$\x_{t-1}$ to $\y_{t}$ (\eg passing through either
 $\h^{(2)}_{t-1} \to \h^{(2)}_t$ or $\h^{(1)}_{t-1} \to
 \h^{(1)}_t$) through which information may flow. Additionally, the
 hidden state transitions occur on two seperate memory cells so parameters
@@ -665,10 +665,10 @@ Unfortunately, naive implementations of \cref{eq:rnn-dynamics} oftentimes suffer
 \emph{vanishing gradient} and \emph{exploding gradient} \citep{Bengio1994}.
 Broadly speaking, these problems are both related to the product in
 \cref{eq:error-transfer} exponentially growing or shrinking for long
-timespans (i.e. $t \gg k$).
+timespans (\ie $t \gg k$).
 
 Following \citet{Pascanu2012}, let $\| \cdot \|$ be any
-submultiplicative matrix norm (e.g. Frobenius, spectral, nuclear, Shatten
+submultiplicative matrix norm (\eg Frobenius, spectral, nuclear, Shatten
 $p$-norms). Without loss of generality, we will use the \emph{operator norm}
 defined as
 \begin{equation}
@@ -708,7 +708,7 @@ conditions for vanishing gradients to occur may be written as
     \gamma_{\W} < \frac{1}{\gamma_\sigma}
     \label{eq:vanishing-gradients-suff}
 \end{equation}
-This is true for commonly used activation functions (e.g. $\gamma_\sigma = 1$
+This is true for commonly used activation functions (\eg $\gamma_\sigma = 1$
 for $\sigma_{hh} = \tanh$, $\gamma_\sigma = 0.25$ for $\sigma_{hh} =
 \sigmoid$).
 
@@ -746,7 +746,7 @@ Since this should hold for any hidden state $\h_{t}$, this means that:
 In the \emph{constant error carousel} (CEC), this is ensured by setting
 $\sigma_{hh} = \W_{hh} = \I$. This may be interpreted as removing time dynamics
 on $\h$ in order to permit error signals to be transferred backwards in time
-(\cref{eq:error-transfer}) without modification (i.e. $\forall t \geq k: \frac{\pd
+(\cref{eq:error-transfer}) without modification (\ie $\forall t \geq k: \frac{\pd
 \h_t}{\pd \h_k} = \I$).
 
 In addition to using a CEC, a LSTM introduces three gates controlling access to the CEC:

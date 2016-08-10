@@ -59,7 +59,7 @@ duration of one $1/16$th note, exceeding the time resoltuions of
 \citep{hild1991harmonet} by 4x, and \citep{bellgard1994harmonizing} by 8x.
 
 We consider only note pitches and durations, neglecting changes in timing
-(e.g. ritardandos), dynamics (e.g. crescendos), and stylistic notations (e.g.
+(\eg ritardandos), dynamics (\eg crescendos), and stylistic notations (\eg
 accents, staccatos, legatos).
 
 An example of the distortion introduced through of our preprocessing steps is
@@ -101,7 +101,7 @@ has increased after key normalization. This can be explained by noting that
 Bach's chorales were to be performed by vocalists and hence were restricted to
 use pitches within human voice ranges regardless of key. After transposition,
 this constraint is no longer be satisfied and we see the appearance of
-unrealistically low notes (e.g. A1) outside the range of even the lowest voice
+unrealistically low notes (\eg A1) outside the range of even the lowest voice
 types.
 
 \begin{landscape}
@@ -127,7 +127,7 @@ types.
 In \cref{fig:pc-key-standardization}, we visualize histograms of pitch class usages.
 As expected, key normalization has increased the usage of pitch classes in the key of
 C-major / A-minor (\ie those which possess no accidentals) and decreased out of key
-pitch classes (e.g. C\#, F\#).
+pitch classes (\eg C\#, F\#).
 
 \begin{figure}
     \centering
@@ -178,7 +178,7 @@ After preprocessing of the scores, our next step is to encode music into a
 sequence of tokens amenable for processing by RNNs. One design decision is
 whether the tokens in the sequence are comprised of individual notes (as done
 in \citep{mozer1994neural,franklin2004recurrent,sturm2016music}) or larger
-harmonic units (e.g. chords \citep{Eck2002,Boulanger-Lewandowski2012},
+harmonic units (\eg chords \citep{Eck2002,Boulanger-Lewandowski2012},
 ``harmonic context'' \citep{Allan2005}). This tradeoff is similar to one faced
 in RNN language modelling where either individual characters or entire words
 can be used.

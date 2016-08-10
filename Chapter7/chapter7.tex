@@ -50,8 +50,8 @@ is advanced one frame every time a chord boundary delimiter symbol is output.
 
 In order to align and compare the activation profiles with the original score,
 all the activations occuring in between two chord boundary delimiters must be
-combined. This aggregation of neuron activations from higher resolution (i.e.
-note-by-note) to lower resolution (i.e. frame-by-frame) is reminiscent of
+combined. This aggregation of neuron activations from higher resolution (\ie
+note-by-note) to lower resolution (\ie frame-by-frame) is reminiscent of
 pooling operations in convolutional neural networks\mynote{cite}. Motivated by
 this observation, we introduce the method for pooling an arbitrary number of
 token-level activations into a single frame-level activation.
@@ -75,7 +75,7 @@ sequence $\tilde{\z}$ is now indexed by frames rather than by tokens and hence
 corresponds to time-steps.
 
 We choose to perform max pooling because it preserves the maximum activations
-of each neuron over the frame. While pooling methods (e.g. sum pooling, average
+of each neuron over the frame. While pooling methods (\eg sum pooling, average
 pooling) are possible, we did not find significant differences in the
 visualizations produced.
 
@@ -84,7 +84,7 @@ The max-pooled frame-level activations are shown in
 can be aligned and compared against the stimulus
 \cref{fig:model-analysis-stimulus}. Notice the appearance of vertical bands
 corresponding to when a chord/rest is held for multiple frames. In particular,
-the vector embedding corresponding to rests (e.g. near frames $30$ and $90$ in
+the vector embedding corresponding to rests (\eg near frames $30$ and $90$ in
 \cref{fig:model-analysis-frames} top) are sparse, showing up as white smears
 not only in the embedding layer but on all LSTM memory cells.
 
@@ -169,8 +169,8 @@ $i$th neuron in layer $l$.
 The first three neurons ($(1,64)$, $(1,138)$, $(1,207)$) shown in the 2nd to
 4th panel from top of \cref{fig:model-analysis-cells-individual} effectively
 behave like cadence detectors. While they all exhibit activity when the
-stimulus contains $V$ chords (i.e. G-major). $(1,64)$ and $(1,138)$ are both
-specific to perfect cadences (i.e. $V -- I$ chord progressions) used to
+stimulus contains $V$ chords (\ie G-major). $(1,64)$ and $(1,138)$ are both
+specific to perfect cadences (\ie $V -- I$ chord progressions) used to
 conclude phrases and differ only in the chord inversions which they are most
 sensitive to. In contrast, $(1,207)$ only exhibits activity for the $V$ chord
 associated with the imperfect cadences near frames $150$ and $180$.

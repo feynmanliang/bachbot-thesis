@@ -9,7 +9,7 @@
 
 \mynote{Talk about how correct harmonization is equivalent to conditioning on
   future hidden state over all possible $\h$ trajectories passing through it.
-  Intractable conditioning, so we approximate by neglecting to constrain (i.e.
+  Intractable conditioning, so we approximate by neglecting to constrain (\ie
   don't account for future at all) and instead do teacher forcing. Hope that
   teacher forcing induces the hidden state to go in a reasonable trajectory,
 but results show otherwise}
@@ -89,14 +89,14 @@ is true and justifies our model, the factorization
 does not hold. Some primary criticisms include
 \begin{itemize}
   \item Modeling capacity limits for RNNs: the model $\hat{P}$ may not be able to fully express
-    the true distribution $P$ (e.g. if $P$ is non-Markovian)
+    the true distribution $P$ (\eg if $P$ is non-Markovian)
   \item Greedy sequential selection: it is possible that the greedy $\argmax$ at each
     time without accounting for future constraints on sequences $(w_{\alpha_{t'}})_{t' > t}$
     leads to a solution with sub-optimal joint probability
   \item Assumption that prior selections $\hat{w_{1:t-1}}$ optimize $P(w_t | w_{1:t-1})$:
     the model $\hat{P}$ is trained on data which assumes all prior inputs have beeen
     ground truth. It has been shown \mynote{mikolov} that such an assumption can lead to
-    very sensitive hidden state dynamics which are not robust to errors (i.e. when
+    very sensitive hidden state dynamics which are not robust to errors (\ie when
     $\hat{w_{1:t-1}}$ contain errors).
 \end{itemize}
 Beam search is one way to mitigate the effects of greedy selection: our current
@@ -139,7 +139,7 @@ Of particular interest is the AT dataset. Bach oftentimes only wrote the
 Soprano and Bass parts of a piece, leaving the middle parts to be filled in by
 students. Our networks performance on this task can be used as a benchmark for
 an easier task. Another intersting configuration is ATB, which corresponds to
-harmonizing a given melody (i.e. Soprano line) and can be compared against
+harmonizing a given melody (\ie Soprano line) and can be compared against
 prior work such as \citet{Allan2005}.
 
 \section{Results}
@@ -156,7 +156,7 @@ prior work such as \citet{Allan2005}.
 \end{figure}
 
 We are unable to compare against \citet{Allan2005} because their model consists
-of multiple domain specific subtasks (e.g. harmony and chord skeletons,
+of multiple domain specific subtasks (\eg harmony and chord skeletons,
 ornamentation) and because they only consider the ATB case.
 
 \subsection{Harmonizing popular tunes with BachBot}

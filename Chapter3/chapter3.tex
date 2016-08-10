@@ -37,7 +37,7 @@
 Some common themes
 \begin{enumerate}
   \item Use of domain-specific representations for musical data
-  \item Modeling at multiple resolutions / timescales (i.e. chords vs notes)
+  \item Modeling at multiple resolutions / timescales (\ie chords vs notes)
 \end{enumerate}
 In contrast, we avoid imposing prior knowledge in order to avoid any biases
 and hope that the model will learn the features relevant for good performance.
@@ -84,7 +84,7 @@ and generating full-length novel compositions
 Unlike classification, the other tasks (harmonization, completion, automatic
 composition) require synthesis of novel music. In a review by
 \citet{toiviainen2000symbolic}, automatic composition methods are broady
-classified as either symbolic (i.e. rule based) or connectionist (i.e. neural
+classified as either symbolic (\ie rule based) or connectionist (\ie neural
 networks).
 
 \subsection{Symbolic rule-based methods}
@@ -186,7 +186,7 @@ HARMONET \citep{hild1991harmonet}, which combines connectionist neural networks
 with formal rules to specifically harmonize Bach chorales. It implements a
 domain-specific processing pipeline consisting of:
 \begin{enumerate}
-  \item Harmonic modelling: Predict harmonic skeleton (i.e. Roman numerals
+  \item Harmonic modelling: Predict harmonic skeleton (\ie Roman numerals
   quantized to quarter-notes) using a neural network
   \item Expand each Roman numeral to chords using formal rules
   \item Ornamentation: add eighth-notes using formal rules
@@ -197,7 +197,7 @@ Additionally, the use of formal rules makes the system suffer from the same
 problems that rule-based systems suffer from.
 
 MELONET \citep{feulner1994melonet} builds on top of HARMONET's harmonic
-modelling to construct chorale partitas (i.e. variations where one of the
+modelling to construct chorale partitas (\ie variations where one of the
 parts is varied in a harmonically believable way). It first introduced multiple
 ideas which have been rediscovered in recent years, including:
 \begin{enumerate}
@@ -241,7 +241,7 @@ One of the first applications of LSTM to music was by
 \citet{Eck2002,Eck2002-blues}. Using a LSTM to model blues chord progressions
 and another to model melody lines given chords, the authors reported that LSTM
 can learn long term music structure such as repeated motifs can be learned
-without explicit modelling (e.g. MELONET). However, the music representation
+without explicit modelling (\eg MELONET). However, the music representation
 quantized to eighth notes, used considered pitch classes without accounting for
 octaves, and limited the model to $12$ possible chords. Additionally, there was
 ``no explicit way to determine when a note ends,'' prohibiting discrimination
