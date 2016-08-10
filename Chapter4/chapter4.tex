@@ -26,9 +26,9 @@ prior work and utilize in following chapters.
 
 We restrict the scope of our investigation to Bach chorales for the following reasons:
 \begin{enumerate}
-  \item The Baroque style employed in Bach chorales has specific guidelines
-    \citep{piston1978harmony} (i.e.\ no parallel fifths) and stylistic elements
-    (i.e. voice leading) which can be use to qualitatively evaluate success
+  \item The Baroque style employed in Bach chorales has specific guidelines and
+    practices \citep{piston1978harmony} (\eg no parallel fifths, voice leading)
+    which can be use to qualitatively evaluate success
   \item The structure of chorales are regular: all chorales have four parts and
     consist of a melody in the Soprano part harmonized by the Alto, Tenor, and
     Bass parts. Additionally, each chorale consists of a series of \emph{phrases}:
@@ -47,7 +47,7 @@ system\citep{butt1999bach}, are conveniently provided by
 Motivated by the transposition invariance of music and prior practice
 \citep{mozer1994neural} \citep{Eck2002} \citep{franklin2004recurrent}
 \citep{franklin2005jazz}, we first perform \emph{key normalization}.
-The key signature of each score were firsanalyzed using the Krumhansl
+The keys of each score were first analyzed using the Krumhansl
 Schmuckler key-finding algorithm \citep{krumhansl2001cognitive} and then
 transposed according to \mynote{Table XYZ} such that the transposed key is
 C-major for major mode scores and A-minor for minor mode scores.
@@ -64,7 +64,7 @@ accents, staccatos, legatos).
 
 An example of the distortion introduced through of our preprocessing steps is
 provided in \vref{fig:score-effects-preproc} in sheet music notation and in
-piano roll\mynote{Is piano roll defined?} notation on
+piano roll notation on
 \vref{fig:piano-roll-effects-preproc}.
 \begin{figure}[p]
     \centering
@@ -73,9 +73,10 @@ piano roll\mynote{Is piano roll defined?} notation on
     \vspace{1.5cm}
 
     \includegraphics[width=0.8\linewidth]{bwv185-6-preproc-score-1.png}
-    \caption{First 4 bars of JCB Chorale BWV 133.6 before (top) and after (bottom) preprocessing. Note
-    the transposition down by a semitone to C-major as well as quantization of the
-    demisemiquavers in the third bar of the Soprano part.}
+    \caption{First 4 bars of JCB Chorale BWV 185.6 before (top) and after
+      (bottom) preprocessing. Note the transposition down by a semitone to
+      C-major as well as quantization of the demisemiquavers in the third bar of
+    the Soprano part.}
     \label{fig:score-effects-preproc}
 \end{figure}
 
@@ -125,7 +126,7 @@ types.
 
 In \cref{fig:pc-key-standardization}, we visualize histograms of pitch class usages.
 As expected, key normalization has increased the usage of pitch classes in the key of
-C-major / A-minor (i.e. those which possess no accidentals) and decreased out of key
+C-major / A-minor (\ie those which possess no accidentals) and decreased out of key
 pitch classes (e.g. C\#, F\#).
 
 \begin{figure}

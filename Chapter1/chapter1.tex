@@ -43,12 +43,12 @@ Our fundamental question is this: have advances in deep learning enabled
 construction of musical models capable of deceiving human listeners. To answer this
 question, we build a model incorporating the current state-of-the-art in deep
 neural sequence modelling and conduct a large-scale musical Turing test. Our
-results suggest an undeniable yes.
+results convincingly suggest an affirmitive answer.
 
 Our contributions incude:
 \begin{enumerate}
-    \item A note-by-note sequential representation for polyphonic music amenable to processing with
-        standard sequence models
+    \item A note-by-note sequential representation for polyphonic music
+      amenable to processing with standard sequence models
     \item A rigorous investigation of how recent deep learning advances such
         how as dropout \citep{srivastava2014dropout}, batch normalization
         \citep{ioffe2015batch}, and new RNN architectures can be applied to
@@ -74,20 +74,21 @@ Every aspiring music theorist is at some point tasked with composing simple
 pieces of music in order demonstrate understanding of the harmonic rules of
 Western classical music. These pedagogical exercises often include
 harmonization of chorale melodies, a task which is viewed as sufficiently
-constrained to allow a composer's skill to be judged. A generative model
-for music scores can be applied to this task by conditioning on the melody
-line and sampling the conditional distribution for possible harmonizations.
+constrained to allow a composer's basic technique to be judged. A generative
+model for music scores can be applied to this task by conditioning on the
+melody line and sampling the conditional distribution for possible
+harmonizations.
 
 A more difficult task is automatic composition, where the composer is tasked
 with producing an original composition of a particular musical style. The open
-nature of this task enables a composer to simultaneously demonstrate their
-creativity along with understanding of music theory. However, this lack of
+nature of this task enables a composer to demonstrate both their
+understanding of music theory as well as their creativity. However, this lack of
 constraints and loose definition of musical style makes it more difficult to
 evaluate the quality of the output. To apply a generative model towards this
 task, we can train the model to assign larger probability mass to stylistically
 similar scores and then sample the model to generate a novel composition.
 
-While our modeling framework is capable of modeling any MIDI-encodeable music
+While our modeling framework is capable of modeling any encoded music
 score, we focus our study on chorales by Johann Sebasian Bach. These provide
 a relatively large corpus by a single composer, are well understood by music
 theorists, and are routinely used when teaching music theory.
@@ -100,8 +101,11 @@ practical matters encountered with parallel training and sampling across
 multiple GPUs, and benchmark how well our final system performs on human test
 subjects.
 
+\mynote{Mark: this speaks to an important part of the why for this project
+and could do with setting in relief.}
+
 With advances in computing and progress in modeling methods and algorithms,
-computational modeling has started to provide novel insights into varios
+computational modeling has started to provide novel insights into various
 musical phenomena. By offering a method for quantitatively testing theories,
 it can help us to learn more about the various cognitive and perceptual processes
 related to music comprehension, production, and style.

@@ -73,7 +73,7 @@ tempo) as well as synthesis/generation of the physical acoustic waveforms.
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\linewidth]{bwv133-6-original-score-1.png}
-    \caption{Sheet music representation of some bars from a musical score (BWV133.6) with articulation instructions removed.}
+    \caption{Sheet music representation of some bars from a musical score (BWV133.6).}
     \label{fig:eg-score}
 \end{figure}
 
@@ -184,31 +184,28 @@ denoted near the start of the piece in beats per minute.
     \label{fig:note-durations}
 \end{figure}
 
-\subsection{Key signature}
+\subsection{Tonality in common practice music}
 
-\emph{Tonal music} is a genre of music encompassing most of Western classical
-music. It is characterized by the prevalence of one pitch class (the
-\emph{tonic}) around which the remainder of the piece is built.
-
-A basic concept within tonal music is \emph{mode}, which defines a subset of
-pitch classes that are ``in key'' with respect to the tonic.
-\cref{tab:mode-intervals} illustrates the pitch intervals between adjacent
-pitch classes within two important modes: the \emph{major} (Ionian, I) and
-\emph{minor} (Aeolian, VI) modes. The choice of tonic and mode is collectively
-referred to as the \emph{key signature}.
+\emph{Tonality} refers to ``the orientation of melodies and harmonies towards a
+referential (or \emph{tonic}) pitch class``\citep{grove-tonality}. One way to
+characterize tonality is with \emph{scales}, which defines a subset of pitch
+classes that are ``in key'' with respect to the tonic. \Cref{tab:key-intervals}
+shows the pitch intervals between adjacent pitch classes within two important
+scales: the \emph{major} and the \emph{minor}. The choice of tonic and scale is
+collectively referred to as the \emph{key}.
 
 \begin{table}[htpb]
     \centering
     \begin{tabular}{lc}
         \toprule
-        Mode & Pitch Intervals (semitones) \\
+        Key & Pitch Intervals (semitones) \\
         \midrule
         Major (Ionian, I) & +2, +2, +1, +2, +2, +2 \\
         Minor (Aeolian, VI) & +2, +1, +2, +2, +1, +2 \\
         \bottomrule
     \end{tabular}
-    \caption{Pitch intervals for the two most important modes\citep{freedman2015correlational}. The pitches in a scale can be found by starting at the tonic and successively offsetting by the given pitch intervals.}
-    \label{tab:mode-intervals}
+    \caption{Pitch intervals for the two most important keys\citep{freedman2015correlational}. The pitches in a scale can be found by starting at the tonic and successively offsetting by the given pitch intervals.}
+    \label{tab:key-intervals}
 \end{table}
 
 \subsection{Polyphony, chords, and chord progressions}
@@ -286,16 +283,16 @@ major key signature would be represented as $I$ -- $ii$ -- $IImaj7$ -- $V$.
 \subsubsection{Transposition invariance}
 
 A common theme throughout our discussion has been ambiguity of the tonic. When
-discussing key signatures, the mode was defined using intervals relative to a
+discussing key signatures, the key was defined using intervals relative to a
 choice of tonic. Similarly, roman numeral analysis of chord progressions is
 also conducted relative to a tonic. Even if a chord progression and tonic are
 both transposed by arbitrary pitch interval, the roman numeral analysis will
 remain unchanged.
 
-The \emph{transposition invariance} of chord progressions and modes is an
+The \emph{transposition invariance} of chord progressions and keys is an
 important property of music. It enables us to offset an entire score by an
 arbitrary pitch interval without affecting the important psychoacoustic
-qualities captured by chord progressions and choice of mode.
+qualities captured by chord progressions and choice of key.
 
 \section{Neural sequence probability modeling}
 
@@ -395,14 +392,13 @@ connections between hidden layers (Elman networks \citep{elman1990finding}) or
 from the output layers to the hidden layers (Jordan networks
 \citep{jordan1997serial}). Mathematically, an (Elman-type) RNN is a discrete time
 dynamical system commonly parameterized as:
-\begin{equation}
+\begin{equation}\label{eq:rnn-dynamics}
  \left.\begin{aligned}
           \h_t &=& \W_{xh} \sigma_{xh} \left( \x_t \right) + \W_{hh} \sigma_{hh} \left( \h_{t-1} \right)\\
           \y_t &=& \W_{hy} \sigma_{hy} \left( \h_t \right)
        \end{aligned}
  \right\}
  \qquad \text{RNN Dynamics}
- \label{eq:rnn-dynamics}
 \end{equation}
 \begin{align}
 \end{align}
@@ -565,7 +561,7 @@ These assumptions imply the sequential factorization:
   &= \left( \prod_{t=1}^T P(\y_t | \h_t) \right) \left(\prod_{t=1}^T P(\h_{t}| \h_{t-1}, \x_{t})\right) &\text{\cref{eq:modified-markov}}\\
   &= \prod_{t=1}^T P(\y_t | \h_t, \x_t) P(\h_{t}| \h_{t-1}, \x_{t}) & \\
 \end{align}
-\cref{eq:hidden-state-stationarity} combined with \cref{eq:output-stationarity} imply that $P(\y_t | \h_t)$
+Together, \cref{eq:hidden-state-stationarity} and \cref{eq:output-stationarity} imply that $P(\y_t | \h_t)$
 and $P(\h_{t}| \h_{t-1}, \x_{t})$ are time-invariant and can be modelled by the same recurrent function.
 
 In RNNs, the hidden state dynamics $P(\h_t | \h_{t-1}, \x_t)$ are deterministic:
@@ -589,8 +585,7 @@ a probability vector constrained to sum to one.
 
 Fortunately, we can treat $\z_t$ as the \emph{scores} for a \emph{Boltzmann
 distribution} (aka softmax):
-\begin{equation}
-    \label{eq:boltzmann-dist}
+\begin{equation}\label{eq:boltzmann-dist}
     P( \y_{t} = s | \h_{t-1}, \x_t )
     = \frac{\exp \left(-\z_{t,s}/T\right) }{ \sum_{k=1}^{K} \left(\exp -\z_{t,k}/T\right)}
 \end{equation}
@@ -696,7 +691,7 @@ Substituting back into \cref{eq:error-transfer}, we find that
 
 Hence, we see that a sufficient condition for vanishing gradients is
 for $\gamma_{\W} \gamma_\sigma < 1$, in which case $\left\| \frac{\pd \h_t}{\pd \h_k} \right\| \to 0$
-exponentially for long timespans $t \gg k$. $\qed$
+exponentially for long timespans $t \gg k$. %$\qed$
 
 If $\gamma_\sigma$ is bounded, sufficient
 conditions for vanishing gradients to occur may be written as
