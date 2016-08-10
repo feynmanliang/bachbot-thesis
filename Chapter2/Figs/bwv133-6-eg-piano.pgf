@@ -1959,12 +1959,6 @@
 \pgfusepath{}%
 \end{pgfscope}%
 \begin{pgfscope}%
-\definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
-\pgfsetstrokecolor{textcolor}%
-\pgfsetfillcolor{textcolor}%
-\pgftext[x=2.990395in,y=3.528157in,,base]{\color{textcolor}\rmfamily\fontsize{12.000000}{14.400000}\selectfont Piano roll}%
-\end{pgfscope}%
-\begin{pgfscope}%
 \pgfpathrectangle{\pgfqpoint{0.587578in}{0.488666in}}{\pgfqpoint{4.805635in}{2.970046in}} %
 \pgfusepath{clip}%
 \pgfsetroundcap%

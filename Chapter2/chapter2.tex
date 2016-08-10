@@ -112,7 +112,6 @@ specify the notation for a pitch. On sheet music, the pitch of a note is
 indicated by its vertical position with respect to the \emph{stave} (the five
 horizontal lines and four spaces).
 
-\mynote{Cite wiki scientific pitch notation}
 \begin{figure}[tb]
     \centering
     \includegraphics[width=0.6\linewidth]{Pitch_notation.png}
@@ -132,11 +131,10 @@ with their notation in sheet music are enumerated in
 physical time intervals is given by the \emph{tempo}, which is usually
 denoted near the start of the piece in beats per minute.
 
-\mynote{Cite wiki Whole note}
 \begin{figure}[tb]
     \centering
     \includegraphics[width=0.6\linewidth]{note-durations.png}
-    \caption{Comparison of various note durations.}
+    \caption{Comparison of various note durations \citep{wiki-note-durations}}
     \label{fig:note-durations}
 \end{figure}
 
@@ -196,6 +194,8 @@ collectively referred to as the \emph{key}.
 
 \begin{table}[tb]
     \centering
+    \caption{Pitch intervals for the two most important keys \citep{freedman2015correlational}. The pitches in a scale can be found by starting at the tonic and successively offsetting by the given pitch intervals.}
+    \label{tab:key-intervals}
     \begin{tabular}{lc}
         \toprule
         Key & Pitch Intervals (semitones) \\
@@ -204,8 +204,6 @@ collectively referred to as the \emph{key}.
         Minor (Aeolian, VI) & +2, +1, +2, +2, +1, +2 \\
         \bottomrule
     \end{tabular}
-    \caption{Pitch intervals for the two most important keys \citep{freedman2015correlational}. The pitches in a scale can be found by starting at the tonic and successively offsetting by the given pitch intervals.}
-    \label{tab:key-intervals}
 \end{table}
 
 \subsection{Polyphony, chords, and chord progressions}
@@ -233,6 +231,8 @@ half-diminished $7$th.
 
 \begin{table}[tb]
     \centering
+    \caption{Common chord qualities and their corresponding intervals \citep{freedman2015correlational}}
+    \label{tab:chord-qualities}
     \begin{tabular}{lc}
         \toprule
         Chord quality & Intervals from root pitch class \\
@@ -250,8 +250,6 @@ half-diminished $7$th.
         Half-diminished 7th & +3, +6, +10 \\
         \bottomrule
     \end{tabular}
-    \caption{Common chord qualities and their corresponding intervals \citep{freedman2015correlational}}
-    \label{tab:chord-qualities}
 \end{table}
 
 The lowest note in a chord is called the \emph{bass} note and is oftentimes the
@@ -278,15 +276,13 @@ the chord progression $C$ major -- $A$ minor -- $D$ major 7th -- $G$ major in
 the $C$ major key would be represented in Roman numerals as \RN{1} -- \Rn{2} --
 \RN{2}maj$7$ -- \RN{5}.
 
-\mynote{Talk about cadences (will be used when describing neuron specificites)}
-
 A common use case for Roman numeral analysis is identifying and classifying
 chord progressions called \emph{harmonic cadences}, which are commonly used for
 effects such as eliciting a sense of incompleteness
 \citep{jonas1982introduction} or establishing a sense of conclusion at the end
 of phrases \citep{randel1999harvard}. The most important cadences include:
 \mynote{Review that these definitions are actually necessary}
-\begin{definition}
+\begin{description}
   \item[Perfect cadence]: \RN{5} -- \RN{1}. The perfect cadence is described by
     \citet{randel1999harvard} as ``a microcosm of the tonal system, and is the
     most direct means of establishing a pitch as tonic. It is virtually
@@ -299,384 +295,247 @@ of phrases \citep{randel1999harvard}. The most important cadences include:
   \item[Interrupted cadepnce]: \RN{5}--\Rn{6}. Also considered a weak cadence
     which invokes a ``hanging'' sensation prompting continuation
     \cite{piston1978harmony}.
-\end{definition}
+\end{description}
 
-\subsubsection{Transposition invariance}
+\subsubsection{Transposition invariance}\label{sec:transposition-invariance}
 
-A common theme throughout our discussion has been ambiguity of the tonic. When
-discussing key, the key was defined using intervals relative to a choice of
-tonic. Similarly, Roman numeral analysis of chord progressions is also
-conducted relative to a tonic. Even if a chord progression and tonic are both
-transposed by arbitrary pitch interval, the Roman numeral analysis will remain
-unchanged.
+Notice that the discussion thus far has remained ambiguous on the choice of
+tonic. This is intentional: most of the concepts discussed do not depend on the
+choice of tonic. When discussing tonality, the scale was defined using
+intervals relative to a choice of tonic. Similarly, Roman numeral analysis of
+chord progressions and cadences is also conducted relative to a tonic. Neither
+the scale nor the Roman numeral analysis is affected when a score is transposed
+by an arbitrary pitch interval.
 
 The \emph{transposition invariance} of chord progressions and keys is an
 important property of music. It enables us to offset an entire score by an
-arbitrary pitch interval without affecting the important psychoacoustic
-qualities captured by chord progressions and choice of key.
+arbitrary pitch interval without affecting many important psychoacoustic
+qualities.
 
 \section{Automatic composition}\label{sec:automatic-composition}
 
-Automatic composition is described by \citet{papadopoulos1999ai} as:
+\emph{Automatic composition} broadly refers to the use of algorithms to
+generate music. \citet{papadopoulos1999ai} gives the following definition for
+automatic composition:
 \begin{quote}
-  a sequence (set) of rules (instructions, operations) for solving (accomplishing) a [particular] problem (task)
-  [in a finite number of steps] of combining musical parts (things, elements) into a whole (composition)
+  a sequence (set) of rules (instructions, operations) for solving
+  (accomplishing) a [particular] problem (task) [in a finite number of steps]
+  of combining musical parts (things, elements) into a whole (composition)
 \end{quote}
-\citet{pearce2002motivations} emphasizes \emph{algorithmic composition} should ``be applied exclusively
-to activities in which the motivations have this artistic character.''
+Of the many tasks within automatic composition, two are most relevant to us:
+\begin{description}
+  \item[Harmonization] Given a fixed part (\eg a melody), generate the notes for
+    one or more accompanying parts
+  \item[Composition] Generate all the parts for a score of music
+\end{description}
+In addition, our work primarily on \emph{automatic stylistic composition} where
+we impose the additional constraint that the generated music should be
+stylistically similar to a particular genre or artist.
 
-\mynote{Generate melody, harmonize, complete generation, style imitation}
-
-\subsection{Generative models}
-
-\mynote{Describe automatic composition vs harmonization vs analysis/scoring}
-Generative models are desirable because they can be used for a variety of
-automatic composition tasks:
-\begin{enumerate}
-  \item Conditioned for harmonization
-  \item Sampled for automatic composition
-\end{enumerate}
-In addition, they can also be used for scoring.
-
-\section{Neural sequence probability modeling}
-
-Our work in later sections make heavy use of neural networks as a generative
-model for sequences. In this section, we briefly review the relevant concepts and set up notation.
-
-\subsection{Neurons: the basic computation unit}
-
-Neurons are the basic abstraction which are combined together to form
-neural networks. A \emph{neuron} is a parametric model of a function $f : \RR^D \to
-\RR$ from its $D$-dimensional input $\x$ to its output $y$. Our neurons will be
-defined as
-\begin{equation}
-    f(\x) \coloneqq \sigma( \langle \vec{w}, \x \rangle)
-\end{equation}
-which can be viewed as an inner product with \emph{weights} $\vec{w}$ to
-produce an \emph{activation} $z \coloneqq \langle \vec{w}, \x \rangle
-\in \RR$ which is then squashed to a bounded domain by a non-linear
-\textbf{activation function} $\sigma : \RR \to [L, U]$. This is visually
-depicted in \cref{fig:nn-single}, which also makes apparent the
-interpretation of weight $w_i$ as the sensitivity of the output $y$ to the
-input $x_i$.
-
-\begin{figure}[tb]
-    \centering
-    \input{Chapter2/Figs/nn-single.pdf_tex}
-    \caption{A single neuron first computes an activation $z$ and then passes it through an activation function $\sigma(\cdot)$}
-    \label{fig:nn-single}
-\end{figure}
-
-\subsection{Feedforward neural networks}
-
-Multiple neurons may share inputs and have their outputs concatenated together
-to form a \emph{layer} modelling a multivariate functions $f :
-\RR^{D_\text{in}} \to \RR^{D_\text{out}}$. Multiple layers can then
-be composed together to form a \emph{feedforwd neural network}.
-
-\begin{figure}[tb]
-    \centering
-    \input{Chapter2/Figs/nn-ffw.pdf_tex}
-    \caption{Graph depiction of a feedforward neural network with $2$ hidden layers}
-    \label{fig:nn-ffw}
-\end{figure}
-
-Although a single hidden layer is theoretically sufficient for a universal
-function approximator \citep{Cybenko1993}, the number of hidden units to
-guarantee reported theoretical bounds are usually infeasibly large. Instead,
-recent work in \emph{deep learning} has shown that deep models which contain
-many hidden layers can achieve strong performance across a variety of
-tasks \citep{Bengio2011}.
-
-The improved modeling capacity gained by composing multiple layers is due to
-the composition of multiple non-linear activation functions.
-In fact, it is easy to show that removing activation functions would make
-a deep network equivalent to a single matrix transform: let $\W_{l,l+1}$
-denote the weights between layers $l$ and $l+1$. The original neural network
-computes the function
-\begin{equation}
-    \sigma\left(
-        \W_{L,L-1} \sigma \left(
-            \W_{L-1,L-2}\cdots \sigma \left(
-                \W_{2,1} \x
-            \right) \cdots
-        \right)
-    \right)
-\end{equation}
-After removing the activation functions $\sigma$, we are left with
-\begin{equation}
-    \W_{L,L-1} \W_{L-1,L-2}\cdots \W_{2,1} \x
-    = \x
-    = \tilde{\W} \x
-\end{equation}
-where $\tilde{\W} = \left(\prod_{i=1}^{L-1} \W_{i,i+1} \right)$
-is a matrix transform computing the same function as the neural network with
-activation functions removed.
-
-\subsection{Recurrent neural networks}
+\section{Recurrent neural networks for generative sequence modelling}
 
 \nomenclature[z-RNN]{RNN}{Recurrent Neural Network}
 
-While feedforward neural networks provide a flexible model for approximating
-arbitrary functions, they require a fixed-dimension input $\x$ and hence
-cannot be directly applied to sequential data $\x = (\x_t)_{t=1}^T$ where $T$ may
-vary.
+Our work in later sections make heavy use of recurrent neural networks (RNNs).
+In this section, we clarify terminology and review the relevant ideas.
+While we assume a basic understanding of neural networks, readers lacking
+such a background may be interested in first reviewing \vref{sec:primer-nn}
+before proceeding.
 
-A naive method for extending feedforward networks would be to independently
-apply a feedforward network to compute $\y_t = f(\x_t \vec{\theta})$ at each timestep
-$1 \leq t \leq T$. However, this approach is only correct when each output
-$\y_t$ depends only on the input at the current time $\x_t$ and is independent of
-all prior inputs $\{\x_k\}_{k < t}$. This assumption is false in musical data:
-the current musical note usually is highly dependent on the sequence of notes
-leading up to it.
+\subsection{Notation}
 
-This shortcoming motivates \emph{recurrent neural networks} (RNNs), which
-generalize feedforward networks by introducing time-delayed recurrent
-connections between hidden layers (Elman networks \citep{elman1990finding}) or
-from the output layers to the hidden layers (Jordan networks
-\citep{jordan1997serial}). Mathematically, an (Elman-type) RNN is a discrete time
-dynamical system commonly parameterized as:
+\nomenclature[r-input]{$\x^{(l)}_t$}{Input to layer $l$ at time $t$}
+\nomenclature[r-hidden-state]{$\h^{(l)}_t$}{Hidden state of layer $l$ at time $t$}
+\nomenclature[r-output]{$\y^{(l)}_t$}{Output of layer $l$ at time $t$}
+\nomenclature[r-Wxh]{$\W_{xh}$}{Weight matrix between input and hidden state}
+\nomenclature[r-Wxh]{$\W_{hh}$}{Weight matrix between previous and current and hidden states}
+\nomenclature[r-Wxh]{$\W_{hy}$}{Weight matrix between hidden state and output}
+\nomenclature[g-sxh]{$\sigma_{xh}$}{Activation function between input and hidden state}
+\nomenclature[g-shh]{$\sigma_{hh}$}{Activation function between previous and current hidden states}
+\nomenclature[g-shy]{$\sigma_{hy}$}{Activation function between hidden state and output}
+
+We first clarify the basic notation and conventions used to describe multilayer
+RNNs. Unless otherwise specified, unintroduced notation appearing in the
+remainder of our work is to be interpreted as defined in this section.
+
+We use $\x_t \in \RR^{N_{in}}$ with $t=1,2,\cdots,T$ to denote a sequence of
+\emph{input} (\ie observed) vectors, $\z_t \in \RR^{N_{hid}}$ a sequence of
+\emph{hidden state} (\ie unobserved) vectors. and $\y_t \in \RR^{N_{out}}$ a
+sequence of \emph{output} vectors.
+
+To describe model parameters, we use $\W$ to indicate the \emph{weight matrix}
+consisting of all the connection weights between two blocks of neurons
+and $\sigma(\cdot)$ to indicate the \emph{activation function}. The collection
+of all model parameters is denoted by $\vec{\theta}$.
+
+When further clarity is required, we use $\W_{s,t}$ to denote the connection
+weights from block $s$ to block $t$ (\ie in \cref{sec:LSTM}, $\W_{xf}$ and
+$\W_{xh}$ refer to the connections from the inputs to the forget gate and
+hidden state respectively). Subscripts on activation functions $\sigma_{s,t}(\cdot)$
+are to be interpreted analogously.
+
+Using the above notation, the equations for \emph{RNN time dynamics} can be expressed as
 \begin{equation}\label{eq:rnn-dynamics}
  \left.\begin{aligned}
           \h_t &=& \W_{xh} \sigma_{xh} \left( \x_t \right) + \W_{hh} \sigma_{hh} \left( \h_{t-1} \right)\\
           \y_t &=& \W_{hy} \sigma_{hy} \left( \h_t \right)
        \end{aligned}
  \right\}
- \qquad \text{RNN Dynamics}
+ \qquad \text{RNN time dynamics}
 \end{equation}
-\begin{align}
-\end{align}
-where $\sigma_{\cdot \cdot}(\cdot)$ are activation functions acting
-element-wise and $\theta = \{ \W_{xh}, \W_{hh}, \W_{hy}\}$ are the learned
-parameters. \cref{fig:nn-rnn} provides a graphical illustration of such a
-network. Notice that apart from the edges between hidden nodes, the network is
-identical to a regular feedforward network (\cref{fig:nn-ffw}).
 
-\mynote{Why do we use Elman}
+When discussing multilayer networks, we use parenthesized superscripts to
+indicate layer. For example, $\z^{(2)}_t$ is the hidden states of the second
+layer and $N^{(3)}_{in}$ is the dimensionality of the third layer's inputs
+$\x^{(3)}_t$. We assume the outputs of the $l-1$st layer are used as the inputs
+of the $l$th layer (\ie $\forall t: \x^{(l)}_t = \y^{(l-1)}_t$).
 
-\begin{figure}[tb]
-    \centering
-    \input{Chapter2/Figs/nn-rnn.pdf_tex}
-    \caption{Graph representation of an Elman-type RNN.}
-    \label{fig:nn-rnn}
-\end{figure}
+\subsection{The memory cell abstraction}
 
-To apply the RNN over an input sequence $\x$, the activations of the hidden
-states are first initialized to an initial value $\h \in \RR^{D_{h}}$. Next,
-for each timestep $t$ the hidden layer activations are computed using the
-current input $\x_t$ and the previous hidden state activations $\h_{t-1}$.
-This motivates an alternative perspective on RNNs as a template consisting
-of a feedforward network with inputs $\{\x_t, \h_{t-1}\}$ (see
-\cref{fig:rnn-elman}) replicated across time $t$.
+While many different variants for RNNs exist
+\citep{elman1990finding,jordan1997serial,hochreiter1997long,cho2014learning,Koutnik2014,Mikolov2015},
+many share the same underlying structure. Hence, it is useful to discuss RNNs
+abstractly without specifying a particular variant.
 
 \begin{figure}[tb]
   \centering
   \input{Chapter2/Figs/nn-rnn-elman.pdf_tex}
-  \caption{Equivalent formulation of an Elman-type RNN treating the
-    time-delayed hidden state $\h_{t-1}$ as additional inputs to a feedforward
-  network}
+  \caption{An Elman-type RNN with a single hidden layer. The recurrent hidden
+    state is illustrated as unit-delayed (denoted by $z^{-1}$) feedback edges
+    from the hidden states to the input layer. The memory cell encapsulating the
+  hidden state is also shown.}
   \label{fig:rnn-elman}
 \end{figure}
 
+To do so, we introduce the notion of a \emph{memory cell} in order to abstract
+away how different variations of RNNs compute $\y_t$ and $\h_t$ from $\x_t$ and
+$\h_{t-1}$. This is illustrated visually in \cref{fig:rnn-elman}, which shows a
+standard Elman-type RNN \citep{elman1990finding} with the memory cell indicated
+as a dashed box isolating the recurrent hidden state.
 
-\subsubsection{Memory cell abstraction}
+Notice that the edges in \cref{fig:rnn-elman} entering the memory cell
+consist of the input $\x_t$ and previous hidden state $\h_{t-1}$,
+and the edges leaving the memory cell consist of the current hidden state $\h_t$
+and the outputs $\y_t$. Hence, to specify an concrete implementation for a
+memory cell, it suffices to provide two functions $\f_h$ and $\f_y$ which
+uses $\x_t$ and $\h_{t-1}$ to compute the next hidden state $\h_t = f_h(\x_t,
+\h_{t-1})$ and output $\y_t = f_y(\h_t)$.
 
-Notice that \cref{fig:rnn-elman} delineates the recurrent hidden state from
-the rest of the diagram, introducing an abstraction called a \emph{memory
-cell}. This allows us to abstract away how $\y_t$ and $\h_t$ are computed from
-$\x_t$ and $\h_{t-1}$, enabling discussion of RNNs applicable to many different
-implementations. Concretely, A memory cell is an interface which for each
-timestep $t$:
-\begin{description}
-  \item[Inputs]~
-    \begin{itemize}
-      \item The current element in the input sequence $\x_t$
-      \item The previous hidden state $\h_{t-1}$
-    \end{itemize}
-  \item[Outputs]~
-    \begin{itemize}
-      \item The next  hidden state $\h_t = f_h (\x_t, \h_{t-1})$
-      \item The outputs $\y_t = f_y (\h_t)$.
-    \end{itemize}
-\end{description}
-In future diagrams, we will abstractly represent the memory cell
-as a node labelled with $\h$.
+\subsection{Operations on RNNs: unrolling and stacking}
 
-\subsubsection{Unrolling into a directed acyclic computation graph}
+\subsubsection{Unrolling RNNs into directed acyclic graphs}
 
-One important operation on RNNs is \emph{unrolling} the template in
-\cref{fig:rnn-elman} into a chain of $T$ replications with connected hidden
-states (\cref{fig:rnn-single-unrolled}). This removes the time-delayed
-recurrent, converting the RNN into a finite directed acyclic graph where nodes
-represent pieces of data and edges $s \to t$ indicate that $t$ is a function of
-$s$. This is identical to a feedforward network, justifying the view of RNNs as
-a dynamically-sized feedforward network with $T$ layers and parameters tied
-across all layers.
+\nomenclature[z-DAG]{DAG}{Directed Acyclic Graph}
 
-\mynote{Talk about how view of unrolled RNN as DNN inspires cross-polination \eg
-gating to let information flow deeper: LSTM gates and highway networks, grid
-LSTMS}
+Given an input sequence $\{\x_{t}\}_{t=1}^T$ with length $T$, an RNN can be
+\emph{unrolled} into a directed acyclic graph (DAG) comprised of $T$ copies of the
+memory cell connected forwards in time. \Cref{fig:rnn-single-unrolled} shows
+a block diagram of \cref{fig:rnn-elman} on the left and its corresponding unrolled
+DAG on the right.
 
 \begin{figure}[tb]
   \centering
   \resizebox{4.5in}{!}{\input{Chapter2/Figs/rnn-single-unrolled.pdf_tex}}
-  \caption{Signal flow diagram representation of a single-layer RNN and its
-  corresponding directed acyclic graph after unrolling}
+  \caption{Signal flow diagram representation of a single-layer RNN (left) and its
+    corresponding DAG (right) after unrolling. The blocks labeled
+    with $\h_t$ represent memory cells whose parameters are shared across all times
+  $t$.}
   \label{fig:rnn-single-unrolled}
 \end{figure}
 
-\cref{fig:rnn-single-unrolled} makes it obvious how the hidden state is
-carried along throughout the sequence of computations, giving rise to a useful
+\Cref{fig:rnn-single-unrolled} shows that the hidden state $\h_t$ is passed
+forwards throughout the sequence of computations. This gives rise to an
 alternative interpretation of the hidden state as a temporal memory mechanism.
-Under this interpretation, we can view the hidden state update $\h_t = f_h
-(\x_t, \h_{t-1})$ as \emph{writing} information extracted from the
-current inputs $\x_t$ to the memory $\h_{t-1}$. Similarly, producing
-the outputs $\y_t = f_y (\h_t)$ can be seen as \emph{reading}
-information from the hidden state.
+Under this interpretation, updating the hidden state $\h_t = f_h (\x_t,
+\h_{t-1})$ can be viewed as \emph{writing} information from the current inputs
+$\x_t$ to memory and producing the outputs $\y_t = f_y (\h_t)$ can be
+interpreted as \emph{reading} information from memory.
 
-\mynote{Compare to N-grams; show how it's like an infinite context. One
-    interpretation is to view the hidden state $\h_t$ as an
-    infinite-length prior context window, summarizing all of the prior inputs
-    into into a compact fixed-size vector.}
+\subsubsection{Stacking memory cells to form deep RNNs}
 
-\subsubsection{Stacking memory cells to form multi-layer RNNs}
-
-Since the RNN outputs $\y$ also form a sequence with the same length as
-the inputs $\x$, they can be used as inputs into another RNN. This
-stacking of multiple memory cells is similar to the layering seen in deep
-neural networks, giving rise to the term \emph{deep neural sequence models}
-\mynote{Cite?}. This is illustrated in \cref{fig:rnn-multi-unrolled}.
+In addition to unrolling, RNNs can also be \emph{stacked} to form deep RNNs
+\citep{el1995hierarchical,schmidhuber1992learning}. This is accomplished in a
+manner analogous to deep belief networks: outputs from the previous memory cell
+in the stack are used as inputs for the current memory cell (see
+\cref{fig:rnn-multi-unrolled}).
 
 \begin{figure}[tb]
     \centering
     \resizebox{4.5in}{!}{\input{Chapter2/Figs/rnn-multi-unrolled.pdf_tex}}
-    \caption{Template and unrolling of a stacked 2-layer RNN}
+    \caption{Stacking multiple memory cells to form a deep RNN.}
     \label{fig:rnn-multi-unrolled}
 \end{figure}
 
-The greater modeling capabilities of multilayer RNNs can be attributed to two
-primary factors: composition of multiple non-linearities and an increase in the
-number of paths through which information can flow. The former is analogous to
-the feedforward case: stacking memory cells increases the number of
-non-linearities in the composite cell just like stacking multiple layers in
-feedforward networks. To understand the latter point, notice that in
-\cref{fig:rnn-single-unrolled} there is only a single path from
-$\x_{t-1}$ to $\y_{t}$ hence the conditional independence
-$\y_{t} \independent \x_{t-1} | \h^{(1)}_t$ is satisfied.
-However, in \cref{fig:rnn-multi-unrolled} there are multiple paths from
-$\x_{t-1}$ to $\y_{t}$ (\eg passing through either
-$\h^{(2)}_{t-1} \to \h^{(2)}_t$ or $\h^{(1)}_{t-1} \to
-\h^{(1)}_t$) through which information may flow. Additionally, the
-hidden state transitions occur on two seperate memory cells so parameters
-need not be tied and the stacked RNN can learn different time dynamics
-at each depth.
+The greater modeling capabilities of multilayer RNNs can be attributed to three
+primary factors: composition of multiple non-activation functions and an
+increase in the number of paths for information can flow.
+The former reason is analogous to the case in deep belief networks, which
+is well documented \citep{bengio2009learning}. To understand the latter, notice
+that in \cref{fig:rnn-single-unrolled} there is only a single path from
+$\x_{t-1}$ to $\y_{t}$ hence the conditional independence $\y_{t} \independent
+\x_{t-1} | \h^{(1)}_t$ is satisfied. However, in \cref{fig:rnn-multi-unrolled}
+there are multiple paths from $\x_{t-1}$ to $\y_{t}$ (\eg passing through
+either $\h^{(2)}_{t-1} \to \h^{(2)}_t$ or $\h^{(1)}_{t-1} \to \h^{(1)}_t$)
+through which information may flow.
 
-\subsection{Modeling assumptions}
-
-\mynote{Integrate better}
-
-We make the following assumptions about the sequence $\x_{1:T}$, $\y_{1:T}$, and $\h_{0:T}$:
-\begin{enumerate}
-  \item Modified Markov assumption:
-    \begin{equation}
-      \label{eq:modified-markov}
-      \forall t: P(\h_t | \h_{0:t-1}, \x_{1:t}) = P(\h_t | \h_{t-1}, \x_t)
-    \end{equation}
-  \item Hidden State Stationarity:
-    \begin{equation}
-      \label{eq:hidden-state-stationarity}
-      \forall t_1, t_2: P(\h_{t_1} = \k | \h_{t_{1}-1} = \i, \x_{t_1} = \j) = P(\h_{t_2} = \k | \h_{t_{2}-1} = \i, \x_{t_2} = \j)
-   \end{equation}
-  \item Output Stationarity:
-    \begin{equation}
-      \label{eq:output-stationarity}
-      \forall t_1, t_2: P(\y_{t_1} = \j | \h_{t_1} = \i) = P(\y_{t_2} = \j | \h_{t_2} = \i)
-   \end{equation}
-  \item Output independence:
-   \begin{equation}
-     \label{eq:output-independence}
-     P(\y_{1:T} | \h_{0:T}, \x_{1:T}) = \prod_{t=1}^T P(\y_t | \h_{t}, \x_t)
-   \end{equation}
-\end{enumerate}
-
-These assumptions imply the sequential factorization:
-\begin{align}
-  &P(\y_{1:T}, \h_{1:T} | \h_0, \x_{1:T})  &\\
-  &= P(\y_{1:T} | \h_{0:T}, \x_{1:T}) P(\h_{1:T} | \h_0, \x_{1:T})  &\\
-  &= \left( \prod_{t=1}^T P(\y_t | \h_t) \right) P(\h_{1:T}| \h_0, \x_{1:T}) &\text{\cref{eq:output-independence}}\\
-  &= \left( \prod_{t=1}^T P(\y_t | \h_t) \right) \left(\prod_{t=1}^T P(\h_{t}| \h_{0:t-1}, \x_{1:t})\right) &\\
-  &= \left( \prod_{t=1}^T P(\y_t | \h_t) \right) \left(\prod_{t=1}^T P(\h_{t}| \h_{t-1}, \x_{t})\right) &\text{\cref{eq:modified-markov}}\\
-  &= \prod_{t=1}^T P(\y_t | \h_t, \x_t) P(\h_{t}| \h_{t-1}, \x_{t}) & \\
-\end{align}
-Together, \cref{eq:hidden-state-stationarity} and \cref{eq:output-stationarity} imply that $P(\y_t | \h_t)$
-and $P(\h_{t}| \h_{t-1}, \x_{t})$ are time-invariant and can be modelled by the same recurrent function.
-
-In RNNs, the hidden state dynamics $P(\h_t | \h_{t-1}, \x_t)$ are deterministic:
-\begin{equation}
-  \h_t = f_h(\x_t, \h_{t-1})
-\end{equation}
-Which means that $P(\y_{1:T}, \h_{1:T} | \h_0, \x_{1:T}) = P(\y_{1:T} | \h_0, \x_{1:T})$.
-This yields the factorization
-\begin{equation}
-  P(\y_{1:T} | \h_0, \x_{1:T})
-  = P(\y_{1:T}, \h_{1:T} | \h_0, \x_{1:T})
-  = \prod_{t=1}^T P(\y_t | \h_t, \x_t) f_h(\x_t, \h_{t-1})
-\end{equation}
-\mynote{Draw PGM}
-
-However, one minor problem remains. Let $\z_t = f_y(f_h(\x_t, \h_{t-1}))$ (with
-$f_y$ and $f_h$ as defined in \mynote{ref}) denote the outputs of the RNN model
-at time $t$. Note that $\z_t$ can be any real vector in $\RR^{|V|}$
-\mynote{Define $V$ to be the vocabulary}, but $P(\x_{t+1} | \h_{t-1}, \x_{t})$ is
-a probability vector constrained to sum to one.
-
-Fortunately, we can treat $\z_t$ as the \emph{scores} for a \emph{Boltzmann
-distribution}
-\begin{equation}\label{eq:boltzmann-dist}
-    P( \y_{t} = s | \h_{t-1}, \x_t )
-    = \frac{\exp \left(-\z_{t,s}/T\right) }{ \sum_{k=1}^{K} \left(\exp -\z_{t,k}/T\right)}
-\end{equation}
-where $T \in \RR^+$ is a \emph{temperature} parameter (set to $T=1$ during training and varied during sampling).
-To keep notation compact, we omit writing this explicitly and understand $P(\y_t | \h_{t-1}, \x_t)$ to mean
-the Boltzmann distribution parameterized by the scores $f_y(f_h(\x_t, \h_{t-1}))$.
-
-Note the similarity between \cref{eq:modified-markov}--\cref{eq:output-independence}
-and the assumptions for Hidden Markov models \citep{ramage2007hidden}. Discrepancies are due
-to the presence of an input sequence $\x_{1:T}$ in our sequence-to-sequence model.
-
-\mynote{Discuss validity of assumptions, namely output independence assuming hidden state and input summarize
-all prior context}
-
+% Additionally, parameters need not be shared
+% across different layers so the stacked RNN can learn different time dynamics
+% for each layer.
 
 \subsection{Training RNNs and backpropagation through time}
 
 \nomenclature[z-BPTT]{BPTT}{Backpropagation Through Time}
+\nomenclature[g-th]{$\theta$}{Model Parameters}
+\nomenclature[r-E]{$\mathcal{E}$}{Error or Loss}
 
 The parameters $\vec{\theta}$ of a RNN are typically learned from data to
-minimize a cost $\mathcal{E} = \sum_{1 \leq t \leq T} \mathcal{E}_t(\x_t)$
+minimize some \emph{cost} $\mathcal{E} = \sum_{1 \leq t \leq T} \mathcal{E}_t(\x_t)$
 measuring the performance of the network on some task. This optimization is
 commonly carried out using iterative gradient descent methods, which require
 computation of the gradients $\frac{\pd \mathcal{E}}{\pd \vec{\theta}}$ at each
 iteration.
 
-One approach for computing the necessary gradients is \emph{backpropagation
-through time} (BPTT) \citep{goller1996learning}, an adaptation of the backpropagation
-algorithm \citep{linnainmaa1970representation,rumelhart1988learning} to the unrolled RNN computation
-graph. We can apply the chain rule to the unrolled RNN's computation graph in
-\cref{fig:rnn-bptt} to obtain
+In feedforward networks, computation of gradients can be performed efficiently
+using backprapogation
+\citep{bryson1963optimal,linnainmaa1970representation,rumelhart1988learning}.
+While the cycles introduced by time-delayed recurrent hidden state connections
+may seem to complicate matters for RNNs, recall that unrolling removes the
+time-delayed recurrent edges and converts the RNN into a DAG (\eg
+\vref{fig:rnn-single-unrolled}). The unrolled RNN can be justifiably
+interpreted as a $T$ layered feedforward neural network with parameters shared
+across all layers, motivating the application of techniques such as
+backpropagation to the unrolled RNNs.
+
+Unsurprisingly, this is precisely what is done in the \emph{backpropagation
+through time} (BPTT) algorithm \citep{goller1996learning}. Applying the
+chain rule to the RNN dynamics equations (\vref{eq:rnn-dynamics})
+unrolled network (see \cref{fig:rnn-bptt}), we obtain
 \begin{align}
-    \frac{\pd \mathcal{E}}{\pd \vec{\theta}} &=& \sum_{1 \leq t \leq T} \frac{\pd \mathcal{E}_t}{\pd \vec{\theta}} \\
-    \frac{\pd \mathcal{E}_t}{\pd \vec{\theta}} &=& \sum_{1 \leq k \leq t} \left(
+  \frac{\pd \mathcal{E}}{\pd \vec{\theta}} &= \sum_{1 \leq t \leq T} \frac{\pd \mathcal{E}_t}{\pd \vec{\theta}} \label{eq:err-total}\\
+    \frac{\pd \mathcal{E}_t}{\pd \vec{\theta}} &= \sum_{1 \leq k \leq t} \left(
         \frac{\pd \mathcal{E}_t}{\pd \y_t}
         \frac{\pd \y_t}{\pd \h_t}
         \frac{\pd \h_t}{\pd \h_k}
         \frac{\pd \h_k}{\pd \vec{\theta}}
     \right) \label{eq:error-t}\\
-    \frac{\pd \h_t}{\pd \h_k} &=&
+    \frac{\pd \h_t}{\pd \h_k} &=
     \prod_{t \geq i > k} \frac{\pd \h_i}{\pd \h_{i-1}}
     = \prod_{t \geq i > k} \W_{hh}^\tp \diag \left( \sigma_{hh}'( \h_{i-1} ) \right)
     \label{eq:error-transfer}
 \end{align}
+
+\Cref{eq:error-t} expresses how the error $\mathcal{E}_t$ at time $t$ is a sum
+of \emph{temporal contributions} $
+\frac{\pd \mathcal{E}_t}{\pd \y_t}
+\frac{\pd \y_t}{\pd \h_t}
+\frac{\pd \h_t}{\pd \h_k}
+\frac{\pd \h_k}{\pd \vec{\theta}}$
+measuring how $\vec{\theta}$'s impact on $\h_k$ affects the cost
+$\mathcal{E}_t$ at some future time $t > k$. The quantity
+$\frac{\pd \h_t}{\pd \h_k}$ in \cref{eq:error-transfer} measures the affect of
+the hidden state $\h_k$ on some future state $\h_t$ where $t > k$ and can be
+interpreted as transferring the error ``in time'' from step $t$ back to step
+$k$ \citep{Pascanu2012}.
 
 \begin{figure}[tb]
     \centering
@@ -685,26 +544,28 @@ graph. We can apply the chain rule to the unrolled RNN's computation graph in
     \label{fig:rnn-bptt}
 \end{figure}
 
-\cref{eq:error-t} expresses how the error $\mathcal{E}_t$ at time $t$ is a sum
-of \emph{temporal contributions} $
-\frac{\pd \mathcal{E}_t}{\pd \y_t}
-\frac{\pd \y_t}{\pd \h_t}
-\frac{\pd \h_t}{\pd \h_k}
-\frac{\pd \h_k}{\pd \vec{\theta}}$
-measuring how $\theta$'s impact on $\h_k$ affects the cost at some future
-time $t > k$. The factors in \cref{eq:error-transfer} measures the affect
-of the hidden state $\h_k$ on some future state $\h_t$ where $t > k$
-and can be interpreted as transferring the error ``in time'' from step $t$ back
-to step $k$ \citep{Pascanu2012}.
+Just like traditional backpropagation, \cref{fig:rnn-bptt} demonstrates how
+BPTT divides the computation of a global gradient $\frac{\pd \mathcal{E}}{\pd
+\theta}$ into a series of local gradient computations, each of which involves
+significantly less variables and hence is easier to compute.
 
 \subsubsection{Vanishing/exploding gradients}
 
-Unfortunately, naive implementations of \cref{eq:rnn-dynamics} oftentimes
-suffers from two well known problems: the \emph{vanishing gradient} and
-\emph{exploding gradient} \citep{Bengio1994}. Broadly speaking, these problems
-are both related to the product in \cref{eq:error-transfer} exponentially
-growing or shrinking for long timespans (\ie $t \gg k$). A rigorous
-proof is provided in \vref{sec:vanishing-exploding-gradients}.
+Unfortunately, naive implementations of RNNs (specifically
+\cref{eq:rnn-dynamics}) often suffer from two well known problems: the
+\emph{vanishing gradient} and \emph{exploding gradient} \citep{Bengio1994}.
+These problems are both related to the product in \cref{eq:error-transfer}
+exponentially growing or shrinking over long timespans (\ie $t \gg k$). A
+sufficient condition (proved in \vref{sec:vanishing-exploding-gradients}) for
+vanishing gradients is
+\begin{equation}\label{eq:vanishing-gradients-suff}
+  \left\| \W_{hh} \right\| < \frac{1}{\gamma_\sigma}
+\end{equation}
+where $\| \cdot \|$ is the matrix operator norm (see \vref{eq:operator-norm}),
+$\W_{hh}$ is defined in \vref{eq:rnn-dynamics},
+and $\gamma_\sigma$ is a constant depending on choice of activation function
+(\eg $\gamma_\sigma = 1$ for $\sigma_{hh} = \tanh$, $\gamma_\sigma = 0.25$ for
+$\sigma_{hh} = \sigmoid$).
 
 This difficulty learning relationships between events spaced far apart in time
 presents a signficant challenge for music applications. As noted by
@@ -715,26 +576,48 @@ presents a signficant challenge for music applications. As noted by
   structure.
 \end{quote}
 
-\subsection{Long short term memory: solving the vanishing gradient}
+\subsection{Long short term memory: solving the vanishing gradient}\label{sec:LSTM}
+
 \nomenclature[z-LSTM]{LSTM}{Long Short Term Memory}
 \nomenclature[z-CEC]{CEC}{Constant Error Carousel}
+\nomenclature[r-input-gate]{$\i_t$}{Input gate values}
+\nomenclature[r-forget-gate]{$\f_t$}{Forget gate values}
+\nomenclature[r-output-gate]{$\o_t$}{Output gate values}
+\nomenclature[r-Wxh]{$\W_{xh}$}{Weight matrix between input and hidden state}
+\nomenclature[r-Wxh]{$\W_{hh}$}{Weight matrix between previous and current and hidden states}
+\nomenclature[r-Wxh]{$\W_{hy}$}{Weight matrix between hidden state and output}
+\nomenclature[g-sxh]{$\sigma_{xh}$}{Activation function between input and hidden state}
+\nomenclature[g-shh]{$\sigma_{hh}$}{Activation function between previous and current hidden states}
+\nomenclature[g-shy]{$\sigma_{hy}$}{Activation function between hidden state and output}
 
 In order to build a model which learns long range dependencies, vanishing
 gradients must be avoided. A popular memory cell architecture which does so is
 \emph{long short term memory} (LSTM). Proposed by \citet{hochreiter1997long},
 LSTM solves the vanishing gradient problem by enforcing \emph{constant error
 flow} on \cref{eq:error-transfer}, that is
-\begin{equation}
+\begin{equation}\label{eq:const-err-flow}
     \W_{hh}^\tp \sigma_{hh}' (\h_{t}) = \matr{I}
 \end{equation}
 where $\matr{I}$ is the identity matrix.
 
-Integrating the above differential equation yields $\W_{hh} \sigma_{hh}(\h_{t}) = \h_{t}$.
-Since this should hold for any hidden state $\h_{t}$, this means that:
+As a result of the constant error flow condition, notice that \vref{eq:error-transfer}
+becomes
+\begin{equation}
+  \frac{\pd \h_t}{\pd \h_k}
+  = \prod_{t \geq i > k} \W_{hh}^\tp \diag \left( \sigma_{hh}'( \h_{i-1} ) \right)
+  = \prod_{t \geq i > k} \matr{I}
+  = \matr{I}
+\end{equation}
+The dependence on the time-interval $t-k$ is no longer present, ameliorating
+the exponential decay causing vanishing gradients and enabling long-range
+dependencies (\ie $t \gg k$) to be learned.
+
+Integrating \cref{eq:const-err-flow} yields $\W_{hh} \sigma_{hh}(\h_{t}) = \h_{t}$.
+Since this must hold for any hidden state $\h_{t}$, this means that:
 \begin{enumerate}
     \item $\W_{hh}$ must be full rank
     \item $\sigma_{hh}$ must be linear
-    \item $\W_{hh} \circ \sigma_{hh} = \matr{I}$
+    \item $\W_{hh} \sigma_{hh} = \matr{I}$
 \end{enumerate}
 
 In the \emph{constant error carousel} (CEC), this is ensured by setting
@@ -752,11 +635,11 @@ In addition to using a CEC, a LSTM introduces three gates controlling access to 
 
 Mathematically, the LSTM model is defined by the following set of equations:
 \begin{align}
-    \i_t &=& \sigmoid(\W_{xi} \x_t + \W_{yi} \y_{t-1} + \b_i) \\
-    \o_t &=& \sigmoid(\W_{xo} \x_t + \W_{yo} \y_{t-1} + \b_o) \\
-    \f_t &=& \sigmoid(\W_{xf} \x_t + \W_{yf} \y_{t-1} + \b_f) \\
-    \h_t &=& \f_t \odot \h_{t-1} + \i_t \odot \tanh(\W_{xh}\x_t + y_{t-1} \W_{yh} + \b_h) \label{eq:lstm-dynamics} \\
-    \y_t &=& \o_t \odot \tanh(\h_t)
+    \i_t &= \sigmoid(\W_{xi} \x_t + \W_{yi} \y_{t-1} + \b_i) \\
+    \o_t &= \sigmoid(\W_{xo} \x_t + \W_{yo} \y_{t-1} + \b_o) \\
+    \f_t &= \sigmoid(\W_{xf} \x_t + \W_{yf} \y_{t-1} + \b_f) \\
+    \h_t &= \f_t \odot \h_{t-1} + \i_t \odot \tanh(\W_{xh}\x_t + y_{t-1} \W_{yh} + \b_h) \\
+    \y_t &= \o_t \odot \tanh(\h_t)
 \end{align}
 where $\odot$ denotes elementwise multiplication of vectors.
 
