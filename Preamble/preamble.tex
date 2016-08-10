@@ -211,14 +211,10 @@
 \usepackage{mathtools}
 \usepackage{pgf}
 
-\usepackage{varioref}
-% Must be loaded after varioref
-\newcommand\numberthis{\refstepcounter{equation}\tag{\theequation}} % for numbering in  the align* environment
-\usepackage[nameinlink]{cleveref}
-
-
 \usepackage{tikz,ifthen} % TODO: eliminate when graveyard removed
 \usetikzlibrary{positioning}
+
+\newcommand\numberthis{\refstepcounter{equation}\tag{\theequation}} % for numbering in  the align* environment
 
 \newcommand{\RR}{\mathbb{R}}
 \newcommand{\NN}{\mathbb{N}}

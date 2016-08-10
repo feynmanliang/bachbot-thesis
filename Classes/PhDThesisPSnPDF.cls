@@ -613,6 +613,7 @@ supported!}
 % Moved below other usepackage definitions to fix PDFLaTeX footnote warning
 % Based on the suggestion by John Plaice
 
+\usepackage{varioref} % must be before hyperref
 \ifsetDVI
   \special{papersize=\the\paperwidth,\the\paperheight}
   \RequirePackage[unicode=true]{hyperref}  % extra option dvips
@@ -621,6 +622,7 @@ supported!}
   \pdfpagewidth=\the\paperwidth
   \pdfpageheight=\the\paperheight
 \fi
+\usepackage[nameinlink]{cleveref} % must be after hyperref
 
 \if@print
   % For Print version
