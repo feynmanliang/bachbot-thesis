@@ -1,0 +1,193 @@
+% ******************************* Thesis Appendix B ********************************
+\chapter{Appendix C: Additional Proofs, Figures, and Tables}
+
+\ifpdf
+    \graphicspath{{Appendix3/Figs/Raster/}{Appendix3/Figs/PDF/}{Appendix3/Figs/}}
+\else
+    \graphicspath{{Appendix3/Figs/Vector/}{Appendix3/Figs/}}
+\fi
+
+This section contains additional proofs, figures, and tables referenced from
+the body of this work. It is intended for readers who wish to examine our
+claims in greater detail.
+
+\section{Sufficient conditions for vanishing gradients}\label{sec:vanishing-exploding-gradients}
+
+Following \citet{Pascanu2012}, let $\| \cdot \|$ be any
+submultiplicative matrix norm (\eg Frobenius, spectral, nuclear, Shatten
+$p$-norms). Without loss of generality, we will use the \emph{operator norm}
+defined as
+\begin{equation}\label{eq:operator-norm}
+    \| A \| = \sup_{x \in \RR^n; x \neq 0} \frac{|A x|}{|x|}
+\end{equation}
+where $|\cdot|$ is the standard Euclidian norm.
+
+Applying the definition of submultiplicativity to the factors of
+the product in \cref{eq:error-transfer}, we have that for any $k$
+\begin{equation}
+    \left\| \frac{\pd \h_k}{\pd \h_{k-1}} \right\|
+    \leq \| \W_{hh}^\tp \| \| \diag\left( \sigma_{hh}'(\h_{k-1}) \right) \|
+    \leq \gamma_{\W} \gamma_\sigma
+\end{equation}
+where we have defined $\gamma_{\W} = \| \W_{hh}^\tp \|$ and
+\begin{align}
+    \gamma_\sigma
+    &\coloneqq \sup_{h \in \RR^n} \| \diag \left( \sigma_{hh}'(\h) \right) \|  &\\
+    &= \sup_{h \in \RR^n} \max_i \sigma_{hh}'(\h)_i &\mbox{Operator norm of diag} \\
+    &= \sup_{x \in \RR} \sigma_{hh}'(x) &\mbox{$\sigma_{hh}$ acts elementwise}
+\end{align}
+
+Substituting back into \cref{eq:error-transfer}, we find that
+\begin{equation}
+    \left\| \frac{\pd \h_t}{\pd \h_k} \right\|
+    = \left\| \prod_{t \geq i > k} \frac{\pd \h_i}{\pd \h_{i-1}} \right\|
+    \leq  \prod_{t \geq i > k} \left\| \frac{\pd \h_i}{\pd \h_{i-1}} \right\|
+    \leq (\gamma_{\W} \gamma_\sigma)^{t-k}
+\end{equation}
+
+Hence, we see that a sufficient condition for vanishing gradients is
+for $\gamma_{\W} \gamma_\sigma < 1$, in which case $\left\| \frac{\pd \h_t}{\pd \h_k} \right\| \to 0$
+exponentially for long timespans $t \gg k$. $\qed$
+
+If $\gamma_\sigma$ is bounded, sufficient
+conditions for vanishing gradients to occur may be written as
+\begin{equation}
+    \gamma_{\W} < \frac{1}{\gamma_\sigma}
+\end{equation}
+This is true for commonly used activation functions (\eg $\gamma_\sigma = 1$
+for $\sigma_{hh} = \tanh$, $\gamma_\sigma = 0.25$ for $\sigma_{hh} =
+\sigmoid$).
+
+The converse of the proof implies that $\| \W_{hh}^\tp \| \geq
+\frac{1}{\gamma_\sigma}$ are necessary conditions for $\gamma_{\W}
+\gamma_\sigma > 1$ and exploding gradients to occur.
+
+\subsection{Quantifying the effects of preprocessing}
+
+The relevant discussion is found in \vref{sec:preprocessing}.
+
+\begin{landscape}
+  \begin{figure}[p]
+    \centering
+    \begin{subfigure}[c]{1.0\textwidth}
+        \centering
+        \input{Appendix3/Figs/pitch-usage-original.pgf}
+    \end{subfigure}
+    \begin{subfigure}[c]{1.0\textwidth}
+        \centering
+        \input{Appendix3/Figs/pitch-usage-preproc.pgf}
+    \end{subfigure}
+    \caption{Distribution of pitches used over Bach chorales corpus.
+      Transposition has resulted in an overall broader range of pitches and
+    increased the counts of pitches which are in key.}
+    \label{fig:pitch-key-standardization}
+  \end{figure}
+\end{landscape}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \input{Appendix3/Figs/pitch-class-usage-original.pgf}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \input{Appendix3/Figs/pitch-class-usage-preproc.pgf}
+    \end{subfigure}
+    \caption{Distribution of pitch classes over Bach chorales corpus. Transposition has increased the counts
+    for pitch classes within the C-major / A-minor scales.}
+    \label{fig:pc-key-standardization}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \input{Appendix3/Figs/meter-usage-original.pgf}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \input{Appendix3/Figs/meter-usage-quantized.pgf}
+    \end{subfigure}
+    \caption{Meter is minimally affected by quantization due to the high resolution used for
+    time quantization.}
+    \label{fig:meter-time-quantization}
+\end{figure}
+
+\subsection{Discovering neurons specific to musical concepts}
+
+The relevant discussion is found in \vref{sec:music-concept-neurons}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-0.pdf}
+    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-1.pdf}
+    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-2.pdf}
+    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-3.pdf}
+    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-4.pdf}
+    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-5.pdf}
+    \caption{Neuron activations over time as the encoded stimulus is processed token-by-token}
+    \label{fig:model-analysis-tokens}
+\end{figure}
+
+
+\subsection{Identifying and verifying local optimality of the overall best model}
+
+The relevant discussion is found in \vref{sec:overall-best-model}.
+
+\begin{center}
+  \captionof{figure}{Results of grid search (see \Cref{sec:lstm-grid-search}) over LSTM sequence model hyperparameters}
+  \label{tab:torch-rnn-config-perfs}
+  \input{Appendix3/Figs/torch-rnn-config-perfs.tex}
+  \addtocounter{table}{-1}%
+\end{center}
+
+\begin{figure}[htbp]
+    \centering
+    \input{Appendix3/Figs/torch-rnn-network-params.pgf}
+    \caption{\texttt{rnn\_size=256} and \texttt{num\_layers=3} yields lowest validation loss.}
+    \label{fig:torch-rnn-network-params}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \input{Appendix3/Figs/torch-rnn-network-params-num-layers.pgf}
+  \caption{Validation loss improves initially with increasing network depth but deteriorates after $>3$ layers.}
+  \label{fig:torch-rnn-network-params-num-layers}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \input{Appendix3/Figs/torch-rnn-network-params-rnn-size.pgf}
+  \caption{Validation loss improves initially with higher-dimensional hidden states
+  but deteriorates after $>256$ dimensions.}
+  \label{fig:torch-rnn-network-params-rnn-size}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \input{Appendix3/Figs/torch-rnn-input-params.pgf}
+    \caption{\texttt{seq\_length=128} and \texttt{wordvec=32} yields lowest validation loss.}
+    \label{fig:torch-rnn-input-params}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \input{Appendix3/Figs/torch-rnn-input-params-wordvec.pgf}
+  \caption{Perturbations about \texttt{wordvec=32} do not yield significant improvements.}
+  \label{fig:torch-rnn-input-params-wordvec}
+\end{figure}
+
+\subsection{Additional large-scale subjective evaluation results}
+
+The relevant discussion is found in \vref{sec:eval-results}.
+
+\begin{figure}[htbp]
+  \centering
+  \input{Chapter7/Figs/responses-mask-agegroup.pgf}
+  \caption{Proportion of correct responses for each question type and age group.}
+  \label{fig:responses-mask-agegroup}
+\end{figure}
+

@@ -1,5 +1,5 @@
-% ******************************* Thesis Appendix B ********************************
-\chapter{Appendix B}
+% ******************************* Thesis Appendix A ****************************
+\chapter{Appendix B: An introduction to neural networks}\label{sec:primer-nn}
 
 \ifpdf
     \graphicspath{{Appendix2/Figs/Raster/}{Appendix2/Figs/PDF/}{Appendix2/Figs/}}
@@ -7,134 +7,129 @@
     \graphicspath{{Appendix2/Figs/Vector/}{Appendix2/Figs/}}
 \fi
 
-\section{Additional Figures and Tables}
+This chapter provides background at a more elementary level than
+\vref{sec:bg-rnn}. Its goal is to sufficiently educate readers unfamiliar with
+recurrent neural networks such that the remainder of our work can be
+understood.
 
-\subsection{Quantifying the effects of preprocessing}
+\section{Neurons: the basic computation unit}
 
-The relevant discussion is found in \vref{sec:preprocessing}.
+Neurons are the basic abstraction which are combined together to form
+neural networks. A \emph{neuron} is a parametric model of a function $f : \RR^D \to
+\RR$ from its $D$-dimensional input $\x$ to its output $y$. Our neurons will be
+defined as
+\begin{equation}
+    f(\x) \coloneqq \sigma( \langle \vec{w}, \x \rangle)
+\end{equation}
+which can be viewed as an inner product with \emph{weights} $\vec{w}$ to
+produce an \emph{activation} $z \coloneqq \langle \vec{w}, \x \rangle
+\in \RR$ which is then squashed to a bounded domain by a non-linear
+\textbf{activation function} $\sigma : \RR \to [L, U]$. This is visually
+depicted in \cref{fig:nn-single}, which also makes apparent the
+interpretation of weight $w_i$ as the sensitivity of the output $y$ to the
+input $x_i$.
 
-\begin{landscape}
-  \begin{figure}[p]
+\begin{figure}[tb]
     \centering
-    \begin{subfigure}[c]{1.0\textwidth}
-        \centering
-        \input{Appendix2/Figs/pitch-usage-original.pgf}
-    \end{subfigure}
-    \begin{subfigure}[c]{1.0\textwidth}
-        \centering
-        \input{Appendix2/Figs/pitch-usage-preproc.pgf}
-    \end{subfigure}
-    \caption{Distribution of pitches used over Bach chorales corpus.
-      Transposition has resulted in an overall broader range of pitches and
-    increased the counts of pitches which are in key.}
-    \label{fig:pitch-key-standardization}
-  \end{figure}
-\end{landscape}
+    \input{Appendix2/Figs/nn-single.pdf_tex}
+    \caption{A single neuron first computes an activation $z$ and then passes it through an activation function $\sigma(\cdot)$}
+    \label{fig:nn-single}
+\end{figure}
 
-\begin{figure}[htbp]
+\section{Feedforward neural networks}
+
+Multiple neurons may share inputs and have their outputs concatenated together
+to form a \emph{layer} modelling a multivariate functions $f :
+\RR^{D_\text{in}} \to \RR^{D_\text{out}}$. Multiple layers can then
+be composed together to form a \emph{feedforwd neural network}.
+
+\begin{figure}[tb]
     \centering
-    \begin{subfigure}[t]{0.48\textwidth}
-        \centering
-        \input{Appendix2/Figs/pitch-class-usage-original.pgf}
-    \end{subfigure}
-    ~
-    \begin{subfigure}[t]{0.48\textwidth}
-        \centering
-        \input{Appendix2/Figs/pitch-class-usage-preproc.pgf}
-    \end{subfigure}
-    \caption{Distribution of pitch classes over Bach chorales corpus. Transposition has increased the counts
-    for pitch classes within the C-major / A-minor scales.}
-    \label{fig:pc-key-standardization}
+    \input{Appendix2/Figs/nn-ffw.pdf_tex}
+    \caption{Graph depiction of a feedforward neural network with $2$ hidden layers}
+    \label{fig:nn-ffw}
 \end{figure}
 
-\begin{figure}[htbp]
+Although a single hidden layer is theoretically sufficient for a universal
+function approximator \citep{Cybenko1993}, the number of hidden units to
+guarantee reported theoretical bounds are usually infeasibly large. Instead,
+recent work in \emph{deep learning} has shown that deep models which contain
+many hidden layers can achieve strong performance across a variety of
+tasks \citep{Bengio2011}.
+
+The improved modeling capacity gained by composing multiple layers is due to
+the composition of multiple non-linear activation functions.
+In fact, it is easy to show that removing activation functions would make
+a deep network equivalent to a single matrix transform: let $\W_{l,l+1}$
+denote the weights between layers $l$ and $l+1$. The original neural network
+computes the function
+\begin{equation}
+    \sigma\left(
+        \W_{L,L-1} \sigma \left(
+            \W_{L-1,L-2}\cdots \sigma \left(
+                \W_{2,1} \x
+            \right) \cdots
+        \right)
+    \right)
+\end{equation}
+After removing the activation functions $\sigma$, we are left with
+\begin{equation}
+    \W_{L,L-1} \W_{L-1,L-2}\cdots \W_{2,1} \x
+    = \x
+    = \tilde{\W} \x
+\end{equation}
+where $\tilde{\W} = \left(\prod_{i=1}^{L-1} \W_{i,i+1} \right)$
+is a matrix transform computing the same function as the neural network with
+activation functions removed.
+
+\section{Recurrent neural networks}
+
+While feedforward neural networks provide a flexible model for approximating
+arbitrary functions, they require a fixed-dimension input $\x$ and hence
+cannot be directly applied to sequential data $\x = (\x_t)_{t=1}^T$ where $T$ may
+vary.
+
+A naive method for extending feedforward networks would be to independently
+apply a feedforward network to compute $\y_t = f(\x_t \vec{\theta})$ at each timestep
+$1 \leq t \leq T$. However, this approach is only correct when each output
+$\y_t$ depends only on the input at the current time $\x_t$ and is independent of
+all prior inputs $\{\x_k\}_{k < t}$. This assumption is false in musical data:
+the current musical note usually is highly dependent on the sequence of notes
+leading up to it.
+
+This shortcoming motivates \emph{recurrent neural networks} (RNNs), which
+generalize feedforward networks by introducing time-delayed recurrent
+connections between hidden layers (Elman networks \citep{elman1990finding}) or
+from the output layers to the hidden layers (Jordan networks
+\citep{jordan1997serial}). Mathematically, an (Elman-type) RNN is a discrete time
+dynamical system commonly parameterized as:
+\begin{equation}
+ \left.\begin{aligned}
+          \h_t &=& \W_{xh} \sigma_{xh} \left( \x_t \right) + \W_{hh} \sigma_{hh} \left( \h_{t-1} \right)\\
+          \y_t &=& \W_{hy} \sigma_{hy} \left( \h_t \right)
+       \end{aligned}
+ \right\}
+ \qquad \text{RNN Dynamics}
+\end{equation}
+\begin{align}
+\end{align}
+where $\sigma_{\cdot \cdot}(\cdot)$ are activation functions acting
+element-wise and $\theta = \{ \W_{xh}, \W_{hh}, \W_{hy}\}$ are the learned
+parameters. \cref{fig:nn-rnn} provides a graphical illustration of such a
+network. Notice that apart from the edges between hidden nodes, the network is
+identical to a regular feedforward network (\cref{fig:nn-ffw}).
+
+\begin{figure}[tb]
     \centering
-    \begin{subfigure}[t]{0.48\textwidth}
-        \centering
-        \input{Appendix2/Figs/meter-usage-original.pgf}
-    \end{subfigure}
-    ~
-    \begin{subfigure}[t]{0.48\textwidth}
-        \centering
-        \input{Appendix2/Figs/meter-usage-quantized.pgf}
-    \end{subfigure}
-    \caption{Meter is minimally affected by quantization due to the high resolution used for
-    time quantization.}
-    \label{fig:meter-time-quantization}
+    \input{Appendix2/Figs/nn-rnn.pdf_tex}
+    \caption{Graph representation of an Elman-type RNN.}
+    \label{fig:nn-rnn}
 \end{figure}
 
-\subsection{Discovering neurons specific to musical concepts}
-
-The relevant discussion is found in \vref{sec:music-concept-neurons}.
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-0.pdf}
-    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-1.pdf}
-    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-2.pdf}
-    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-3.pdf}
-    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-4.pdf}
-    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-5.pdf}
-    \caption{Neuron activations over time as the encoded stimulus is processed token-by-token}
-    \label{fig:model-analysis-tokens}
-\end{figure}
-
-
-\subsection{Identifying and verifying local optimality of the overall best model}
-
-The relevant discussion is found in \vref{sec:overall-best-model}.
-
-\begin{center}
-  \captionof{figure}{Results of grid search (see \Cref{sec:lstm-grid-search}) over LSTM sequence model hyperparameters}
-  \label{tab:torch-rnn-config-perfs}
-  \input{Appendix2/Figs/torch-rnn-config-perfs.tex}
-  \addtocounter{table}{-1}%
-\end{center}
-
-\begin{figure}[htbp]
-    \centering
-    \input{Appendix2/Figs/torch-rnn-network-params.pgf}
-    \caption{\texttt{rnn\_size=256} and \texttt{num\_layers=3} yields lowest validation loss.}
-    \label{fig:torch-rnn-network-params}
-\end{figure}
-
-\begin{figure}[htbp]
-  \centering
-  \input{Appendix2/Figs/torch-rnn-network-params-num-layers.pgf}
-  \caption{Validation loss improves initially with increasing network depth but deteriorates after $>3$ layers.}
-  \label{fig:torch-rnn-network-params-num-layers}
-\end{figure}
-
-\begin{figure}[htbp]
-  \centering
-  \input{Appendix2/Figs/torch-rnn-network-params-rnn-size.pgf}
-  \caption{Validation loss improves initially with higher-dimensional hidden states
-  but deteriorates after $>256$ dimensions.}
-  \label{fig:torch-rnn-network-params-rnn-size}
-\end{figure}
-
-\begin{figure}[htbp]
-    \centering
-    \input{Appendix2/Figs/torch-rnn-input-params.pgf}
-    \caption{\texttt{seq\_length=128} and \texttt{wordvec=32} yields lowest validation loss.}
-    \label{fig:torch-rnn-input-params}
-\end{figure}
-
-\begin{figure}[htbp]
-  \centering
-  \input{Appendix2/Figs/torch-rnn-input-params-wordvec.pgf}
-  \caption{Perturbations about \texttt{wordvec=32} do not yield significant improvements.}
-  \label{fig:torch-rnn-input-params-wordvec}
-\end{figure}
-
-\subsection{Additional large-scale subjective evaluation results}
-
-The relevant discussion is found in \vref{sec:eval-results}.
-
-\begin{figure}[htbp]
-  \centering
-  \input{Chapter7/Figs/responses-mask-agegroup.pgf}
-  \caption{Proportion of correct responses for each question type and age group.}
-  \label{fig:responses-mask-agegroup}
-\end{figure}
-
+To apply the RNN over an input sequence $\x$, the activations of the hidden
+states are first initialized to an initial value $\h \in \RR^{D_{h}}$. Next,
+for each timestep $t$ the hidden layer activations are computed using the
+current input $\x_t$ and the previous hidden state activations $\h_{t-1}$.
+This motivates an alternative perspective on RNNs as a template consisting
+of a feedforward network with inputs $\{\x_t, \h_{t-1}\}$ (see
+\vref{fig:rnn-elman}) replicated across time $t$.

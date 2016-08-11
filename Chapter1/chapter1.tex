@@ -31,81 +31,101 @@
     \graphicspath{{Chapter1/Figs/Vector/}{Chapter1/Figs/}}
 \fi
 
-%********************************** %First Section  **************************************
-Bringing together ideas from language modelling, deep learning, and music
-psychology, we develop a generative model for music and conduct a large-scale
-subjective evaluation. Our results validate our success: participants were only
-5\% more likely to identify an original Bach composition from a sample from
-BachBot. To our knowledge, no prior work in automatic composition has carried
-out a study at this scale.
+\section{Motivation}
 
-Our fundamental question is this: have advances in deep learning enabled
-construction of musical models capable of deceiving human listeners. To answer this
-question, we build a model incorporating the current state-of-the-art in deep
-neural sequence modelling and conduct a large-scale musical Turing test. Our
-results convincingly suggest an affirmative answer.
+Can the style of a particular composer or genre of music be codified into a
+deterministic computable algorithm? While it may be easy to enumerate some
+musical rules, reaching consensus on a formal theory for
+stylistic composition has proven to be difficult. Even after hundreds of years
+of study, many modern music theorists would still feel uncomfortable claiming a
+``correct'' algorithm for composing music like Bach, Beethoven, or Mozart.
 
-Our contributions include:
-\begin{enumerate}
-    \item A note-by-note sequential representation for polyphonic music
-      amenable to processing with standard sequence models
-    \item A rigorous investigation of how recent deep learning advances such
-        how as dropout \citep{srivastava2014dropout}, batch normalization
-        \citep{ioffe2015batch}, and new RNN architectures can be applied to
-        improve probabilistic modelling of music data
-    \item A connectionist model for Bach chorales which avoids domain-specific
-      feature engineering and is capable of composing, completing, harmonizing,
-      and scoring polyphonic scores
-    \item The first large-scale music Turing test with over \mynote{XXX} participants
-\end{enumerate}
+Despite these difficulties, recent advances in computing and progress in
+modelling techniques has enabled computational modelling to provide novel
+insights into various musical phenomena. By offering a method for
+quantitatively testing theories, computational models can help us learn more
+about the various cognitive and perceptual processes related to music
+comprehension, production, and style.
 
-While deep learning has revolutionized computer vision and natural language
-processing, its applications to other domains are still emerging. This
-dissertation is concerned with the applications of deep learning to a new
-problem domain: music scores.
+One primary use case for computational music models is \emph{automatic
+composition}, a task concerned with algorithmic production of musical
+compositions. While early automatic composition models were predominantly
+rule-based, the field has experienced an increased interest in connectionist
+neural-network models over the last $25$ years. The recent empirical triumphs
+of deep learning, a specific form of connectionist modelling, has further
+fueled the renewed interest in connectionist systems for automatic
+composition.
 
-In this work, we investigate how sequence probability models parameterized by
-deep recurrent neural networks can be used as generative models over scores of
-music. Such a model has a variety of applications within computational music
-theory. The aim of this work is to investigate applications on two particular
-tasks: melody harmonization and automatic composition.
+\section{Research aims and scope}
 
-Every aspiring music theorist is at some point tasked with composing simple
-pieces of music in order demonstrate understanding of the harmonic rules of
-Western classical music. These pedagogical exercises often include
-harmonization of chorale melodies, a task which is viewed as sufficiently
-constrained to allow a composer's basic technique to be judged. A generative
-model for music scores can be applied to this task by conditioning on the
-melody line and sampling the conditional distribution for possible
+This thesis is concerned with \emph{automatic stylistic composition}, where the
+goal is to create a system capable of generating music in a style similar to a
+particular composer or genre. We restrict our attention to a particular class
+of model: \emph{generative probabilistic sequence models} which are
+\emph{learned from data}. A generative probabilistic model is desirable because
+it can be applied to a variety of automatic composition tasks, including:
+harmonizing a melody (by conditioning the model on the melody), automatic
+composition (by sampling the model), and scoring (by evaluating the model on a
+given sequence). Fitting the model to data enables it to automatically learn
+the relationships and regularities present throughout the training data,
+enabling generation of music which is statistically similar to what was
+observed during training.
+
+We develop a method for automatic stylistic composition which brings together
+ideas from deep learning, language modelling, and music theory. Our motivation
+stems from recent developments
+\citep{srivastava2014dropout,ioffe2015batch,el1995hierarchical,schmidhuber1992learning}
+which have enabled deep learning models to surpass prior state-of-the-art
+techniques in domains such as computer vision, natural language processing, and
+speech recognition. As it has already shown promise across a wide variety of
+problem domains, we hypothesized that the application of modern deep learning
+techniques to automatic composition would yield similar success.
+
+The aim of our research is \emph{to build an automatic composition system
+capable of imitating Bach's composition style on both harmonization and
+automatic composition tasks in a manner that an average listener finds
+indistinguishable from Bach}. While the method we develop is capable of
+modelling arbitrary polyphonic music compositions, we restrict the scope of our
+study to Bach's chorales. These provide a relatively large corpus by a single
+composer, are well understood by music theorists, and are routinely used when
+teaching music theory.
+
+\section{Organization of the chapters}
+
+The remaining chapters are organized as follows:
+
+\Vref{ch:automatic-composition} describes the construction and evaluation of
+our final model. Our approach first encodes music scores into a sequential
+format. reducing the task to one of sequence modelling. This type of problem is
+analagous to that of language modelling in speech research. Unfortuantely, we
+found that traditional $N$-gram models performed poorly because they are unable
+to capture the important long-range dependencies and precise harmonic rules
+present in music. Inspired by the strong performance of recurrent neural
+network language models, we then investigated sequence models parameterized by
+recurrent neural networks and found that a deep long short-term memory
+architecture performs particularly well.
+
+In \vref{ch:model-analysis}, we open the black box and characterize the
+internals of our learned model. Through measuring neuron activations to applied
+stimulus, we discover that the certain neurons in the model have specialized to
+specific musical concepts without any form of supervision or prior knowledge.
+Our results here represent a significant milestone in computational modelling
+of how musical knowledge is acquired.
+
+We turn to the task of harmonization in \vref{ch:harmonization} and present a
+method for conditionally sampling our model in order to generate
 harmonizations.
 
-A more difficult task is automatic composition, where the composer is tasked
-with producing an original composition of a particular musical style. The open
-nature of this task enables a composer to demonstrate both their
-understanding of music theory as well as their creativity. However, this lack of
-constraints and loose definition of musical style makes it more difficult to
-evaluate the quality of the output. To apply a generative model towards this
-task, we can train the model to assign larger probability mass to stylistically
-similar scores and then sample the model to generate a novel composition.
+To evaluate our success in achieving our stated research aim,
+\vref{ch:evaluation} describes the design, results, and conclusions from a
+large-scale musical Turing test we conducted. Encouragingly, we find that
+average participants are only 5\% more likely than random chance to
+differentiate BachBot from real Bach. Furthermore, our analysis of participant
+demographics and costs suggest that voluntary participation user studies
+promoted over social media yields superior data than paid studies conducted
+using Amazon MTurk. This finding is especially significant to the field of
+machine translation, where use of MTurk in academic publications is widely
+accepted.
 
-While our modelling framework is capable of modelling any encoded music
-score, we focus our study on chorales by Johann Sebastian Bach. These provide
-a relatively large corpus by a single composer, are well understood by music
-theorists, and are routinely used when teaching music theory.
-The aim is to build an automatic music composition system capable of imitating
-Bach's composition style on both harmonization and automatic composition tasks.
-
-We will examine how design decisions made when constructing probability models
-over music affect the musical characteristics of generated samples, investigate
-practical matters encountered with parallel training and sampling across
-multiple GPUs, and benchmark how well our final system performs on human test
-subjects.
-
-\mynote{Mark: this speaks to an important part of the why for this project
-and could do with setting in relief.}
-
-With advances in computing and progress in modelling methods and algorithms,
-computational modelling has started to provide novel insights into various
-musical phenomena. By offering a method for quantitatively testing theories,
-it can help us to learn more about the various cognitive and perceptual processes
-related to music comprehension, production, and style.
+Finally, we summarize the conclusions from our work and suggest future directions
+for extension in \vref{ch:conclusion}.

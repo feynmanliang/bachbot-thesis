@@ -1,5 +1,5 @@
 % ******************************* Thesis Appendix A ****************************
-\chapter{Appendix A}
+\chapter{Appendix A: A primer on Western music theory}\label{sec:music-theory-primer}
 
 \ifpdf
     \graphicspath{{Appendix1/Figs/Raster/}{Appendix1/Figs/PDF/}{Appendix1/Figs/}}
@@ -7,12 +7,11 @@
     \graphicspath{{Appendix1/Figs/Vector/}{Appendix1/Figs/}}
 \fi
 
-\section{A primer on Western music theory}\label{sec:music-theory-primer}
-
-This section provides a primer on the music theory relevant for understanding
-the following chapters. It synthesizes material originally presented in
+This chapter serves as a primer on the music theory knowledge assumed
+throughout the rest of our work. It synthesizes material originally presented
+in
 \citet{franklin2006recurrent,nagler2014schubot,quick2014kulitta,freedman2015correlational}.
-Readers with a strong music background may wish to skip to skip this section.
+Readers with a strong music background may wish to skip this section.
 
 Music theory is a branch of musicology concerned with the study of the rules
 and practices of music. While the general field includes study of acoustic
@@ -35,7 +34,7 @@ the same musical piece may differ across transcriptions and performers.
 Despite these variations, a piece of music is still recognizable from just the
 notes, suggesting that notes are the defining element for a piece of music.
 
-\subsection{Notes: the basic building blocks}
+\section{Notes: the basic building blocks}
 
 A \emph{note} is the most fundamental element of music score and
 represents a sound played at a certain \emph{pitch} for a certain
@@ -44,7 +43,7 @@ denoted by the filled/unfilled black heads with protruding stems. As a can be
 viewed as a collection of notes over time, notes are the fundamental building
 blocks for musical scores.
 
-\subsubsection{Pitch}
+\subsection{Pitch}
 
 Though pitch is closely related to physical frequency of vibration of a
 waveform (as measured in Hertz), pitch is a perceptual property whose semantic
@@ -112,7 +111,7 @@ horizontal lines and four spaces).
     \label{fig:pitch-class}
 \end{figure}
 
-\subsubsection{Duration}
+\subsection{Duration}
 
 In addition to pitch, a note also possesses a \emph{duration}. The duration of
 a note indicates how long it is to be played and is measured in fractions of a
@@ -131,7 +130,7 @@ denoted near the start of the piece in beats per minute.
     \label{fig:note-durations}
 \end{figure}
 
-\subsubsection{Offset, Measures, and Meter}
+\subsection{Offset, Measures, and Meter}
 
 The final property a note possess is an \emph{offset} indicating the time at
 which a note is articulated. The offset is measured with respect to a fixed
@@ -159,7 +158,7 @@ meter of a score provides information about musical structure which can be used
 to predict chord changes and repepetition boundaries
 \citep{cooper1963rhythmic}.
 
-\subsubsection{Piano roll notation}
+\subsection{Piano roll notation}
 
 \begin{figure}[tb]
     \centering
@@ -175,7 +174,7 @@ pitch respectively. A solid horizontal bar signifies the presence of a note at
 the corresponding pitch and offset and the length of the bar corresponds to the
 note's duration.
 
-\subsection{Tonality in common practice music}
+\section{Tonality in common practice music}
 
 \emph{Tonality} refers to ``the orientation of melodies and harmonies towards a
 referential (or \emph{tonic}) pitch class`` \citep{grove-tonality}. One way to
@@ -207,7 +206,7 @@ music contains multiple parts potentially sounding multiple pitches at the same
 time. Just as notes form the basis of monophonic music, chords are the fundamental
 building blocks for polyphonic music.
 
-\subsubsection{Chords: basic units for representing simultaneously sounding notes}
+\subsection{Chords: basic units for representing simultaneously sounding notes}
 
 A \emph{chord} is a collection of three or more pitches all sounding
 simultaneously \citep{randel1999harvard}. In Western classical music, they
@@ -250,7 +249,7 @@ root note. However, alternative voicings called \emph{inversions} can place the
 root note on a different octave and cause the bass and root notes to
 differ.
 
-\subsubsection{Chord progressions, phrases, and cadences}
+\subsection{Chord progressions, phrases, and cadences}
 
 Sequences of chords are called \emph{chord progressions}, which are oftentimes
 grouped with adjacent progressions into coherent units called \emph{phrases}.
@@ -274,7 +273,6 @@ chord progressions called \emph{harmonic cadences}, which are commonly used for
 effects such as eliciting a sense of incompleteness
 \citep{jonas1982introduction} or establishing a sense of conclusion at the end
 of phrases \citep{randel1999harvard}. The most important cadences include:
-\mynote{Review that these definitions are actually necessary}
 \begin{description}
   \item[Perfect cadence]: \RN{5} -- \RN{1}. The perfect cadence is described by
     \citet{randel1999harvard} as ``a microcosm of the tonal system, and is the
@@ -284,13 +282,12 @@ of phrases \citep{randel1999harvard}. The most important cadences include:
     \RN{1}--\RN{5}, \Rn{2}--\RN{5}, \RN{4}--\RN{5}, \RN{5}--\RN{5}, and \Rn{6}
     -- \RN{5}. The imperfect cadence sounds incomplete and is considered
     a \emph{weak} cadence which call for continuation \citep{jonas1982introduction}
-  \item[Plagal cadence]: \RN{4}--\RN{1}
   \item[Interrupted cadepnce]: \RN{5}--\Rn{6}. Also considered a weak cadence
     which invokes a ``hanging'' sensation prompting continuation
     \cite{piston1978harmony}.
 \end{description}
 
-\subsubsection{Transposition invariance}\label{sec:transposition-invariance}
+\subsection{Transposition invariance}\label{sec:transposition-invariance}
 
 Notice that the discussion thus far has remained ambiguous on the choice of
 tonic. This is intentional: most of the concepts discussed do not depend on the
@@ -304,183 +301,3 @@ The \emph{transposition invariance} of chord progressions and keys is an
 important property of music. It enables us to offset an entire score by an
 arbitrary pitch interval without affecting many important psychoacoustic
 qualities.
-
-
-
-\section{An introduction to neural networks}\label{sec:primer-nn}
-
-\subsection{Neurons: the basic computation unit}
-
-Neurons are the basic abstraction which are combined together to form
-neural networks. A \emph{neuron} is a parametric model of a function $f : \RR^D \to
-\RR$ from its $D$-dimensional input $\x$ to its output $y$. Our neurons will be
-defined as
-\begin{equation}
-    f(\x) \coloneqq \sigma( \langle \vec{w}, \x \rangle)
-\end{equation}
-which can be viewed as an inner product with \emph{weights} $\vec{w}$ to
-produce an \emph{activation} $z \coloneqq \langle \vec{w}, \x \rangle
-\in \RR$ which is then squashed to a bounded domain by a non-linear
-\textbf{activation function} $\sigma : \RR \to [L, U]$. This is visually
-depicted in \cref{fig:nn-single}, which also makes apparent the
-interpretation of weight $w_i$ as the sensitivity of the output $y$ to the
-input $x_i$.
-
-\begin{figure}[tb]
-    \centering
-    \input{Appendix1/Figs/nn-single.pdf_tex}
-    \caption{A single neuron first computes an activation $z$ and then passes it through an activation function $\sigma(\cdot)$}
-    \label{fig:nn-single}
-\end{figure}
-
-\subsection{Feedforward neural networks}
-
-Multiple neurons may share inputs and have their outputs concatenated together
-to form a \emph{layer} modelling a multivariate functions $f :
-\RR^{D_\text{in}} \to \RR^{D_\text{out}}$. Multiple layers can then
-be composed together to form a \emph{feedforwd neural network}.
-
-\begin{figure}[tb]
-    \centering
-    \input{Appendix1/Figs/nn-ffw.pdf_tex}
-    \caption{Graph depiction of a feedforward neural network with $2$ hidden layers}
-    \label{fig:nn-ffw}
-\end{figure}
-
-Although a single hidden layer is theoretically sufficient for a universal
-function approximator \citep{Cybenko1993}, the number of hidden units to
-guarantee reported theoretical bounds are usually infeasibly large. Instead,
-recent work in \emph{deep learning} has shown that deep models which contain
-many hidden layers can achieve strong performance across a variety of
-tasks \citep{Bengio2011}.
-
-The improved modeling capacity gained by composing multiple layers is due to
-the composition of multiple non-linear activation functions.
-In fact, it is easy to show that removing activation functions would make
-a deep network equivalent to a single matrix transform: let $\W_{l,l+1}$
-denote the weights between layers $l$ and $l+1$. The original neural network
-computes the function
-\begin{equation}
-    \sigma\left(
-        \W_{L,L-1} \sigma \left(
-            \W_{L-1,L-2}\cdots \sigma \left(
-                \W_{2,1} \x
-            \right) \cdots
-        \right)
-    \right)
-\end{equation}
-After removing the activation functions $\sigma$, we are left with
-\begin{equation}
-    \W_{L,L-1} \W_{L-1,L-2}\cdots \W_{2,1} \x
-    = \x
-    = \tilde{\W} \x
-\end{equation}
-where $\tilde{\W} = \left(\prod_{i=1}^{L-1} \W_{i,i+1} \right)$
-is a matrix transform computing the same function as the neural network with
-activation functions removed.
-
-\subsection{Recurrent neural networks}
-
-While feedforward neural networks provide a flexible model for approximating
-arbitrary functions, they require a fixed-dimension input $\x$ and hence
-cannot be directly applied to sequential data $\x = (\x_t)_{t=1}^T$ where $T$ may
-vary.
-
-A naive method for extending feedforward networks would be to independently
-apply a feedforward network to compute $\y_t = f(\x_t \vec{\theta})$ at each timestep
-$1 \leq t \leq T$. However, this approach is only correct when each output
-$\y_t$ depends only on the input at the current time $\x_t$ and is independent of
-all prior inputs $\{\x_k\}_{k < t}$. This assumption is false in musical data:
-the current musical note usually is highly dependent on the sequence of notes
-leading up to it.
-
-This shortcoming motivates \emph{recurrent neural networks} (RNNs), which
-generalize feedforward networks by introducing time-delayed recurrent
-connections between hidden layers (Elman networks \citep{elman1990finding}) or
-from the output layers to the hidden layers (Jordan networks
-\citep{jordan1997serial}). Mathematically, an (Elman-type) RNN is a discrete time
-dynamical system commonly parameterized as:
-\begin{equation}
- \left.\begin{aligned}
-          \h_t &=& \W_{xh} \sigma_{xh} \left( \x_t \right) + \W_{hh} \sigma_{hh} \left( \h_{t-1} \right)\\
-          \y_t &=& \W_{hy} \sigma_{hy} \left( \h_t \right)
-       \end{aligned}
- \right\}
- \qquad \text{RNN Dynamics}
-\end{equation}
-\begin{align}
-\end{align}
-where $\sigma_{\cdot \cdot}(\cdot)$ are activation functions acting
-element-wise and $\theta = \{ \W_{xh}, \W_{hh}, \W_{hy}\}$ are the learned
-parameters. \cref{fig:nn-rnn} provides a graphical illustration of such a
-network. Notice that apart from the edges between hidden nodes, the network is
-identical to a regular feedforward network (\cref{fig:nn-ffw}).
-
-\mynote{Why do we use Elman}
-
-\begin{figure}[tb]
-    \centering
-    \input{Appendix1/Figs/nn-rnn.pdf_tex}
-    \caption{Graph representation of an Elman-type RNN.}
-    \label{fig:nn-rnn}
-\end{figure}
-
-To apply the RNN over an input sequence $\x$, the activations of the hidden
-states are first initialized to an initial value $\h \in \RR^{D_{h}}$. Next,
-for each timestep $t$ the hidden layer activations are computed using the
-current input $\x_t$ and the previous hidden state activations $\h_{t-1}$.
-This motivates an alternative perspective on RNNs as a template consisting
-of a feedforward network with inputs $\{\x_t, \h_{t-1}\}$ (see
-\cref{fig:rnn-elman}) replicated across time $t$.
-
-
-\section{Sufficient conditions for vanishing gradients}\label{sec:vanishing-exploding-gradients}
-
-Following \citet{Pascanu2012}, let $\| \cdot \|$ be any
-submultiplicative matrix norm (\eg Frobenius, spectral, nuclear, Shatten
-$p$-norms). Without loss of generality, we will use the \emph{operator norm}
-defined as
-\begin{equation}\label{eq:operator-norm}
-    \| A \| = \sup_{x \in \RR^n; x \neq 0} \frac{|A x|}{|x|}
-\end{equation}
-where $|\cdot|$ is the standard Euclidian norm.
-
-Applying the definition of submultiplicativity to the factors of
-the product in \cref{eq:error-transfer}, we have that for any $k$
-\begin{equation}
-    \left\| \frac{\pd \h_k}{\pd \h_{k-1}} \right\|
-    \leq \| \W_{hh}^\tp \| \| \diag\left( \sigma_{hh}'(\h_{k-1}) \right) \|
-    \leq \gamma_{\W} \gamma_\sigma
-\end{equation}
-where we have defined $\gamma_{\W} = \| \W_{hh}^\tp \|$ and
-\begin{align}
-    \gamma_\sigma
-    &\coloneqq \sup_{h \in \RR^n} \| \diag \left( \sigma_{hh}'(\h) \right) \|  &\\
-    &= \sup_{h \in \RR^n} \max_i \sigma_{hh}'(\h)_i &\mbox{Operator norm of diag} \\
-    &= \sup_{x \in \RR} \sigma_{hh}'(x) &\mbox{$\sigma_{hh}$ acts elementwise}
-\end{align}
-
-Substituting back into \cref{eq:error-transfer}, we find that
-\begin{equation}
-    \left\| \frac{\pd \h_t}{\pd \h_k} \right\|
-    = \left\| \prod_{t \geq i > k} \frac{\pd \h_i}{\pd \h_{i-1}} \right\|
-    \leq  \prod_{t \geq i > k} \left\| \frac{\pd \h_i}{\pd \h_{i-1}} \right\|
-    \leq (\gamma_{\W} \gamma_\sigma)^{t-k}
-\end{equation}
-
-Hence, we see that a sufficient condition for vanishing gradients is
-for $\gamma_{\W} \gamma_\sigma < 1$, in which case $\left\| \frac{\pd \h_t}{\pd \h_k} \right\| \to 0$
-exponentially for long timespans $t \gg k$. $\qed$
-
-If $\gamma_\sigma$ is bounded, sufficient
-conditions for vanishing gradients to occur may be written as
-\begin{equation}
-    \gamma_{\W} < \frac{1}{\gamma_\sigma}
-\end{equation}
-This is true for commonly used activation functions (\eg $\gamma_\sigma = 1$
-for $\sigma_{hh} = \tanh$, $\gamma_\sigma = 0.25$ for $\sigma_{hh} =
-\sigmoid$).
-
-The converse of the proof implies that $\| \W_{hh}^\tp \| \geq
-\frac{1}{\gamma_\sigma}$ are necessary conditions for $\gamma_{\W}
-\gamma_\sigma > 1$ and exploding gradients to occur.
