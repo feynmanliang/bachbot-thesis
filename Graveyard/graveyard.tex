@@ -317,6 +317,93 @@ back-off N-grams and other interpolated language models.
 Fortunately, low order N-grams and standard HMM-based models are sampleable and
 thus can be used as baselines.
 
+\section{Probabilistic sequence modelling}
+
+In this section, we how RNNs can be used to parameterize a probability
+distribution $P(\x)$ over sequences $\x$ of arbitrary length and the modelling
+assumptions required for the model to be valid.
+
+\subsection{Modelling assumptions}
+
+An RNN model for sequences necessarily imposes 
+
+We make the following assumptions about the sequences $\x_{1:T}$, $\y_{1:T}$,
+and $\h_{0:T}$ and their corresponding probability distributions:
+\begin{enumerate}
+  \item Modified Markov assumption:
+    \begin{equation}
+      \label{eq:modified-markov}
+      \forall t: P(\h_t | \h_{0:t-1}, \x_{1:t}) = P(\h_t | \h_{t-1}, \x_t)
+    \end{equation}
+  \item Deterministic hidden state dynamics:
+    \begin{equation}
+      \label{eq:hidden-state-deterministic}
+      \h_t = f_h(\h_{t-1}, \x_t)
+   \end{equation}
+   for some function $f_h$
+  \item Output Stationarity:
+    \begin{equation}
+      \label{eq:output-stationarity}
+      \forall t_1, t_2: P(\y_{t_1} = \j | \h_{t_1} = \i) = P(\y_{t_2} = \j | \h_{t_2} = \i)
+   \end{equation}
+  \item Output independence:
+   \begin{equation}
+     \label{eq:output-independence}
+     P(\y_{1:T} | \h_{0:T}, \x_{1:T}) = \prod_{t=1}^T P(\y_t | \h_{t}, \x_t)
+   \end{equation}
+\end{enumerate}
+
+\subsection{Modelling sequences with RNNs}
+
+As a consequence of our modelling assumptions, we have the sequential factorization:
+\begin{align}
+  &P(\y_{1:T}, \h_{1:T} | \h_0, \x_{1:T})  &\\
+  &= P(\y_{1:T} | \h_{0:T}, \x_{1:T}) P(\h_{1:T} | \h_0, \x_{1:T})  &\\
+  &= \left( \prod_{t=1}^T P(\y_t | \h_t) \right) P(\h_{1:T}| \h_0, \x_{1:T}) &\text{\Cref{eq:output-independence}}\\
+  &= \left( \prod_{t=1}^T P(\y_t | \h_t) \right) \left(\prod_{t=1}^T P(\h_{t}| \h_{0:t-1}, \x_{1:t})\right) &\\
+  &= \left( \prod_{t=1}^T P(\y_t | \h_t) \right) \left(\prod_{t=1}^T P(\h_{t}| \h_{t-1}, \x_{t})\right) &\text{\Cref{eq:modified-markov}}\\
+  &= \prod_{t=1}^T P(\y_t | \h_t, \x_t) P(\h_{t}| \h_{t-1}, \x_{t}) &
+\end{align}
+\Cref{eq:hidden-state-stationarity} and \cref{eq:output-stationarity} imply
+that $P(\h_{t}| \h_{t-1}, \x_{t})$ and $P(\y_t | \h_t)$ are time-invariant and
+can hence be modelled by the same recurrent function.
+
+In RNNs, the hidden state dynamics are given by \vref{eq:rnn-dynamics}. Since this is deterministic,
+we have that $P(\h_t | \h_{t-1}, \x_t)$
+$P(\y_{1:T}, \h_{1:T} | \h_0, \x_{1:T}) = P(\y_{1:T} | \h_0, \x_{1:T})$.
+This yields the factorization
+\begin{equation}
+  P(\y_{1:T} | \h_0, \x_{1:T})
+  = P(\y_{1:T}, \h_{1:T} | \h_0, \x_{1:T})
+  = \prod_{t=1}^T P(\y_t | \h_t, \x_t) f_h(\x_t, \h_{t-1})
+\end{equation}
+\mynote{Draw PGM}
+
+However, one minor problem remains. Let $\z_t = f_y(f_h(\x_t, \h_{t-1}))$ (with
+$f_y$ and $f_h$ as defined in \mynote{ref}) denote the outputs of the RNN model
+at time $t$. Note that $\z_t$ can be any real vector in $\RR^{|V|}$
+\mynote{Define $V$ to be the vocabulary}, but $P(\x_{t+1} | \h_{t-1}, \x_{t})$ is
+a probability vector constrained to sum to one.
+
+Fortunately, we can treat $\z_t$ as the \emph{scores} for a \emph{Boltzmann
+distribution}
+\begin{equation}\label{eq:boltzmann-dist}
+    P( \y_{t} = s | \h_{t-1}, \x_t )
+    = \frac{\exp \left(-\z_{t,s}/T\right) }{ \sum_{k=1}^{K} \left(\exp -\z_{t,k}/T\right)}
+\end{equation}
+where $T \in \RR^+$ is a \emph{temperature} parameter (set to $T=1$ during training and varied during sampling).
+To keep notation compact, we omit writing this explicitly and understand $P(\y_t | \h_{t-1}, \x_t)$ to mean
+the Boltzmann distribution parameterized by the scores $f_y(f_h(\x_t, \h_{t-1}))$.
+
+Note the similarity between \cref{eq:modified-markov}--\cref{eq:output-independence}
+and the assumptions for Hidden Markov models \citep{ramage2007hidden}. Discrepancies are due
+to the presence of an input sequence $\x_{1:T}$ in our sequence-to-sequence model.
+
+\mynote{Discuss validity of assumptions, namely output independence assuming hidden state and input summarize
+all prior context}
+
+
+
 \section{Related work}
 
 \cite{Cuthbert2011} used

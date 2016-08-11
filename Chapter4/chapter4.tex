@@ -360,7 +360,7 @@ Our model first embeds the inputs $\x_t$ into a \texttt{wordvec}-dimensional
 vector-space, compressing the dimensionality down from $|V| \approx 140$ to
 $\texttt{wordvec}$ dimensions. Next, \texttt{num\_layers} layers of memory
 cells followed by batch normalization \citep{ioffe2015batch} and dropout
-\citep{srivastava2014dropout} with dropout probability \texttt{dropout} are
+\citep{hinton2012improving} with dropout probability \texttt{dropout} are
 stacked. The outputs $\y^{(\texttt{num\_layers})}_t$ are followed by a
 fully-connected layer mapping to $|V| = 108$ units, which are passed through a
 softmax to yield a predictive distribution $P(\x_{t+1} | \h_{t-1}, \x_{t})$.

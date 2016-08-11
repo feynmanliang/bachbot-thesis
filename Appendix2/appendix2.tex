@@ -101,7 +101,7 @@ This shortcoming motivates \emph{recurrent neural networks} (RNNs), which
 generalize feedforward networks by introducing time-delayed recurrent
 connections between hidden layers (Elman networks \citep{elman1990finding}) or
 from the output layers to the hidden layers (Jordan networks
-\citep{jordan1997serial}). Mathematically, an (Elman-type) RNN is a discrete time
+\citep{jordan1997serial}). Mathematically, a linear Elman-type RNN is a discrete time
 dynamical system commonly parameterized as:
 \begin{equation}
  \left.\begin{aligned}
@@ -109,7 +109,7 @@ dynamical system commonly parameterized as:
           \y_t &=& \W_{hy} \sigma_{hy} \left( \h_t \right)
        \end{aligned}
  \right\}
- \qquad \text{RNN Dynamics}
+ \qquad \text{Linear Elman-Type RNN Dynamics}
 \end{equation}
 \begin{align}
 \end{align}
