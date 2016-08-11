@@ -1,12 +1,54 @@
 % ******************************* Thesis Appendix B ********************************
 \chapter{Appendix B}
 
+\ifpdf
+    \graphicspath{{Appendix2/Figs/Raster/}{Appendix2/Figs/PDF/}{Appendix2/Figs/}}
+\else
+    \graphicspath{{Appendix2/Figs/Vector/}{Appendix2/Figs/}}
+\fi
+
 \section{Additional Figures and Tables}
 
 \begin{center}
   \captionof{figure}{Results of grid search (see \Cref{sec:lstm-grid-search}) over LSTM sequence model hyperparameters}
   \label{tab:torch-rnn-config-perfs}
-  \input{Chapter4/Figs/torch-rnn-config-perfs.tex}
+  \input{Appendix2/Figs/torch-rnn-config-perfs.tex}
   \addtocounter{table}{-1}%
 \end{center}
+
+\begin{figure}[tb]
+    \centering
+    \input{Appendix2/Figs/torch-rnn-network-params.pgf}
+    \caption{\texttt{rnn\_size=256} and \texttt{num\_layers=3} yields lowest validation loss.}
+    \label{fig:torch-rnn-network-params}
+\end{figure}
+
+\begin{figure}[tb]
+  \centering
+  \input{Appendix2/Figs/torch-rnn-network-params-num-layers.pgf}
+  \caption{Validation loss improves initially with increasing network depth but deteriorates after $>3$ layers.}
+  \label{fig:torch-rnn-network-params-num-layers}
+\end{figure}
+
+\begin{figure}[tb]
+  \centering
+  \input{Appendix2/Figs/torch-rnn-network-params-rnn-size.pgf}
+  \caption{Validation loss improves initially with higher-dimensional hidden states
+  but deteriorates after $>256$ dimensions.}
+  \label{fig:torch-rnn-network-params-rnn-size}
+\end{figure}
+
+\begin{figure}[tb]
+    \centering
+    \input{Appendix2/Figs/torch-rnn-input-params.pgf}
+    \caption{\texttt{seq\_length=128} and \texttt{wordvec=32} yields lowest validation loss.}
+    \label{fig:torch-rnn-input-params}
+\end{figure}
+
+\begin{figure}[tb]
+  \centering
+  \input{Appendix2/Figs/torch-rnn-input-params-wordvec.pgf}
+  \caption{Perturbations about \texttt{wordvec=32} do not yield significant improvements.}
+  \label{fig:torch-rnn-input-params-wordvec}
+\end{figure}
 

@@ -13,138 +13,67 @@
     \graphicspath{{Chapter4/Figs/Vector/}{Chapter4/Figs/}}
 \fi
 
-This chapter describes a generative RNN sequence model for polyphonic music. We
-first describe our process for constructing a training corpus of chorales and
-quantify the impact of our preprocessing procedure over the corpus. Next, we
-present a simple frame-based sequence encoding for polyphonic music. Using this
-sequence representation, we perform an investigation of various RNN
-architectures, design tradeoffs, and training methods. The results of our
-investigation are used to design our final model, which we compare against
-prior work and utilize in following chapters.
+This chapter describes the design and quantitative evaluation of a generative
+RNN sequence model for polyphonic music. We first construct a training corpus
+from Bach chorales and investigate the impact of our preprocessing procedure on
+the corpus. Next, we present a simple frame-based sequence encoding for
+polyphonic music with many desirable properties.
 
-\section{Modeling assumptions}
+Using this sequence representation, we reduce the task to one of language
+modelling and first show that traditional $N$-gram language models perform poorly
+on our encoded music data. This prompts an investigation of various RNN
+architectures, design trade-offs, and training methods in order to build
+an optimized generative model for Bach chorales.
 
-\mynote{Integrate better}
+We conclude this chapter by quantitatively evaluating our final model in
+test-set loss and training time, and comparing against similar work to
+establish context.
 
-In order to use LSTM as a model for music, we make the following assumptions
-about the sequences $\x_{1:T}$, $\y_{1:T}$, and $\h_{0:T}$:
-\begin{enumerate}
-  \item Modified Markov assumption:
-    \begin{equation}
-      \label{eq:modified-markov}
-      \forall t: P(\h_t | \h_{0:t-1}, \x_{1:t}) = P(\h_t | \h_{t-1}, \x_t)
-    \end{equation}
-  \item Hidden State Stationarity:
-    \begin{equation}
-      \label{eq:hidden-state-stationarity}
-      \forall t_1, t_2: P(\h_{t_1} = \k | \h_{t_{1}-1} = \i, \x_{t_1} = \j) = P(\h_{t_2} = \k | \h_{t_{2}-1} = \i, \x_{t_2} = \j)
-   \end{equation}
-  \item Output Stationarity:
-    \begin{equation}
-      \label{eq:output-stationarity}
-      \forall t_1, t_2: P(\y_{t_1} = \j | \h_{t_1} = \i) = P(\y_{t_2} = \j | \h_{t_2} = \i)
-   \end{equation}
-  \item Output independence:
-   \begin{equation}
-     \label{eq:output-independence}
-     P(\y_{1:T} | \h_{0:T}, \x_{1:T}) = \prod_{t=1}^T P(\y_t | \h_{t}, \x_t)
-   \end{equation}
-\end{enumerate}
+\section{Constructing a corpus of encoded Bach chorales scores}
 
-These assumptions imply the sequential factorization:
-\begin{align}
-  &P(\y_{1:T}, \h_{1:T} | \h_0, \x_{1:T})  &\\
-  &= P(\y_{1:T} | \h_{0:T}, \x_{1:T}) P(\h_{1:T} | \h_0, \x_{1:T})  &\\
-  &= \left( \prod_{t=1}^T P(\y_t | \h_t) \right) P(\h_{1:T}| \h_0, \x_{1:T}) &\text{\cref{eq:output-independence}}\\
-  &= \left( \prod_{t=1}^T P(\y_t | \h_t) \right) \left(\prod_{t=1}^T P(\h_{t}| \h_{0:t-1}, \x_{1:t})\right) &\\
-  &= \left( \prod_{t=1}^T P(\y_t | \h_t) \right) \left(\prod_{t=1}^T P(\h_{t}| \h_{t-1}, \x_{t})\right) &\text{\cref{eq:modified-markov}}\\
-  &= \prod_{t=1}^T P(\y_t | \h_t, \x_t) P(\h_{t}| \h_{t-1}, \x_{t}) & \\
-\end{align}
-Together, \cref{eq:hidden-state-stationarity} and \cref{eq:output-stationarity} imply that $P(\y_t | \h_t)$
-and $P(\h_{t}| \h_{t-1}, \x_{t})$ are time-invariant and can be modelled by the same recurrent function.
-
-In RNNs, the hidden state dynamics $P(\h_t | \h_{t-1}, \x_t)$ are deterministic:
-\begin{equation}
-  \h_t = f_h(\x_t, \h_{t-1})
-\end{equation}
-Which means that $P(\y_{1:T}, \h_{1:T} | \h_0, \x_{1:T}) = P(\y_{1:T} | \h_0, \x_{1:T})$.
-This yields the factorization
-\begin{equation}
-  P(\y_{1:T} | \h_0, \x_{1:T})
-  = P(\y_{1:T}, \h_{1:T} | \h_0, \x_{1:T})
-  = \prod_{t=1}^T P(\y_t | \h_t, \x_t) f_h(\x_t, \h_{t-1})
-\end{equation}
-\mynote{Draw PGM}
-
-However, one minor problem remains. Let $\z_t = f_y(f_h(\x_t, \h_{t-1}))$ (with
-$f_y$ and $f_h$ as defined in \mynote{ref}) denote the outputs of the RNN model
-at time $t$. Note that $\z_t$ can be any real vector in $\RR^{|V|}$
-\mynote{Define $V$ to be the vocabulary}, but $P(\x_{t+1} | \h_{t-1}, \x_{t})$ is
-a probability vector constrained to sum to one.
-
-Fortunately, we can treat $\z_t$ as the \emph{scores} for a \emph{Boltzmann
-distribution}
-\begin{equation}\label{eq:boltzmann-dist}
-    P( \y_{t} = s | \h_{t-1}, \x_t )
-    = \frac{\exp \left(-\z_{t,s}/T\right) }{ \sum_{k=1}^{K} \left(\exp -\z_{t,k}/T\right)}
-\end{equation}
-where $T \in \RR^+$ is a \emph{temperature} parameter (set to $T=1$ during training and varied during sampling).
-To keep notation compact, we omit writing this explicitly and understand $P(\y_t | \h_{t-1}, \x_t)$ to mean
-the Boltzmann distribution parameterized by the scores $f_y(f_h(\x_t, \h_{t-1}))$.
-
-Note the similarity between \cref{eq:modified-markov}--\cref{eq:output-independence}
-and the assumptions for Hidden Markov models \citep{ramage2007hidden}. Discrepancies are due
-to the presence of an input sequence $\x_{1:T}$ in our sequence-to-sequence model.
-
-\mynote{Discuss validity of assumptions, namely output independence assuming hidden state and input summarize
-all prior context}
-
-
-
-\section{Constructing a corpus of encoded scores}
-
-\mynote{We restrict our attention to Bach chorales: Describe Bach and chorales, 4 parts, soprano lead with ATB harmony,
-regular phrases, fermatas to denote phrase ends. Background section in chorale harmonization. }
-\mynote{Describe MIDIs 127 iquantized pitches, isomorphic to musicXML}
-
+\nomenclature[z-BWV]{BWV}{Bach-Werke-Verzeichnis numbering system for Bach chorales}
 
 We restrict the scope of our investigation to Bach chorales for the following reasons:
 \begin{enumerate}
   \item The Baroque style employed in Bach chorales has specific guidelines and
     practices \citep{piston1978harmony} (\eg no parallel fifths, voice leading)
     which can be use to qualitatively evaluate success
-  \item The structure of chorales are regular: all chorales have four parts and
-    consist of a melody in the Soprano part harmonized by the Alto, Tenor, and
-    Bass parts. Additionally, each chorale consists of a series of \emph{phrases}:
-    groupings of consecutive notes into a unit that has complete musical sense
-    of its own\citep{nattiez1990music}. It is well known\mynote{citep} that Bach
-    denoted ends of phrases with fermatas\mynote{refer back to background}.
+  \item The large amount of easily recognizable structure: all chorales have
+    exactly four parts consisting of a melody in the Soprano part harmonized by
+    the Alto, Tenor, and Bass parts. Additionally, each chorale consists of a
+    series of \emph{phrases}: ``groupings of consecutive notes into a unit that
+    has complete musical sense of its own'''\citep{nattiez1990music} which Bach
+    delimited using fermatas
   \item The Bach chorales have become a standardized corpus routinely studied
     by aspiring music theorists\citep{white2002guidelines}
 \end{enumerate}
-The Bach chorales, indexed by the Bach-Werke-Verzeichnis (BWV) numbering
-system\citep{butt1999bach}, are conveniently provided by
-\texttt{music21}\citep{Scott2015}.
+We use the \emph{Bach-Werke-Verzeichnis} (BWV) \citep{butt1999bach} indexed
+collection of the Bach chorales provided by the
+\texttt{music21}\citep{Scott2015} Python library as our data source.
 
 \subsection{Preprocessing}
 
-Motivated by the transposition invariance of music (see
-\vref{sec:transposition-invariance}) as well as prior practice
+\nomenclature[z-MIDI]{MIDI}{Musical Instrument Device Interface}
+
+Motivated by transposition invariance in music (see
+\vref{sec:transposition-invariance}) and prior work
 \citep{mozer1994neural,Eck2002,franklin2004recurrent,franklin2005jazz}, we
 first perform \emph{key normalization}. The keys of each score were first
 analyzed using the Krumhansl Schmuckler key-finding algorithm
 \citep{krumhansl2001cognitive} and then transposed such that the resulting
 score is C-major for major scores and A-minor for minor scores.
 
-Next, we perform \emph{time quantization} by aligning note start and end times
-to the nearest multiple of some minimum duration. Our model uses a minimum
-duration of one $1/16$th note, exceeding the time resoltuions of
-\citep{Boulanger-Lewandowski2012} \citep{Eck2002} by 2x,
+Next, \emph{time quantization} is performed by aligning note start and end
+times to the nearest multiple of some minimum duration. Our model uses a
+minimum duration of one semibreve, exceeding the time resolutions of
+\citep{Boulanger-Lewandowski2012,Eck2002} by 2x,
 \citep{hild1991harmonet} by 4x, and \citep{bellgard1994harmonizing} by 8x.
 
-We consider only note pitches and durations, neglecting changes in timing
-(\eg ritardandos), dynamics (\eg crescendos), and stylistic notations (\eg
-accents, staccatos, legatos).
+We consider only note pitches and durations, neglecting changes in timing (\eg
+ritardandos), dynamics (\eg crescendos), and stylistic notations (\eg accents,
+staccatos, legatos). This is comparable to prior work
+\citep{Boulanger-Lewandowski2012,pascanu2013construct} where a MIDI-encoding
+also lacking this additional notation was used.
 
 An example of the distortion introduced through of our preprocessing steps is
 provided in \vref{fig:score-effects-preproc} in sheet music notation and in
@@ -283,12 +212,11 @@ between LSTM language models that operate on individual characters versus words
 suggesting that the choice is not too significant at least for English language
 modelling.
 
-
 Similar to \citep{todd1989connectionist}, we represent polyphonic scores using
 a localist frame-based representation where time is discretized into constant
 timestep \emph{frames}. Frame based processing forces the network to learn the
 relative duration of notes, a counting and timing task which
-\citep{gers2002learning} demonstred LSTM is capable of. Consecutive frames are
+\citep{gers2002learning} demonstrated LSTM is capable of. Consecutive frames are
 separated by a unique delimiter (``$|||$''' in \mynote{Figure of score encoded
 in text}).
 
@@ -310,7 +238,7 @@ encoded score}, which Bach used to denote ends of phrases, solves this problem.
 
 Finally, for each score a unique start symbol (``START'' in \mynote{Figure})
 and end symbol (``END'' in \mynote{Figure}) are appended to the beginning and
-end repsectively. This causes the model to learn to initialize itself when
+end respectively. This causes the model to learn to initialize itself when
 given the start symbol and allows us to determine when a composition generated
 by the model has concluded. The vocabulary and corpus size after encoding is
 detailed in \cref{tab:encoded-corpus-stats}. The rank-size distribution of the
@@ -347,7 +275,7 @@ note with the same duration, an issue present in many prior works
 \citep{Eck2002,eck2008learning,Liu2014,Brien2016}.
 
 Additionally, notice that our encoding avoids hand-engineered features such as
-pitch representations which are psychochologically-based \citep{mozer1994neural}
+pitch representations which are psychologically-based \citep{mozer1994neural}
 or harmonically-based \citep{franklin2004recurrent}
 \citep{laden1989representation}. This is intentional and is motivated by
 numerous reports \citep{bengio2009learning}\citep{Bengio2011} suggesting that
@@ -357,7 +285,7 @@ features from raw data.
 \section{Design and validation of a generative model for music}
 
 In this section, we describe the design and validation process leading to our
-generative model. Unlike many prior models for music data, we intentially avoid
+generative model. Unlike many prior models for music data, we intentionally avoid
 injection of domain-specific knowledge into our model architectures such as
 distinguishing between chords versus notes
 \citep{hild1991harmonet}\citep{mozer1994neural} \citep{Eck2002} and explicitly
@@ -392,205 +320,27 @@ for resolving this discrepancy and may help the model better learn to predict
 using generated symbols rather than relying on ground truth to be always
 provided as input.
 
-\subsection{Comparison of memory cells on music data}
+\subsection{Establishing a baseline with $N$-gram language models}
 
-\mynote{Diagram of the model?}
+The encoding of music scores into token sequences permits application of
+standard sequence modelling techniques from \emph{language modelling}, a
+research topic within speech recognition concerned with modelling distributions
+over sequences of tokens (\eg phones, words). This motivates our use of two
+widely available language modelling software packages, KenLM
+\citep{Heafield-estimate} and SRILM \citep{stolcke2002srilm}, as baselines.
+KenLM implements an efficient modified Kneser-Ney smoothing language model and
+while SRILM provides a variety of language models we choose choose to use the
+Good-Turing discounted language model for benchmarking against.
 
-To rapidly compare a large number of memory cell implementations, we leveraged
-\texttt{theanets}\footnote{https://github.com/lmjohns3/theanets}: a Python
-software library for high-level specification of neural network models. \Cref{fig:theanets-architecture}
-shows thes results of exploring a range of RNN memory cell implementation and
-holding \texttt{num\_layers=1}, \texttt{rnn\_size=130}, and \texttt{wordvec=64}
-constant. The periods for the clockwork RNN \citep{cho2014learning} were set to
-$(1, 2, 4, 8, 16)$.
-
-\begin{figure}[tb]
-    \centering
-    \input{Chapter4/Figs/theanets-architecture.pgf}
-    \caption{LSTM and GRUs yield the lowest training loss. Validation loss
-      traces show all architectures exhibit signs of significant overfitting}
-    \label{fig:theanets-architecture}
-\end{figure}
-
-The LSTM and GRU architectures achieve the lowest training errors, consistent
-with expectations since these architectures have the most parameters. All
-yielded comparable validation loss which increased over time, motivating
-regularization.
-
-LSTM and GRUs trained much faster and achieved lower training loss, suggesting
-higher capacity. However, \citet{zaremba2015empirical} reports adding a bias unit to LSTM empirically
-resolves any performane discrepancies compared to GRUs. Furthermore, \citet{Nayebi2015} reports
-that LSTM outperform GRUs in music applications. This motivates our final choice for
-for using LSTM.
-
-\subsection{Optimizing the LSTM architecture}
-\label{sec:lstm-grid-search}
-
-Switched to \texttt{torch-rnn}. \mynote{Discrepancy between above architectures
-and below losses because we are perturbing about best model}
-
-We construct multi-layer LSTM models with \texttt{num\_layers} number of
-layers, each containing \texttt{rnn\_size} hidden units. The inputs $x_t$ are
-one-hot-encoded before being passed through a \texttt{wordvec}-dimensional
-vector-space embedding layer, which compresses the dimensionality down from
-$|V| \approx 140$ to $\texttt{wordvec}$ dimensions. Dropout layers were added
-between LSTM connections in both depth and time dimensions all with dropout
-probability $\texttt{dropout} \in [0,1]$.
-
-We build our models using the \texttt{torch7} framework and
-an optimized implementation of LSTM provided by \texttt{torch-rnn} \mynote{citep}.
-
-Models were trained using RMSProp \mynote{citep} with batch normalization \mynote{citep}
-and an initial learning rate of $2 \times 10^{-3}$ decayed by $0.5$ every $5$
-epochs. The back-propogation through time gradients were clipped
-at $t$ \mynote{citep Mikolov} and truncated after \texttt{seq\_length} time steps.
-We use a mini-batch size of $50$.
-
-\subsubsection{Overall best model}
-
-We identified our best model to be \mynote{what is it?}.
-
-\begin{figure}[tb]
-  \centering
-  \input{Chapter4/Figs/torch-rnn-best-model-trace.pgf}
-  \caption{Training curves for the overall best model. The periodic spikes correspond
-  to resetting of the LSTM state at the end of a training epoch.}
-  \label{fig:torch-rnn-best-model-trace}
-\end{figure}
-
-In the following sections, we investigate pertubations about this model and the
-effects of various hyperparameters. A complete listing of results are available
-in \cref{tab:torch-rnn-config-perfs}.
-
-\subsubsection{Regularization}
-
-The increasing validation error in \cref{fig:theanets-architecture} confirmed
-that our models were overfitting and required regularization. \texttt{dropout}
-
-\begin{figure}[tb]
-  \centering
-  \input{Chapter4/Figs/torch-rnn-dropout.pgf}
-  \caption{Dropout acts as a regularizer, resulting in larger training loss
-  but better generalization as evidenced by lower validation loss. A setting of
-\texttt{dropout=0.3} achieves best results for our model.}
-  \label{fig:torch-rnn-dropout}
-\end{figure}
-
-\mynote{Batch normalization experiments}
-
-\subsubsection{Network capacity}
-
-\begin{figure}[tb]
-    \centering
-    \input{Chapter4/Figs/torch-rnn-network-params.pgf}
-    \caption{\texttt{rnn\_size=256} and \texttt{num\_layers=3} yields lowest validation loss.}
-    \label{fig:torch-rnn-network-params}
-\end{figure}
-
-\begin{figure}[tb]
-  \centering
-  \input{Chapter4/Figs/torch-rnn-network-params-num-layers.pgf}
-  \caption{Validation loss improves initially with increasing network depth but deteriorates after $>3$ layers.}
-  \label{fig:torch-rnn-network-params-num-layers}
-\end{figure}
-
-\begin{figure}[tb]
-  \centering
-  \input{Chapter4/Figs/torch-rnn-network-params-rnn-size.pgf}
-  \caption{Validation loss improves initially with higher-dimensional hidden states
-  but deteriorates after $>256$ dimensions.}
-  \label{fig:torch-rnn-network-params-rnn-size}
-\end{figure}
-
-Sensitivity to network structure: \texttt{num\_layers} and \texttt{rnn\_size}.
-\begin{itemize}
-    \item Larger \texttt{rnn\_size} leads to higher capacity and lower training loss
-        \begin{itemize}
-            \item Presents as overfitting on validation, where the lowest capacity
-                model \texttt{rnn\_size} appears to be improving in generalization while
-                others are flat/increasing
-        \end{itemize}
-    \item Training curves about the same wrt \texttt{num\_layers}, validation curves have interesting story
-        \begin{itemize}
-            \item Depth matters: small 64 and 128 hidden unit RNNs saw improvements up to 0.09
-            \item Unsurprising, \citet{pascanu2013construct} already observed deep RNNs dominated polyphonic modelling.
-            \item Expressivity gained from depth furthers overfitting: 256
-                hidden unit RNN has some of the best validation performance at
-                depth 1 but is the worst generalizing model for depths 2
-                and 3 even though training loss is low
-        \end{itemize}
-    \item \texttt{rnn\_size=128} undisputably best generalizing, optimized at
-        \texttt{num\_layers=2}: will continue with these settings
-\end{itemize}
-
-\subsubsection{Network input parameters}
-
-\mynote{Is seq\_length an input parameter, or the BPTT parameters?}
-
-\begin{figure}[tb]
-    \centering
-    \input{Chapter4/Figs/torch-rnn-input-params.pgf}
-    \caption{\texttt{seq\_length=128} and \texttt{wordvec=32} yields lowest validation loss.}
-    \label{fig:torch-rnn-input-params}
-\end{figure}
-
-\begin{figure}[tb]
-  \centering
-  \input{Chapter4/Figs/torch-rnn-input-params-wordvec.pgf}
-  \caption{Pertubations about \texttt{wordvec=32} do not yield significant improvements.}
-  \label{fig:torch-rnn-input-params-wordvec}
-\end{figure}
-
-Sensitivity to network inputs: \texttt{seq\_length} and \texttt{wordvec}
-\begin{itemize}
-    \item Training losses are about the same across all \texttt{wordvec}s
-    \item Validation losses suggest that increasing \texttt{seq\_length} important for good performance \mynote{investigate further}
-    \item \texttt{wordvec=128} overfits for all cases, the other two depend on \texttt{seq\_length} and vary an order of magnitude smaller than the performance gains from increasing \texttt{seq\_length}
-\end{itemize}
-
-\section{Results}
-
-As precedented by \citep{bayer2013fast,Boulanger-Lewandowski2012}, we
-quantitatively evaluate our models using cross entropies and
-perplexities on a 10\% held-out validation set.
-
-\citet{Allan2005} achieve cross-entropy losses of $2.79-2.80$ on unseen
-test-set scores respectively for their ``harmonic skeleton'' subtask. This task
-involves predictiong a sequence of one of 81 harmonic symbols, which may be
-interpreted as equivalence classes of chords. Even after applying Viterbi
-decoding to find globally optimal sequences, their HMM models achieve cross
-entropies of $0.84-0.87$ on training-set scores (Table 5.2 in
-\citet{Allan2005}).
-
-The baseline results obtained by $N$-grams are shown in
-\vref{tab:baseline-perplexity}. We compare against two widely available
-language modelling software packages, KenLM \citep{Heafield-estimate} and
-SRILM \citep{stolcke2002srilm}. KenLM implements an efficient modified
-Kneser-Ney smoothing language model and while SRILM provides a variety of
-language models we choose choose to use the Good-Turing discounted language
-model for benchmarking against.
-
-In contrast, our best model achieves cross-entropy losses of $0.323$ on
-training data and $0.477$ on held-out test data
-(\vref{tab:torch-rnn-config-perfs}), corresponding to a training perplexity of
-$1.251$ bits and a test perplexity of $1.391$. This is more
-than $0.6$ bits lower than any test perplexity obtained by the $N$-gram
-models compared in \vref{tab:baseline-perplexity}, providing evidence
-that the additional modelling capacity provided by RNNs is useful
-for encoded music score data.
-
-The best models investigated in \citet{Boulanger-Lewandowski2012} achieved
-$-5.56$ log likelihood and $33.12\%$ accuracy on the symbolic prediction task.
-Note that the log likelihood is significantly lower than the $-0.323$ log
-likelihood implied by our model's cross-entropy loss. This is because the two
-results are not comparable as they utilize different input encodings with
-varying vocabulary sizes.
-
-\mynote{Compare \citep{Brien2016}}.
+Both models were developed for applications modelling language data, whose distribution
+over words which may differ from our encoded music data (see \vref{fig:zipf}).
+Furthermore, both are based upon $N$-gram models which are constrained to only
+account for short-term dependencies. Hence, we expect RNNs to outperform the
+results shown in \vref{tab:baseline-perplexity}.
 
 \begin{table}[p]
   \centering
-  \caption{Perplexities of baseline $N$-gram language models}
+  \caption{Perplexities of baseline $N$-gram language models on encoded music data}
   \label{tab:baseline-perplexity}
 \begin{tabular}{l c c c c}
   \toprule
@@ -627,29 +377,215 @@ varying vocabulary sizes.
 \end{tabular}
 \end{table}
 
-\mynote{Compare on pitch/pitch class usage, note durations, meter, lengths of compositions}
+\subsection{Description of RNN model hyperparameters}
 
+The following experiments investigate deep RNN models parameterized by the
+following hyperparameters:
+\begin{enumerate}
+  \item \texttt{num\_layers} -- the number of memory cell layers
+  \item \texttt{rnn\_size} -- the number of hidden units per memory cell (\ie hidden state dimension)
+  \item \texttt{wordvec} -- dimension of vector embeddings
+  \item \texttt{seq\_length}
+  \item \texttt{dropout} -- the dropout probability
+\end{enumerate}
+
+\mynote{Does this need to be diagrammed?}
+
+Our model first embeds the inputs $\x_t$ into a \texttt{wordvec}-dimensional
+vector-space, compressing the dimensionality down from $|V| \approx 140$ to
+$\texttt{wordvec}$ dimensions. Next, \texttt{num\_layers} layers of memory
+cells followed by batch normalization \citep{ioffe2015batch} and dropout
+\citep{srivastava2014dropout} with dropout probability \texttt{dropout} are
+stacked. The outputs $\y^{(\texttt{num\_layers})}_t$ are followed by a
+fully-connected layer mapping to $|V| = 108$ units, which are passed through a
+softmax to yield a predictive distribution $P(\x_{t+1} | \h_{t-1}, \x_{t})$.
+Cross entropy is used as the loss minimized during training.
+
+Models were trained using the Adam normalization \citep{kingma2014adam}
+and an initial learning rate of $2 \times 10^{-3}$ decayed by $0.5$ every $5$
+epochs. The back-propogation through time gradients were clipped
+at $t$\citep{Pascanu2012} and truncated after \texttt{seq\_length} time steps.
+We use a mini-batch size of $50$.
+
+
+\subsection{Comparison of memory cells on music data}
+
+To rapidly compare a large number of memory cell implementations, we leveraged
+\texttt{theanets}\footnote{https://github.com/lmjohns3/theanets}: a Python
+software library for high-level specification of neural network models.
+\Cref{fig:theanets-architecture} shows the results of exploring a range of RNN
+memory cell implementation and holding \texttt{num\_layers=1},
+\texttt{rnn\_size=130}, \texttt{wordvec=64}, and \texttt{seq\_length=50}
+constant. Unlike later models, none of these models utilized dropout or batch
+normalization. We used a batch size of $50$ and configured the clockwork RNN
+\citep{cho2014learning} with $5$ equal-sized hidden state blocks with update
+periods $(1, 2, 4, 8, 16)$.
+
+\begin{figure}[tb]
+    \centering
+    \input{Chapter4/Figs/theanets-architecture.pgf}
+    \caption{LSTM and GRUs yield the lowest training loss. Validation loss
+      traces show all architectures exhibit signs of significant overfitting}
+    \label{fig:theanets-architecture}
+\end{figure}
+
+\Cref{fig:theanets-architecture} shows that while all models achieved similar
+validation losses, LSTM and GRUs trained much faster and achieved lower
+training loss. Since \citet{zaremba2015empirical} find similar empirical
+performance between LSTM and GRUs and \citet{Nayebi2015} observe LSTM
+outperforming GRUs in music applications, we choose to use LSTM as the memory
+cell for all following experiments.
+
+The increasing validation loss over time in \cref{fig:theanets-architecture}
+is a red flag suggesting that overfitting is occuring. This observation motivates
+the exporation of dropout regularization in \cref{sec:lstm-dropout}.
+
+\subsection{Optimizing the LSTM architecture}\label{sec:lstm-grid-search}
 \nomenclature[z-CPU]{CPU}{Central Processing Unit}
 \nomenclature[z-GPU]{GPU}{Graphics Processing Unit}
 
-\mynote{Show speedup when training with multi-GPU, selling point is how fast the model trains}
+After settling on LSTM as the memory cell, we conducted remaining experiments
+using the \texttt{torch-rnn} Lua software library. Our switch was motivated by
+support for GPU training, dropout, and batch normalization.
+
+\subsubsection{Dropout regularization improves validation loss}\label{sec:lstm-dropout}
+
+\mynote{Is it still worth it to do some batch normalization experiments?}
+
+The increasing validation errors in \vref{fig:theanets-architecture} prompted
+investigation of regularization techniques. In addition to adding batch
+normalization, a technique known to reduce overfitting and accelerate training
+\cite{ioffe2015batch}, we also investigated the effects of different levels
+of dropout by varying the \texttt{dropout} parameter.
+
+\begin{figure}[tb]
+  \centering
+  \input{Chapter4/Figs/torch-rnn-dropout.pgf}
+  \caption{Dropout acts as a regularizer, resulting in larger training loss
+  but better generalization as evidenced by lower validation loss. A setting of
+\texttt{dropout=0.3} achieves best results for our model.}
+  \label{fig:torch-rnn-dropout}
+\end{figure}
+
+The experimental results are shown in \cref{fig:torch-rnn-dropout}. As
+expected, dropout acts as a regularizer and reduces validation loss from $0.65$
+down to $0.477$ (when \texttt{dropout=0.3}). Training loss has slightly
+increased, which is also unexpected as application of dropout during training
+introduces additional noise into the model.
+
+\subsubsection{Overall best model}\label{sec:overall-best-model}
+
+We perform a grid search through the following parameter grid:
+\begin{itemize}
+  \item \texttt{num\_layers} $\in \{1,2,3,4\}$
+  \item \texttt{rnn\_size} $\in \{128, 256, 384, 512\}$
+  \item \texttt{wordvec} $\in \{16, 32, 64\}$
+  \item \texttt{seq\_length} $\in \{64,128,256\}$
+  \item \texttt{dropout} $\{0.0, 0.1, 0.2, 0.3, 0.4, 0.5 \}$
+\end{itemize}
+A full listing of results is provided in \vref{tab:torch-rnn-config-perfs}.
+
+The optimal hyperparameter settings within our grid was found to be
+$\texttt{num\_layers}=3$, $\texttt{rnn\_size}=$, $\texttt{wordvec}=32$,
+$\texttt{seq\_length}=128$ $\texttt{dropout}=0.3$. Such a model achieves
+$0.324$ and $0.477$ cross entropy losses on training and validation corpuses
+respectively. \Cref{fig:torch-rnn-best-model-trace} plots the training curve
+of this model and shows that training converges after only 30 iterations.
+
+\begin{figure}[tb]
+  \centering
+  \input{Chapter4/Figs/torch-rnn-best-model-trace.pgf}
+  \caption{Training curves for the overall best model. The periodic spikes correspond
+  to resetting of the LSTM state at the end of a training epoch.}
+  \label{fig:torch-rnn-best-model-trace}
+\end{figure}
+
+To confirm local optimality, we perform perturbations about our final
+hyperparameter settings in
+\crefrange{fig:torch-rnn-network-params}{fig:torch-rnn-input-params-wordvec}.
+
+Consistent with prior work \citep{sutskever2014sequence,kaiser2015neural}, the
+\cref{tab:gpu-training} shows that GPU training resulted in training speedups
+of more than $800\%$ over CPU training.
 
 \begin{table}[tb]
   \centering
-  \caption{Timing results comparing training on CPUs vs GPUs}
-  \label{tab:label}
+  \caption{Timing results comparing CPU and GPU training of the overall best model (\vref{sec:overall-best-model})}
+  \label{tab:gpu-training}
   \begin{tabular}{l c c c}
     \toprule
-    \multirow{2}{*}{} & \multicolumn{2}{c}{Single Batch} & 100 Epochs (seconds) \\
+    \multirow{2}{*}{} & \multicolumn{2}{c}{Single Batch} & 30 Epochs (seconds) \\
     \cmidrule{2-4}
-    & mean (sec) & std (sec) & (hours:minutes)\\
+    & mean (sec) & std (sec) & (minutes)\\
     \midrule
-    CPU & 4.287 & 0.311 & 14:16 \\
-    GPU & 0.513 & 0.001 & 01:35\\
+    CPU & 4.287 & 0.311 & 256.8\\
+    GPU & 0.513 & 0.001 &  28.5\\
     \bottomrule
   \end{tabular}
 \end{table}
-\mynote{Fill in CPU total when converged}
+
+
+Sensitivity to network structure: \texttt{num\_layers} and \texttt{rnn\_size}.
+\begin{itemize}
+    \item Larger \texttt{rnn\_size} leads to higher capacity and lower training loss
+        \begin{itemize}
+            \item Presents as overfitting on validation, where the lowest capacity
+                model \texttt{rnn\_size} appears to be improving in generalization while
+                others are flat/increasing
+        \end{itemize}
+    \item Training curves about the same wrt \texttt{num\_layers}, validation curves have interesting story
+        \begin{itemize}
+            \item Depth matters: small 64 and 128 hidden unit RNNs saw improvements up to 0.09
+            \item Unsurprising, \citet{pascanu2013construct} already observed deep RNNs dominated polyphonic modelling.
+            \item Expressivity gained from depth furthers overfitting: 256
+                hidden unit RNN has some of the best validation performance at
+                depth 1 but is the worst generalizing model for depths 2
+                and 3 even though training loss is low
+        \end{itemize}
+    \item \texttt{rnn\_size=128} found to be best generalizing, optimized at
+        \texttt{num\_layers=2}: will continue with these settings
+\end{itemize}
+
+Sensitivity to network inputs: \texttt{seq\_length} and \texttt{wordvec}
+\begin{itemize}
+    \item Training losses are about the same across all \texttt{wordvec}s
+    \item Validation losses suggest that increasing \texttt{seq\_length} important for good performance \mynote{investigate further}
+    \item \texttt{wordvec=128} overfits for all cases, the other two depend on \texttt{seq\_length} and vary an order of magnitude smaller than the performance gains from increasing \texttt{seq\_length}
+\end{itemize}
+
+\section{Results}
+
+As done by \citep{bayer2013fast,Boulanger-Lewandowski2012}, we
+quantitatively evaluate our models using cross entropies and
+perplexities on a 10\% held-out validation set.
+
+\citet{Allan2005} achieve cross-entropy losses of $2.79-2.80$ on unseen
+test-set scores respectively for their ``harmonic skeleton'' sub-task. This task
+involves predicting a sequence of one of 81 harmonic symbols, which may be
+interpreted as equivalence classes of chords. Even after applying Viterbi
+decoding to find globally optimal sequences, their HMM models achieve cross
+entropies of $0.84-0.87$ on training-set scores (Table 5.2 in
+\citet{Allan2005}).
+
+Our best model achieves cross-entropy losses of $0.323$ on
+training data and $0.477$ on held-out test data
+(\vref{tab:torch-rnn-config-perfs}), corresponding to a training perplexity of
+$1.251$ bits and a test perplexity of $1.391$. This is more than $0.6$ bits
+lower than any test perplexity obtained by the $N$-gram models compared in
+\vref{tab:baseline-perplexity}. This result is expected and shows that the
+greater modelling capacity provided by RNNs is useful for encoded music score
+data.
+
+\mynote{Compare \citep{Brien2016}}.
+
+The best models investigated in \citet{Boulanger-Lewandowski2012} achieved
+$-5.56$ log likelihood and $33.12\%$ accuracy on the symbolic prediction task.
+Note that the log likelihood is significantly lower than the $-0.323$ log
+likelihood implied by our model's cross-entropy loss. This is because the two
+results are not comparable as they utilize different input encodings with
+varying vocabulary sizes.
+
+\mynote{Compare on pitch/pitch class usage, note durations, meter, lengths of compositions}
 
 \section{Other applications}
 
