@@ -9,6 +9,81 @@
 
 \section{Additional Figures and Tables}
 
+\subsection{Quantifying the effects of preprocessing}
+
+The relevant discussion is found in \vref{sec:preprocessing}.
+
+\begin{landscape}
+  \begin{figure}[p]
+    \centering
+    \begin{subfigure}[c]{1.0\textwidth}
+        \centering
+        \input{Appendix2/Figs/pitch-usage-original.pgf}
+    \end{subfigure}
+    \begin{subfigure}[c]{1.0\textwidth}
+        \centering
+        \input{Appendix2/Figs/pitch-usage-preproc.pgf}
+    \end{subfigure}
+    \caption{Distribution of pitches used over Bach chorales corpus.
+      Transposition has resulted in an overall broader range of pitches and
+    increased the counts of pitches which are in key.}
+    \label{fig:pitch-key-standardization}
+  \end{figure}
+\end{landscape}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \input{Appendix2/Figs/pitch-class-usage-original.pgf}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \input{Appendix2/Figs/pitch-class-usage-preproc.pgf}
+    \end{subfigure}
+    \caption{Distribution of pitch classes over Bach chorales corpus. Transposition has increased the counts
+    for pitch classes within the C-major / A-minor scales.}
+    \label{fig:pc-key-standardization}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \input{Appendix2/Figs/meter-usage-original.pgf}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \input{Appendix2/Figs/meter-usage-quantized.pgf}
+    \end{subfigure}
+    \caption{Meter is minimally affected by quantization due to the high resolution used for
+    time quantization.}
+    \label{fig:meter-time-quantization}
+\end{figure}
+
+\subsection{Discovering neurons specific to musical concepts}
+
+The relevant discussion is found in \vref{sec:music-concept-neurons}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-0.pdf}
+    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-1.pdf}
+    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-2.pdf}
+    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-3.pdf}
+    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-4.pdf}
+    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-5.pdf}
+    \caption{Neuron activations over time as the encoded stimulus is processed token-by-token}
+    \label{fig:model-analysis-tokens}
+\end{figure}
+
+
+\subsection{Identifying and verifying local optimality of the overall best model}
+
+The relevant discussion is found in \vref{sec:overall-best-model}.
+
 \begin{center}
   \captionof{figure}{Results of grid search (see \Cref{sec:lstm-grid-search}) over LSTM sequence model hyperparameters}
   \label{tab:torch-rnn-config-perfs}
@@ -16,21 +91,21 @@
   \addtocounter{table}{-1}%
 \end{center}
 
-\begin{figure}[tb]
+\begin{figure}[htbp]
     \centering
     \input{Appendix2/Figs/torch-rnn-network-params.pgf}
     \caption{\texttt{rnn\_size=256} and \texttt{num\_layers=3} yields lowest validation loss.}
     \label{fig:torch-rnn-network-params}
 \end{figure}
 
-\begin{figure}[tb]
+\begin{figure}[htbp]
   \centering
   \input{Appendix2/Figs/torch-rnn-network-params-num-layers.pgf}
   \caption{Validation loss improves initially with increasing network depth but deteriorates after $>3$ layers.}
   \label{fig:torch-rnn-network-params-num-layers}
 \end{figure}
 
-\begin{figure}[tb]
+\begin{figure}[htbp]
   \centering
   \input{Appendix2/Figs/torch-rnn-network-params-rnn-size.pgf}
   \caption{Validation loss improves initially with higher-dimensional hidden states
@@ -38,17 +113,28 @@
   \label{fig:torch-rnn-network-params-rnn-size}
 \end{figure}
 
-\begin{figure}[tb]
+\begin{figure}[htbp]
     \centering
     \input{Appendix2/Figs/torch-rnn-input-params.pgf}
     \caption{\texttt{seq\_length=128} and \texttt{wordvec=32} yields lowest validation loss.}
     \label{fig:torch-rnn-input-params}
 \end{figure}
 
-\begin{figure}[tb]
+\begin{figure}[htbp]
   \centering
   \input{Appendix2/Figs/torch-rnn-input-params-wordvec.pgf}
   \caption{Perturbations about \texttt{wordvec=32} do not yield significant improvements.}
   \label{fig:torch-rnn-input-params-wordvec}
+\end{figure}
+
+\subsection{Additional large-scale subjective evaluation results}
+
+The relevant discussion is found in \vref{sec:eval-results}.
+
+\begin{figure}[htbp]
+  \centering
+  \input{Chapter7/Figs/responses-mask-agegroup.pgf}
+  \caption{Proportion of correct responses for each question type and age group.}
+  \label{fig:responses-mask-agegroup}
 \end{figure}
 

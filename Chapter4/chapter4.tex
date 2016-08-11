@@ -51,7 +51,7 @@ We use the \emph{Bach-Werke-Verzeichnis} (BWV) \citep{butt1999bach} indexed
 collection of the Bach chorales provided by the
 \texttt{music21}\citep{Scott2015} Python library as our data source.
 
-\subsection{Preprocessing}
+\subsection{Preprocessing}\label{sec:preprocessing}
 
 \nomenclature[z-MIDI]{MIDI}{Musical Instrument Device Interface}
 
@@ -78,7 +78,7 @@ also lacking this additional notation was used.
 An example of the distortion introduced through of our preprocessing steps is
 provided in \vref{fig:score-effects-preproc} in sheet music notation and in
 piano roll notation on \vref{fig:piano-roll-effects-preproc}.
-\begin{figure}[p]
+\begin{figure}[tb]
     \centering
     \includegraphics[width=0.8\linewidth]{bwv185-6-original-score-1.png}
 
@@ -92,7 +92,7 @@ piano roll notation on \vref{fig:piano-roll-effects-preproc}.
     \label{fig:score-effects-preproc}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure}[tb]
     \centering
         \input{Chapter4/Figs/bwv185-6-original-piano-roll.pgf}
         \input{Chapter4/Figs/bwv185-6-preproc-piano-roll.pgf}
@@ -107,6 +107,8 @@ piano roll notation on \vref{fig:piano-roll-effects-preproc}.
 To assess the effects introduced by key normalization and time quantization,
 we analyze corpus level statistics related to pitch and duration.
 
+\mynote{Trim since we moved a lot to appendix}
+
 \cref{fig:pitch-key-standardization} plots a histogram of pitch usage counts
 before and after key normalization. Notice that the overall range of pitches
 has increased after key normalization. This can be explained by noting that
@@ -116,42 +118,12 @@ this constraint is no longer be satisfied and we see the appearance of
 unrealistically low notes (\eg A1) outside the range of even the lowest voice
 types.
 
-\begin{landscape}
-  \begin{figure}[p]
-    \centering
-    \begin{subfigure}[c]{1.0\textwidth}
-        \centering
-        \input{Chapter4/Figs/pitch-usage-original.pgf}
-        \input{Chapter4/Figs/pitch-class-usage-original.pgf}
-    \end{subfigure}
-    \begin{subfigure}[c]{1.0\textwidth}
-        \centering
-        \input{Chapter4/Figs/pitch-usage-preproc.pgf}
-        \input{Chapter4/Figs/pitch-class-usage-preproc.pgf}
-    \end{subfigure}
-    \caption{Distribution of pitches used over Bach chorales corpus.
-      Transposition has resulted in an overall broader range of pitches and
-    increased the counts of pitches which are in key.}
-    \label{fig:pitch-key-standardization}
-  \end{figure}
-\end{landscape}
-
 In \cref{fig:pc-key-standardization}, we visualize histograms of pitch class usages.
 As expected, key normalization has increased the usage of pitch classes in the key of
 C-major / A-minor (\ie those which possess no accidentals) and decreased out of key
 pitch classes (\eg C\#, F\#).
 
-\begin{figure}
-    \centering
-    \caption{Distribution of pitch classes over Bach chorales corpus. Transposition has increased the counts
-    for pitch classes within the C-major / A-minor scales.}
-    \label{fig:pc-key-standardization}
-\end{figure}
-
-We investigate the effects of time quantization in
-\cref{fig:note-lengths-time-quantization}, which shows histograms of note
-duration usages before and after quantization. \mynote{Update plots... are they affected}.
-
+\mynote{Add tables to quantify, argue that semiquaver quantization is a big win for us}
 \begin{figure}[tb]
     \centering
     \begin{subfigure}[t]{0.48\textwidth}
@@ -167,21 +139,10 @@ duration usages before and after quantization. \mynote{Update plots... are they 
     \label{fig:note-lengths-time-quantization}
 \end{figure}
 
-\begin{figure}[tb]
-    \centering
-    \begin{subfigure}[t]{0.48\textwidth}
-        \centering
-        \input{Chapter4/Figs/meter-usage-original.pgf}
-    \end{subfigure}
-    ~
-    \begin{subfigure}[t]{0.48\textwidth}
-        \centering
-        \input{Chapter4/Figs/meter-usage-quantized.pgf}
-    \end{subfigure}
-    \caption{Meter is minimally affected by quantization due to the high resolution used for
-    time quantization.}
-    \label{fig:meter-time-quantization}
-\end{figure}
+We investigate the effects of time quantization in
+\cref{fig:note-lengths-time-quantization}, which shows histograms of note
+duration usages before and after quantization. \mynote{Update plots... are they affected}.
+
 
 \subsection{Sequential encoding of musical data}
 \label{sec:sequential-encoding}
@@ -219,6 +180,8 @@ relative duration of notes, a counting and timing task which
 \citep{gers2002learning} demonstrated LSTM is capable of. Consecutive frames are
 separated by a unique delimiter (``$|||$''' in \mynote{Figure of score encoded
 in text}).
+
+\mynote{Add an example encoded score}
 
 Each frame consists of a sequence of $\langle \text{Note}, \text{Tie} \rangle$
 tuples where $\text{Note} \in \{0,1,\cdots,127\}$ represents the MIDI pitch of
@@ -266,6 +229,7 @@ of Zipf's law in our data.
   \label{fig:zipf}
 \end{figure}
 
+\mynote{Trim this stuff}
 Notice that our encoding is sparse: unarticulated notes are not encoded. It is
 also variable length as anywhere from zero to four (in the case of chorales,
 more for arbitrary polyphonic scores) notes. Finally, the explicit
@@ -390,6 +354,7 @@ following hyperparameters:
 \end{enumerate}
 
 \mynote{Does this need to be diagrammed?}
+\mynote{Justify wordvec embedding}
 
 Our model first embeds the inputs $\x_t$ into a \texttt{wordvec}-dimensional
 vector-space, compressing the dimensionality down from $|V| \approx 140$ to

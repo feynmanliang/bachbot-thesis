@@ -20,13 +20,13 @@ automated analysis.
 \begin{figure}[tb]
     \centering
     \includegraphics[trim={0 15cm 0 0},clip,width=0.9\linewidth]{model-analysis-input-score.pdf}
-    %\includegraphics[width=1.00\linewidth]{model-analysis-input-piano-roll.png}
     \includegraphics[width=1.00\linewidth]{model-analysis-input-piano-roll.pdf}
-    %\input{Chapter5/Figs/model-analysis-input-piano-roll.pgf}
     \caption{{\it Top}: The preprocessed score (BWV 133.6) used as input stimulus with Roman numeral analysis annotations obtained
         from {\tt music21}; {\it Bottom}: The same stimulus represented on a piano roll}
     \label{fig:model-analysis-stimulus}
 \end{figure}
+
+\mynote{This stuff is now in the appendx}
 
 In \cref{fig:model-analysis-tokens} we visualize the network activations as
 the stimulus is sequentially applied. Note that as a consequence of the
@@ -34,17 +34,6 @@ variable-length encoding format described in \mynote{ref}, the horizontal axis
 (number of tokens processed) does correspond directly to time. Rather, time
 is advanced one frame every time a chord boundary delimiter symbol is output.
 
-\begin{figure}[tb]
-    \centering
-    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-0.pdf}
-    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-1.pdf}
-    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-2.pdf}
-    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-3.pdf}
-    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-4.pdf}
-    \includegraphics[width=1.0\linewidth]{model-analysis-tokens-5.pdf}
-    \caption{Neuron activations over time as the encoded stimulus is processed token-by-token}
-    \label{fig:model-analysis-tokens}
-\end{figure}
 
 \subsection{Pooling over frames}
 
@@ -79,15 +68,6 @@ of each neuron over the frame. While pooling methods (\eg sum pooling, average
 pooling) are possible, we did not find significant differences in the
 visualizations produced.
 
-The max-pooled frame-level activations are shown in
-\cref{fig:model-analysis-frames}. As a result of pooling, the horizontal axis
-can be aligned and compared against the stimulus
-\cref{fig:model-analysis-stimulus}. Notice the appearance of vertical bands
-corresponding to when a chord/rest is held for multiple frames. In particular,
-the vector embedding corresponding to rests (\eg near frames $30$ and $90$ in
-\cref{fig:model-analysis-frames} top) are sparse, showing up as white smears
-not only in the embedding layer but on all LSTM memory cells.
-
 \begin{figure}[tb]
     \centering
     \includegraphics[width=1.0\linewidth]{model-analysis-chords-0.pdf}
@@ -100,20 +80,32 @@ not only in the embedding layer but on all LSTM memory cells.
     \label{fig:model-analysis-frames}
 \end{figure}
 
+The max-pooled frame-level activations are shown in
+\cref{fig:model-analysis-frames}. As a result of pooling, the horizontal axis
+can be aligned and compared against the stimulus
+\cref{fig:model-analysis-stimulus}. Notice the appearance of vertical bands
+corresponding to when a chord/rest is held for multiple frames. In particular,
+the vector embedding corresponding to rests (\eg near frames $30$ and $90$ in
+\cref{fig:model-analysis-frames} top) are sparse, showing up as white smears
+not only in the embedding layer but on all LSTM memory cells.
+
 \subsection{Probabilistic piano roll: likely variations of the stimulus}
 
+\mynote{Revise: the piano roll reference is removed}
 The bottom panel in \cref{fig:model-analysis-frames} shows the model's predictions
 for tokens in the next frames, where the tokens are arranged according to (arbitrary)
 index within the vocabulary. As the tokens correspond to pitches, they can be sorted
 according to pitch to reconstruct a {\bf probabilistic piano roll}\citep{eck2008learning}
 consisting of the model's sequence of next-frame predictions as it processes the input.
 
-\mynote{Align these}
+\mynote{Revise: the piano roll reference is removed}
 \begin{figure}[tb]
+    %~~\includegraphics[width=0.99\linewidth]{model-analysis-input-piano-roll.pdf}
     \centering
-    ~~\includegraphics[width=0.99\linewidth]{model-analysis-input-piano-roll.pdf}
     \includegraphics[trim={0 0 0 1.4cm},clip,width=1.0\linewidth]{model-analysis-probabilistic-piano-roll.pdf}
-    \caption{Top: piano roll of stimulus (included for reference); Bottom: probabilistic piano roll}
+    \caption{Probabilistic piano roll of next note predictions. Note the strong predictions
+    for fermatas near ends of phrases and the uncertain predictions immediately
+    after long periods of rest.}
     \label{fig:model-analysis-probabilistic-piano-roll}
 \end{figure}
 
@@ -142,7 +134,7 @@ The probabilistic piano roll can be interpreted as variations on the stimulus
 which the model finds likely and may serve as a useful computational tool for
 generating likely chorale variations.
 
-\subsection{Neurons specific to musical concepts}
+\subsection{Neurons specific to musical concepts}\label{sec:music-concept-neurons}
 
 Research in convolutional networks has shown that individual neurons within the
 network oftentimes specialize and specifically detect certain high-level visual
@@ -190,4 +182,7 @@ $(2, 243)$ is specific to $v -- vi$ progressions, with large spikes occuring at
 the $v -- vi$ progressions near frames $55$, $120$, $130$, and a lower intensity spike at
 $170$. Some activity is also observed for the $V -- vi$ around frame $230$ despite
 the first chord being a major mode $V$ rather than minor $v$.
+
+\mynote{Add mark's analysis and credit him}
+\mynote{This refutes criticisms of black boxness of approach, play it up}
 
