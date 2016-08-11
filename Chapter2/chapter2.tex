@@ -6,53 +6,66 @@
     \graphicspath{{Chapter2/Figs/Vector/}{Chapter2/Figs/}}
 \fi
 
-The goal of this chapter is to provide a selective background in recurrent neural
-networks and generative probabilistic sequence modelling required for understanding
-our experiments and results. It also introduces some common definitions and
-notation used throughout later chapters. We assume a basic understanding of
-Western music theory. Readers unfamiliar with concepts such as piano rolls,
-Roman numeral analysis, and cadences, should consult
-\vref{sec:music-theory-primer} for a quick primer and
-\citet{piston1978harmony,denny1960oxford} for more thorough coverage.
+The goal of this chapter is to provide only the necessary background in
+recurrent neural networks and generative probabilistic sequence modelling
+required for understanding our models, experiments, and results. It also
+introduces some common definitions and clarifies notation used throughout later chapters.
+
+A basic understanding of Western music theory and neural networks is assumed.
+Readers unfamiliar with concepts such as piano rolls, Roman numeral analysis,
+and cadences, should review \vref{sec:music-theory-primer} for a quick primer
+and \citet{piston1978harmony,denny1960oxford} for more thorough coverage.
+Likewise, those whom wish to review concepts such as activation functions,
+neurons, and applying recurrent neural networks over arbitrary length sequences
+are advised to review \vref{sec:primer-nn} and consult
+\citet{bengio2009learning} for further reference.
 
 \section{Recurrent neural networks}\label{sec:bg-rnn}
 
-\nomenclature[z-RNN]{RNN}{Recurrent Neural Network}
-
-In this section, we clarify terminology and provide important background in
-recurrent neural networks (RNNs). While a basic understanding of neural
-networks is assumed, readers lacking such a background may be interested in
-reviewing \vref{sec:primer-nn} before proceeding.
 
 \subsection{Notation}
 
-\nomenclature[r-input]{$\x^{(l)}_t$}{Input to layer $l$ at time $t$}
-\nomenclature[r-hidden-state]{$\h^{(l)}_t$}{Hidden state of layer $l$ at time $t$}
-\nomenclature[r-output]{$\y^{(l)}_t$}{Output of layer $l$ at time $t$}
-\nomenclature[r-Wxh]{$\W_{st}$}{Weight matrix from source $s$ to target $t$}
-\nomenclature[g-sxh]{$\sigma_{st}$}{Elementwise activation function from source $s$ to target $t$}
+\nomenclature[z-RNN]{RNN}{Recurrent Neural Network}
+\nomenclature[a-input]{$\x$}{layer inputs}
+\nomenclature[a-hidden-state]{$\h$}{hidden state (\ie memory cell contents)}
+\nomenclature[a-output]{$\y$}{layer outputs}
+\nomenclature[a-Wxh]{$\W$}{weight matrix}
+\nomenclature[a-Nin]{$N_{in}$}{dimensionality of inputs}
+\nomenclature[a-Nhid]{$N_{hid}$}{dimensionality of hidden state}
+\nomenclature[a-Nout]{$N_{out}$}{dimensionality of outputs}
+\nomenclature[a-T]{$T$}{total number of timesteps in a sequence}
+\nomenclature[g-sxh]{$\sigma$}{elementwise activation function}
+\nomenclature[g-th]{$\theta$}{Model Parameters}
+\nomenclature[r-l]{$(l)$}{layer index in multi-layer networks}
+\nomenclature[s-t]{$t$}{time index}
+\nomenclature[s-st]{$st$}{connections from source $s$ to target $t$}
 
-We first clarify the basic notation and conventions used to describe multi-layer
-RNNs. Unless otherwise specified, notation appearing in the
-remainder of our work is to be interpreted as defined in this section.
+We begin by clarifying common notation and conventions used to describe
+multi-layer \emph{recurrent neural networks} (RNNs). Unless otherwise
+specified, future use of notation should be interpreted as defined in this
+section.
 
-We use $\x_t \in \RR^{N_{in}}$ with $t=1,2,\cdots,T$ to denote a sequence of
-\emph{input} (\ie observed) vectors, $\z_t \in \RR^{N_{hid}}$ a sequence of
-\emph{hidden state} (\ie unobserved) vectors. and $\y_t \in \RR^{N_{out}}$ a
-sequence of \emph{output} vectors.
+We use the subscript $t \in \{ 1,2,\cdots,T \}$ to denote the \emph{time index}
+within a sequence of length $T \in \NN$
 
-To describe model parameters, we use $\W$ to indicate the \emph{weight matrix}
-consisting of all the connection weights between two blocks of neurons
-and $\sigma(\cdot)$ to indicate the \emph{activation function}. The collection
-of all model parameters is denoted by $\vec{\theta}$.
+A sequence of \emph{inputs} is denoted by $\x$ and the sequence elements at timestep $t$ is
+denoted by $\x_t \in \RR^{N_{in}}$ and assumed to have dimensionality $N_{in} \in \NN$.
+Similarly, $\h_t \in \RR^{N_{hid}}$ and $\y_t \in \RR^{N_{out}}$ denote elements
+from the \emph{hidden state} and \emph{output} sequences respectively.
 
-When further clarity is required, we use $\W_{s,t}$ to denote the connection
-weights from block $s$ to block $t$ (\ie in \cref{sec:LSTM}, $\W_{xf}$ and
-$\W_{xh}$ refer to the connections from the inputs to the forget gate and
-hidden state respectively). Subscripts on activation functions $\sigma_{s,t}(\cdot)$
-are to be interpreted analogously.
+To describe model parameters, we use $\W$ to indicate a real-valued
+\emph{weight matrix} consisting of all the connection weights between two sets
+of neurons and $\sigma(\cdot)$ to indicate an elementwise \emph{activation
+function}. The collection of all model parameters is denoted by $\vec{\theta}$.
 
-Using the above notation, the equations for \emph{RNN time dynamics} can be expressed as
+When further clarity is required, we use subscripts $\W_{st}$ denote the
+connection weights from a set of neurons $s$ to another set of neurons $t$ (\ie
+in \vref{sec:LSTM}, $\W_{xf}$ and $\W_{xh}$ refer to the connections from the
+inputs to the forget gate and hidden state respectively). Subscripts on
+activation functions $\sigma_{s,t}(\cdot)$ are to be interpreted analogously.
+
+Equipped with the above notation, the equations for \emph{RNN time dynamics} (review
+\vref{sec:primer-nn} if this is unfamiliar) can be expressed as
 \begin{equation}\label{eq:rnn-dynamics}
  \left.\begin{aligned}
           \h_t &=& \W_{xh} \sigma_{xh} \left( \x_t \right) + \W_{hh} \sigma_{hh} \left( \h_{t-1} \right)\\
@@ -62,18 +75,33 @@ Using the above notation, the equations for \emph{RNN time dynamics} can be expr
  \qquad \text{RNN time dynamics}
 \end{equation}
 
-When discussing multi-layer networks, we use parenthesized superscripts to
-indicate layer. For example, $\z^{(2)}_t$ is the hidden states of the second
-layer and $N^{(3)}_{in}$ is the dimensionality of the third layer's inputs
-$\x^{(3)}_t$. We assume the outputs of the $l-1$st layer are used as the inputs
-of the $l$th layer (\ie $\forall t: \x^{(l)}_t = \y^{(l-1)}_t$).
+When discussing multi-layer networks, we use $L \in \NN$ to denote total number
+of layers and parenthesized superscripts $(l)$ for $l \in \{1,2,\cdots,L\}$ to
+indicate the layer. For example, $\z^{(2)}_t$ is the hidden states of the
+second layer and $N^{(3)}_{in}$ is the dimensionality of the third layer's
+inputs $\x^{(3)}_t$. Unless stated otherwise, multi-layer networks will assume
+that the outputs of the $l-1$st layer are used as the inputs of the $l$th layer
+(\ie $\forall t: \x^{(l)}_t = \y^{(l-1)}_t$).
 
 \subsection{The memory cell abstraction}
 
-While many different variants for RNNs exist
+While a large number of proposed RNN variants exist
 \citep{elman1990finding,jordan1997serial,hochreiter1997long,cho2014learning,Koutnik2014,Mikolov2015},
-many share the same underlying structure. Hence, it is useful to discuss RNNs
-abstractly without specifying a particular variant.
+most share the same underlying structure and differ only in small localized
+implementation details. Encapsulating these differences and abstracting them
+away enables general discussion about RNN architecture without making a
+specific choice on implementation.
+
+To do so, we introduce the \emph{memory cell} abstraction to encapsulate the
+details of computing $\y_t$ and $\h_t$ from $\x_t$ and $\h_{t-1}$. This is
+illustrated visually in \cref{fig:rnn-elman}, which shows a standard Elman-type
+RNN \citep{elman1990finding} with the memory cell indicated by a dashed box
+isolating the recurrent hidden state. The edges entering the memory cell
+($\x_t$, $\h_{t-1}$) make up the \emph{memory cell inputs} and the outgoing
+edges ($\y_t$, $\h_t$) are the \emph{memory cell outputs}, so a concrete
+implementation of a memory cell needs to provide two functions $\f_h$ and
+$\f_y$ which uses $\x_t$ and $\h_{t-1}$ to compute the next hidden state $\h_t
+= f_h(\x_t, \h_{t-1})$ and output $\y_t = f_y(\h_t)$.
 
 \begin{figure}[tb]
   \centering
@@ -85,57 +113,13 @@ abstractly without specifying a particular variant.
   \label{fig:rnn-elman}
 \end{figure}
 
-To do so, we introduce the notion of a \emph{memory cell} in order to abstract
-away how different variations of RNNs compute $\y_t$ and $\h_t$ from $\x_t$ and
-$\h_{t-1}$. This is illustrated visually in \cref{fig:rnn-elman}, which shows a
-standard Elman-type RNN \citep{elman1990finding} with the memory cell indicated
-as a dashed box isolating the recurrent hidden state.
-
-Notice that the edges in \cref{fig:rnn-elman} entering the memory cell
-consist of the input $\x_t$ and previous hidden state $\h_{t-1}$,
-and the edges leaving the memory cell consist of the current hidden state $\h_t$
-and the outputs $\y_t$. Hence, to specify an concrete implementation for a
-memory cell, it suffices to provide two functions $\f_h$ and $\f_y$ which
-uses $\x_t$ and $\h_{t-1}$ to compute the next hidden state $\h_t = f_h(\x_t,
-\h_{t-1})$ and output $\y_t = f_y(\h_t)$.
-
-\subsection{Operations on RNNs: unrolling and stacking}
-
-\subsubsection{Unrolling RNNs into directed acyclic graphs}
-
-\nomenclature[z-DAG]{DAG}{Directed Acyclic Graph}
-
-Given an input sequence $\{\x_{t}\}_{t=1}^T$ with length $T$, an RNN can be
-\emph{unrolled} into a directed acyclic graph (DAG) comprised of $T$ copies of the
-memory cell connected forwards in time. \Cref{fig:rnn-single-unrolled} shows
-a block diagram of \cref{fig:rnn-elman} on the left and its corresponding unrolled
-DAG on the right.
-
-\begin{figure}[tb]
-  \centering
-  \resizebox{4.5in}{!}{\input{Chapter2/Figs/rnn-single-unrolled.pdf_tex}}
-  \caption{Signal flow diagram representation of a single-layer RNN (left) and its
-    corresponding DAG (right) after unrolling. The blocks labelled
-    with $\h_t$ represent memory cells whose parameters are shared across all times
-  $t$.}
-  \label{fig:rnn-single-unrolled}
-\end{figure}
-
-\Cref{fig:rnn-single-unrolled} shows that the hidden state $\h_t$ is passed
-forwards throughout the sequence of computations. This gives rise to an
-alternative interpretation of the hidden state as a temporal memory mechanism.
-Under this interpretation, updating the hidden state $\h_t = f_h (\x_t,
-\h_{t-1})$ can be viewed as \emph{writing} information from the current inputs
-$\x_t$ to memory and producing the outputs $\y_t = f_y (\h_t)$ can be
-interpreted as \emph{reading} information from memory.
+\subsection{Operations on RNNs: stacking and unrolling}
 
 \subsubsection{Stacking memory cells to form deep RNNs}
 
-In addition to unrolling, RNNs can also be \emph{stacked} to form deep RNNs
-\citep{el1995hierarchical,schmidhuber1992learning}. This is accomplished in a
-manner analogous to deep belief networks: outputs from the previous memory cell
-in the stack are used as inputs for the current memory cell (see
-\cref{fig:rnn-multi-unrolled}).
+Just like deep neural networks, RNNs can be \emph{stacked} to form deep RNNs
+\citep{el1995hierarchical,schmidhuber1992learning} by treating the
+outputs from the $l-1$st layer's memory cells as inputs to the $l$th layer (see \cref{fig:rnn-multi-unrolled}).
 
 \begin{figure}[tb]
     \centering
@@ -149,17 +133,46 @@ in the stack are used as inputs for the current memory cell (see
 
 Prior work has observed that ``deep RNNs outperformed the conventional, shallow RNN''
 \citet{pascanu2013construct}, affirming the importance of stacking multiple layers
-in RNNs. The greater modelling capabilities of multi-layer RNNs can be
-attributed to three primary factors: composition of multiple non-linear
-activation functions and an increase in the number of paths for information to
-flow. The former reason is analogous to the case in deep belief networks, which
-is well documented \citep{bengio2009learning}. To understand the latter, notice
-that in \cref{fig:rnn-single-unrolled} there is only a single path from
-$\x_{t-1}$ to $\y_{t}$ hence the conditional independence $\y_{t} \independent
-\x_{t-1} | \h^{(1)}_t$ is satisfied. However, in \cref{fig:rnn-multi-unrolled}
-there are multiple paths from $\x_{t-1}$ to $\y_{t}$ (\eg passing through
-either $\h^{(2)}_{t-1} \to \h^{(2)}_t$ or $\h^{(1)}_{t-1} \to \h^{(1)}_t$)
-through which information may flow.
+in RNNs. The improved modelling expressivity can be attributed to two primary
+factors: composition of multiple non-linear activation functions and an
+increase in the number of paths for backpropagated error signals to flow. The
+former reason is analogous to the case in deep belief networks, which is well
+documented \citep{bengio2009learning}. To understand the latter, notice that in
+\cref{fig:rnn-multi-unrolled} there is only a single path from $\x_{t-1}$ to
+$\y_{t}$ hence the conditional independence $\y_{t} \independent \x_{t-1} |
+\h^{(1)}_t$ is satisfied. However, in \cref{fig:rnn-multi-unrolled} there are
+multiple paths from $\x_{t-1}$ to $\y_{t}$ (\eg passing through either
+$\h^{(2)}_{t-1} \to \h^{(2)}_t$ or $\h^{(1)}_{t-1} \to \h^{(1)}_t$) through
+which information may flow.
+
+\subsubsection{Unrolling RNNs into directed acyclic graphs}
+
+\nomenclature[z-DAG]{DAG}{Directed Acyclic Graph}
+
+Given an input sequence $\{\x\}_{t=1}^T$, an RNN can be \emph{unrolled} into a
+\emph{directed acyclic graph} (DAG) comprised of $T$ copies of the memory cell
+connected forwards in time. This is illustrated for a stacked 2-layer RNN in
+\Cref{fig:rnn-multi-unrolled}, where the vectors $\y_t$, $\h_t$, and $\x_t$ are
+depicted as blocks and the $\h_t$ is understood to represent a memory cell.
+
+% \begin{figure}[tb]
+%   \centering
+%   \resizebox{4.5in}{!}{\input{Chapter2/Figs/rnn-single-unrolled.pdf_tex}}
+%   \caption{Signal flow diagram representation of a single-layer RNN (left) and its
+%     corresponding DAG (right) after unrolling. The blocks labelled
+%     with $\h_t$ represent memory cells whose parameters are shared across all times
+%   $t$.}
+%   \label{fig:rnn-single-unrolled}
+% \end{figure}
+
+\Cref{fig:rnn-multi-unrolled} shows that the hidden state $\h_t$ is passed
+forwards throughout the sequence of computations. This gives rise to an
+alternative interpretation of the hidden state as a temporal memory mechanism.
+Under this interpretation, updating the hidden state $\h_t = f_h (\x_t,
+\h_{t-1})$ can be viewed as \emph{writing} information from the current inputs
+$\x_t$ to memory and producing the outputs $\y_t = f_y (\h_t)$ can be
+interpreted as \emph{reading} information from memory.
+
 
 % Additionally, parameters need not be shared
 % across different layers so the stacked RNN can learn different time dynamics
@@ -168,32 +181,35 @@ through which information may flow.
 \subsection{Training RNNs and backpropagation through time}
 
 \nomenclature[z-BPTT]{BPTT}{Backpropagation Through Time}
-\nomenclature[g-th]{$\theta$}{Model Parameters}
 \nomenclature[r-E]{$\mathcal{E}$}{Error or Loss}
 \nomenclature[r-Et]{$\mathcal{E}_t$}{Error or Loss at time $t$}
 
-The parameters $\vec{\theta}$ of a RNN are typically learned from data to
-minimize some \emph{cost} $\mathcal{E} = \sum_{1 \leq t \leq T} \mathcal{E}_t(\x_t)$
-measuring the performance of the network on some task. This optimization is
-commonly carried out using iterative gradient descent methods, which require
-computation of the gradients $\frac{\pd \mathcal{E}}{\pd \vec{\theta}}$ at each
+The parameters $\vec{\theta}$ of a RNN are typically learned from data by
+minimizing some \emph{cost} $\mathcal{E} = \sum_{1 \leq t \leq T}
+\mathcal{E}_t(\x_t)$ measuring the performance of the network on some task.
+This optimization is usually performed using iterative methods which require
+computation of gradients $\frac{\pd \mathcal{E}}{\pd \vec{\theta}}$ at each
 iteration.
 
 In feed-forward networks, computation of gradients can be performed efficiently
 using backpropagation
 \citep{bryson1963optimal,linnainmaa1970representation,rumelhart1988learning}.
-While the cycles introduced by time-delayed recurrent hidden state connections
-may seem to complicate matters for RNNs, recall that unrolling removes the
-time-delayed recurrent edges and converts the RNN into a DAG (\eg
-\vref{fig:rnn-single-unrolled}). The unrolled RNN can be justifiably
-interpreted as a $T$ layered feed-forward neural network with parameters shared
-across all layers, motivating the application of techniques such as
-backpropagation to the unrolled RNNs.
+While time-delayed recurrent hidden state connections appear to complicate
+matters initially, unrolling the RNN removes the time-delayed recurrent edges
+and converts the RNN into a DAG (\eg \vref{fig:rnn-multi-unrolled}) which can
+be interpreted as a $T$ layered feed-forward neural network with parameters
+shared across all $T$ layers.
 
-Unsurprisingly, this is precisely what is done in the \emph{backpropagation
-through time} (BPTT) algorithm \citep{goller1996learning}. Applying the
-chain rule to the RNN dynamics equations (\vref{eq:rnn-dynamics})
-unrolled network (see \cref{fig:rnn-bptt}), we obtain
+This view of unrolled RNNs as feedforward networks motivates
+\emph{backpropagation through time} (BPTT) \citep{goller1996learning}, a method
+for training RNNs which applies backpropagation to the unrolled DAG. However,
+the unrolled RNN can possess an extremely large number of layers if $T$ is
+large, introducing problems not encountered when training feedforward networks
+with fixed depth.
+
+To illustrate the problem, we can first apply the chain rule to the RNN
+dynamics equations (\vref{eq:rnn-dynamics}) unrolled network (see
+\cref{fig:rnn-bptt}), we obtain
 \begin{align}
   \frac{\pd \mathcal{E}}{\pd \vec{\theta}} &= \sum_{1 \leq t \leq T} \frac{\pd \mathcal{E}_t}{\pd \vec{\theta}} \label{eq:err-total}\\
     \frac{\pd \mathcal{E}_t}{\pd \vec{\theta}} &= \sum_{1 \leq k \leq t} \left(

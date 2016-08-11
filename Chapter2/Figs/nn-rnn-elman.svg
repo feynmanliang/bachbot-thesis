@@ -14,7 +14,7 @@
    viewBox="0 0 127.1616 61.821208"
    version="1.1"
    id="svg8"
-   inkscape:version="0.91+devel r"
+   inkscape:version="0.91 r13725"
    sodipodi:docname="nn-rnn-elman.svg">
   <defs
      id="defs2">
@@ -1459,15 +1459,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.979899"
-     inkscape:cx="472.71754"
-     inkscape:cy="62.872336"
+     inkscape:cx="286.59693"
+     inkscape:cy="82.065234"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1914"
-     inkscape:window-height="1161"
+     inkscape:window-height="1148"
      inkscape:window-x="1920"
-     inkscape:window-y="10"
+     inkscape:window-y="24"
      inkscape:window-maximized="0"
      fit-margin-top="0"
      fit-margin-left="0"
@@ -1484,7 +1484,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -1511,17 +1511,6 @@
          x="15.635266"
          y="54.275795"
          style="stroke-width:0.26458332px">Memory Cell</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:52.91666794px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="-22.530916"
-       y="49.828945"
-       id="text5166-3"><tspan
-         sodipodi:role="line"
-         id="tspan5164-5"
-         x="-22.530916"
-         y="49.828945"
-         style="stroke-width:0.26458332px">Inputs</tspan></text>
   </g>
   <g
      inkscape:label="Layer 1"
@@ -1668,27 +1657,27 @@
     <text
        sodipodi:linespacing="2500%"
        id="text18577"
-       y="147.12541"
-       x="97.005714"
+       y="155.10786"
+       x="-0.74015367"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:2500%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        xml:space="preserve"><tspan
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:2500%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.26458332px"
-         y="147.12541"
-         x="97.005714"
+         y="155.10786"
+         x="-0.74015367"
          id="tspan18575"
-         sodipodi:role="line">Input Layer</tspan></text>
+         sodipodi:role="line">Input $\x_t$</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:2500%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="97.445755"
-       y="127.07555"
+       x="80.794868"
+       y="121.51634"
        id="text18577-9"
        sodipodi:linespacing="2500%"><tspan
          sodipodi:role="line"
          id="tspan18575-9"
-         x="97.445755"
-         y="127.07555"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:2500%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.26458332px">Hidden Layer</tspan></text>
+         x="80.794868"
+         y="121.51634"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:2500%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.26458332px">Hidden state $\h_t$</tspan></text>
     <g
        transform="translate(-3.0405303,-3.7525182)"
        id="g18569">
@@ -1728,15 +1717,15 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:2500%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="86.10421"
-       y="104.40247"
+       x="80.972633"
+       y="104.97265"
        id="text18577-9-7"
        sodipodi:linespacing="2500%"><tspan
          sodipodi:role="line"
          id="tspan18575-9-9"
-         x="86.10421"
-         y="104.40247"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:2500%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.26458332px">Output Layer</tspan></text>
+         x="80.972633"
+         y="104.97265"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:2500%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.26458332px">Output $\y_t$</tspan></text>
     <flowRoot
        xml:space="preserve"
        id="flowRoot4097"
@@ -2040,5 +2029,17 @@
            id="tspan9201"
            sodipodi:role="line">$z^{-1}$</tspan></text>
     </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:2500%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="80.794868"
+       y="150.95404"
+       id="text18577-9-6"
+       sodipodi:linespacing="2500%"><tspan
+         sodipodi:role="line"
+         id="tspan18575-9-92"
+         x="80.794868"
+         y="150.95404"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:2500%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.26458332px">Previous hidden state $\h_{t-1}$</tspan></text>
   </g>
 </svg>

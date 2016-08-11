@@ -51,15 +51,15 @@
   \begin{picture}(1,0.48616257)%
     \put(0,0){\includegraphics[width=\unitlength,page=1]{nn-rnn-elman.pdf}}%
     \put(0.36983919,0.0215046){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Memory Cell}}}%
-    \put(0.06969997,0.05647467){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Inputs}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=2]{nn-rnn-elman.pdf}}%
     \put(0.64667219,0.01265516){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{}}}%
-    \put(0.77497898,0.11106471){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Input Layer}}}%
-    \put(0.77843947,0.26873704){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Hidden Layer}}}%
+    \put(0.00630456,0.04829063){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Input $\x_t$}}}%
+    \put(0.64749674,0.31245468){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Hidden state $\h_t$}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=3]{nn-rnn-elman.pdf}}%
-    \put(0.68924945,0.4470383){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Output Layer}}}%
+    \put(0.64889468,0.44255444){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Output $\y_t$}}}%
     \put(0.68902903,0.47040603){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.26974604\unitlength}\raggedright \end{minipage}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=4]{nn-rnn-elman.pdf}}%
     \put(0.61822251,0.19653158){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$z^{-1}$}}}%
+    \put(0.64749674,0.08095634){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Previous hidden state $\h_{t-1}$}}}%
   \end{picture}%
 \endgroup%
