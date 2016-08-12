@@ -21,7 +21,7 @@ the remaining are generated.
 
 In music education, harmonization of a given melody is considered a more
 elementary task than generation of a novel chorale
-\cite{denny1960oxford,piston1978harmony}. However, these expectations may not
+\citep{denny1960oxford,piston1978harmony}. However, these expectations may not
 be valid for our model, which was trained without any consideration of the
 future notes occurring in the provided melody. Our experiments in this chapter
 will yield a definitive answer to this question.
@@ -66,7 +66,7 @@ will yield a definitive answer to this question.
 \nomenclature[g-alpha]{$\alpha$}{multi-index of fixed tokens in harmonization}
 \nomenclature[g-delta]{$\delta$}{Kroneker delta}
 
-Recall that \cref{sec:model-analysis} gave us a RNN model
+Recall that \cref{ch:model-analysis} gave us a RNN model
 $\tilde{P}(\vec{x}_{t+1} | \vec{x}_{t}, \h_{t-1})$, which combined with a fixed
 initial hidden state $\h_0$ yields a \emph{sequential prediction model}
 $\tilde{P}(\x_t | \x_{1:t-1})$ approximating the \emph{true distribution}
@@ -204,7 +204,7 @@ orderings in the encoding, which we propose as extension work.
 
 One question we would like to investigate is the generality of the concepts
 extracted by the model. Although it is trained for sequential prediction of
-Bach chorales, \cref{sec:model-analysis} demonstrated that the model learns
+Bach chorales, \cref{ch:model-analysis} demonstrated that the model learns
 high-level music theoretic concepts. We hypothesized that these high-level
 concepts may enable the model to generalize to data which may significantly
 differ from its training data.

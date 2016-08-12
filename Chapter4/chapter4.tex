@@ -113,7 +113,7 @@ notation on \vref{fig:piano-roll-effects-preproc}.
     \label{fig:score-effects-preproc}
 \end{figure}
 
-\mynote{Fix \vref{fig:piano-roll-effects-preproc} y-labels}
+% \mynote{Fix \vref{fig:piano-roll-effects-preproc} y-labels}
 
 \begin{figure}[tb]
     \centering
@@ -314,7 +314,7 @@ adding prior information through engineering harmonically relevant features.
 Instead, we appeal to results by \citet{bengio2009learning,Bengio2011}
 suggesting that that a key ingredient in deep learning's success is its \emph{ability
 to learn good features from raw data}. Such features are very likely to be
-musically relevant, which we will explore further in \cref{sec:model-analysis}.
+musically relevant, which we will explore further in \cref{ch:model-analysis}.
 
 \section{Design and validation of a generative model for music}
 
@@ -413,7 +413,7 @@ following hyperparameters:
   \item \texttt{dropout} -- the dropout probability
 \end{enumerate}
 
-\mynote{Does this need to be diagrammed?}
+%\mynote{Does this need to be diagrammed?}
 
 Our model first embeds the inputs $\x_t$ into a \texttt{wordvec}-dimensional
 vector-space, compressing the dimensionality down from $|V| \approx 140$ to
@@ -474,7 +474,7 @@ support for GPU training (see \vref{tab:gpu-training}), dropout, and batch norma
 The increasing validation errors in \vref{fig:theanets-architecture} prompted
 investigation of regularization techniques. In addition to adding batch
 normalization, a technique known to reduce overfitting and accelerate training
-\cite{ioffe2015batch}, we also investigated the effects of different levels
+\citep{ioffe2015batch}, we also investigated the effects of different levels
 of dropout by varying the \texttt{dropout} parameter.
 
 \begin{figure}[tb]
