@@ -380,7 +380,7 @@ Finally, applications of RNNs to long sequences can incur a prohibitively high
 cost for a single parameter update \citep{citeulike:13881859}. For instance,
 computing the gradient of an RNN on a sequence of length $1000$ costs the
 equivalent of a forward and backward pass on a $1000$ layer feed-forward
-network. This issue is typically addressed by only backpropagating error
+network. This issue is typically addressed by only back-propagating error
 signals a fixed number of timesteps back in the unrolled network, a technique
 known as \emph{truncated BPTT} \citep{williams1990efficient}. As the hidden
 states in the unrolled network have already been exposed to many previous
