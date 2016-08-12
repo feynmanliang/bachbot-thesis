@@ -2,7 +2,7 @@
 % Use `abstract' as an option in the document class to print only the titlepage and the abstract.
 \begin{abstract}
   This thesis investigates Bach's music composition style using deep sequence
-  learning. We present \textit{BachBot}: a deep LSTM model for automatic
+  learning. We develop \textit{BachBot}: a deep LSTM model for automatic
   stylistic composition of polyphonic music in the style of Bach's chorales.
   Our approach encodes music scores into a sequential format, reducing the task
   to one of sequence modeling. Traditional $N$-gram language models are found
@@ -12,9 +12,9 @@
 
   Unlike many previous works where model architecture is carefully designed
   using an understanding of music theory, our methodology intentionally
-  minimizes prior assumptions and utilizes LSTM without modification. While
-  this is not the first application of deep LSTM to Bach chorales, our work
-  consists of the following novel contributions.
+  minimizes prior assumptions and utilizes a vanilla LSTM without modification.
+  While this is not the first application of deep LSTM to Bach chorales, our
+  work consists of the following novel contributions.
 
   First, we devise a sequential encoding for polyphonic music which avoids
   hand-crafted features and resolves issues noted by prior work. Our

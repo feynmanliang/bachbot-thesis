@@ -1,4 +1,4 @@
-\chapter{Automatic composition with deep LSTM}\label{ch:automatic-composition}
+\chapter{Automatic stylistic composition with deep LSTM}\label{ch:automatic-composition}
 \begin{savequote}[75mm]
   We find ourselves in front of an attempt, as objective as possible, of creating
   an automated art, without any human interference except at the start, only in
@@ -14,17 +14,29 @@
 \fi
 
 This chapter describes the design and quantitative evaluation of a generative
-RNN sequence model for polyphonic music. We first construct a training corpus
-from Bach chorales and investigate the impact of our preprocessing procedure on
-the corpus. Next, we present a simple frame-based sequence encoding for
-polyphonic music with many desirable properties.
+RNN sequence model for polyphonic music. In contrast to many prior systems for
+automatic composition, we intentionally avoid allowing our prior assumptions
+about music theory and structure impact the design of our model, opting to
+learn features from data over injecting prior knowledge. This choice is motivated
+by three considerations:
+\begin{enumerate}
+  \item Prior assumptions about music may be incorrect, limiting the performance achievable by the model
+  \item The goal is to assess the model's ability to compose convincing music, not the researcher's prior knowledge
+  \item The structure learned by an assumption-free model may provide novel insights into various musical phenomena
+\end{enumerate}
+Note that this is deviates from many prior works, which leveraged
+domain-specific knowledge such as modelling chords and notes hierarchically
+\citep{hild1991harmonet,mozer1994neural,Eck2002}, accounting for meter
+\citep{eck2008learning}, and detecting for motifs \citep{feulner1994melonet}.
 
-Using this sequence representation, we reduce the task to one of language
-modelling and first show that traditional $N$-gram language models perform poorly
-on our encoded music data. This prompts an investigation of various RNN
-architectures, design trade-offs, and training methods in order to build
-an optimized generative model for Bach chorales.
-
+We first construct a training corpus from Bach chorales and investigate the
+impact of our preprocessing procedure on the corpus. Next, we present a simple
+frame-based sequence encoding for polyphonic music with many desirable
+properties. Using this sequence representation, we reduce the task to one of
+language modelling and first show that traditional $N$-gram language models
+perform poorly on our encoded music data. This prompts an investigation of
+various RNN architectures, design trade-offs, and training methods in order to
+build an optimized generative model for Bach chorales.
 We conclude this chapter by quantitatively evaluating our final model in
 test-set loss and training time, and comparing against similar work to
 establish context.
@@ -47,16 +59,25 @@ We restrict the scope of our investigation to Bach chorales for the following re
   \item The Bach chorales have become a standardized corpus routinely studied
     by aspiring music theorists\citep{white2002guidelines}
 \end{enumerate}
-We use the \emph{Bach-Werke-Verzeichnis} (BWV) \citep{butt1999bach} indexed
-collection of the Bach chorales provided by the
-\texttt{music21}\citep{Scott2015} Python library as our data source.
+
+While the \textit{JCB Chorales} \citep{Allan2005} has become a popular dataset
+for polyphonic music modelling, we will show in \ref{sec:jcb-distorts} that its quantization to quavers
+introduces a non-negligible amount of distortortion.
+
+Instead, we opt build a corpus of Bach chorales which is quantized to
+semiquavers rather than quavers, enabling our model to operate at a \emph{time
+resolution at least $2\times$ better than all related work}.
+
+Our data is obtained from the \emph{Bach-Werke-Verzeichnis} (BWV)
+\citep{butt1999bach} indexed collection of the Bach chorales provided by the
+\texttt{music21}\citep{Scott2015} Python library.
 
 \subsection{Preprocessing}\label{sec:preprocessing}
 
 \nomenclature[z-MIDI]{MIDI}{Musical Instrument Device Interface}
 
-Motivated by transposition invariance in music (see
-\vref{sec:transposition-invariance}) and prior work
+Motivated by music's transposition invariance (see
+\vref{sec:transposition-invariance}) as well as prior practice
 \citep{mozer1994neural,Eck2002,franklin2004recurrent,franklin2005jazz}, we
 first perform \emph{key normalization}. The keys of each score were first
 analyzed using the Krumhansl Schmuckler key-finding algorithm
@@ -64,20 +85,20 @@ analyzed using the Krumhansl Schmuckler key-finding algorithm
 score is C-major for major scores and A-minor for minor scores.
 
 Next, \emph{time quantization} is performed by aligning note start and end
-times to the nearest multiple of some minimum duration. Our model uses a
-minimum duration of one semibreve, exceeding the time resolutions of
-\citep{Boulanger-Lewandowski2012,Eck2002} by 2x,
-\citep{hild1991harmonet} by 4x, and \citep{bellgard1994harmonizing} by 8x.
+times to the nearest multiple of some fundamental duration. Our model uses a
+fundamental duration of one semibreve, \emph{exceeding the time resolutions of
+\citep{Boulanger-Lewandowski2012,Eck2002} by 2x, \citep{hild1991harmonet} by
+4x, and \citep{bellgard1994harmonizing} by 8x}.
 
 We consider only note pitches and durations, neglecting changes in timing (\eg
-ritardandos), dynamics (\eg crescendos), and stylistic notations (\eg accents,
+ritardandos), dynamics (\eg crescendos), and additional notation (\eg accents,
 staccatos, legatos). This is comparable to prior work
 \citep{Boulanger-Lewandowski2012,pascanu2013construct} where a MIDI-encoding
 also lacking this additional notation was used.
 
-An example of the distortion introduced through of our preprocessing steps is
-provided in \vref{fig:score-effects-preproc} in sheet music notation and in
-piano roll notation on \vref{fig:piano-roll-effects-preproc}.
+An example of the effects introduced by our preprocessing is provided in
+\vref{fig:score-effects-preproc} in sheet music notation and in piano roll
+notation on \vref{fig:piano-roll-effects-preproc}.
 \begin{figure}[tb]
     \centering
     \includegraphics[width=0.8\linewidth]{bwv185-6-original-score-1.png}
@@ -92,6 +113,8 @@ piano roll notation on \vref{fig:piano-roll-effects-preproc}.
     \label{fig:score-effects-preproc}
 \end{figure}
 
+\mynote{Fix \vref{fig:piano-roll-effects-preproc} y-labels}
+
 \begin{figure}[tb]
     \centering
         \input{Chapter4/Figs/bwv185-6-original-piano-roll.pgf}
@@ -102,28 +125,22 @@ piano roll notation on \vref{fig:piano-roll-effects-preproc}.
     \label{fig:piano-roll-effects-preproc}
 \end{figure}
 
-\subsubsection{Corpus level analysis of preprocessing effects}
+\subsubsection{Quantizing to semiquavers introduces non-negligible distortion}\label{sec:jcb-distorts}
 
-To assess the effects introduced by key normalization and time quantization,
-we analyze corpus level statistics related to pitch and duration.
+Choosing to implement our own sequential encoding scheme was a difficult choice.
+While it would permit a finer time-resolution of semiquavers, it would make
+our cross-entropy losses incomparable to those reported on \textit{JCB
+Chorales} \citep{Allan2005}.
 
-\mynote{Trim since we moved a lot to appendix}
+To justify our decision, we investigated the distortion introduced by
+quantization to quavers rather than semiquavers in
+\vref{fig:note-lengths-time-quantization}. We find that \textit{JCB Chorales}
+\emph{distorts $2816$ notes in the corpus ($2.85\%$) because of quantization to
+quavers}. Since our research aim is to generate convincing music, we
+\emph{minimize unnecessary distortions and proceed with our own encoding
+scheme}, understanding that it will create difficulties in comparing
+quantitative evaluation.
 
-\cref{fig:pitch-key-standardization} plots a histogram of pitch usage counts
-before and after key normalization. Notice that the overall range of pitches
-has increased after key normalization. This can be explained by noting that
-Bach's chorales were to be performed by vocalists and hence were restricted to
-use pitches within human voice ranges regardless of key. After transposition,
-this constraint is no longer be satisfied and we see the appearance of
-unrealistically low notes (\eg A1) outside the range of even the lowest voice
-types.
-
-In \cref{fig:pc-key-standardization}, we visualize histograms of pitch class usages.
-As expected, key normalization has increased the usage of pitch classes in the key of
-C-major / A-minor (\ie those which possess no accidentals) and decreased out of key
-pitch classes (\eg C\#, F\#).
-
-\mynote{Add tables to quantify, argue that semiquaver quantization is a big win for us}
 \begin{figure}[tb]
     \centering
     \begin{subfigure}[t]{0.48\textwidth}
@@ -134,18 +151,19 @@ pitch classes (\eg C\#, F\#).
         \centering
         \input{Chapter4/Figs/note-lengths-quantized.pgf}
     \end{subfigure}
-    \caption{Distribution of note durations over Bach chorales corpus. Quantization has minimal impact
-    because of the high resolution (semiquavers) used.}
+    \caption{Distortion introduced by quantization to semiquavers}
     \label{fig:note-lengths-time-quantization}
 \end{figure}
 
-We investigate the effects of time quantization in
-\cref{fig:note-lengths-time-quantization}, which shows histograms of note
-duration usages before and after quantization. \mynote{Update plots... are they affected}.
-
+We also investigate changes in other corpus-level statistics as a result of key
+normalization and time quantization, such as pitch and pitch class usages and
+meter. All results fall within expectations, but the interested reader is
+directed to \vref{sec:quantify-effects-preprocessing}.
 
 \subsection{Sequential encoding of musical data}
 \label{sec:sequential-encoding}
+
+\nomenclature[z-OOV]{OOV}{out of vocabulary}
 
 After preprocessing of the scores, our next step is to encode music into a
 sequence of tokens amenable for processing by RNNs. One design decision is
@@ -157,56 +175,91 @@ in RNN language modelling where either individual characters or entire words
 can be used.
 
 In contrast to most language models which operate at the word level, we choose
-to construct our models at the note level for several reasons.
-Firstly, the issue of multiple tokens in the sequence corresponding to the same
-instant of time in the represented music should not be problematic because
-LSTM have been shown to be able to learn to implement precise timing and
-counting\cite{gers2002learning}. Additionally, the use of a note-level encoding
-partially mitigates the problem of out-of-vocabulary (OOV) tokens in two ways.
-Besides reducing the potential vocabulary size from $O(128^4)$ possible chords
-to $O(128)$ potential notes, the model is now able to capture harmonic
-relationships between notes within the LSTM model weights ($\W_{xx}$,
-$\W_{xh}$, $\W_{hh}$ in \mynote{reference}) and may generalize better to unseen
-chords. Furthermore, \citet{graves2013generating} showed comparable performance
-between LSTM language models that operate on individual characters versus words
-(perplexities of $1.24$ bits vs $1.23$ bits per character respectively),
-suggesting that the choice is not too significant at least for English language
-modelling.
+to construct our models at the note level. The use of \emph{a note-level encoding may
+improve performance with respect to out-of-vocabulary (OOV) tokens} in two ways.
+It first reduces the potential vocabulary size from $O(128^4)$ possible chords
+down to $O(128)$ potential notes. In addition, harmonic relationships learned
+by the model parameters may enable generalization to OOV queries (\eg OOV
+chords that are transpositions of in-vocabualry chords).
 
-Similar to \citep{todd1989connectionist}, we represent polyphonic scores using
-a localist frame-based representation where time is discretized into constant
-timestep \emph{frames}. Frame based processing forces the network to learn the
-relative duration of notes, a counting and timing task which
-\citep{gers2002learning} demonstrated LSTM is capable of. Consecutive frames are
-separated by a unique delimiter (``$|||$''' in \mynote{Figure of score encoded
-in text}).
+In fact, the decision may not even matter at all. \citet{graves2013generating}
+showed comparable performance between LSTM language models that operate on
+individual characters versus words (perplexities of $1.24$ bits vs $1.23$ bits
+per character respectively), suggesting that choice of notes versus chords is not
+very significant, at least for English language modelling.
 
-\mynote{Add an example encoded score}
+Similar to \citep{todd1989connectionist}, our encoding represents polyphonic
+scores using a localist frame-based representation where time is discretized
+into constant timestep \emph{frames}. Frame based processing forces the network
+to learn the relative duration of notes, a counting and timing task which
+\citep{gers2002learning} demonstrated LSTM is capable of. Consecutive frames
+are separated by a unique delimiter (``$|||$''' in
+\vref{fig:eg-encoded-score}). Each frame consists of a sequence of $\langle
+\text{Note}, \text{Tie} \rangle$ tuples where $\text{Note} \in
+\{0,1,\cdots,127\}$ represents the MIDI pitch of a note and $\text{Tie} \in
+\{True,False\}$ distinguishes whether a note is tied with a note at the same
+pitch from the previous frame or is articulated at the current timestep.
 
-Each frame consists of a sequence of $\langle \text{Note}, \text{Tie} \rangle$
-tuples where $\text{Note} \in \{0,1,\cdots,127\}$ represents the MIDI pitch of
-a note and $\text{Tie} \in \{T,F\}$ distinguishes whether a note is tied with a
-note at the same pitch from the previous frame or is articulated at the current
-timestep. A design decision here is the order in which notes within a frame are
-encoded and consequentially processed by a sequential model. Since chorale
-music places the melody in the Soprano part, it is reasonable to expect the
-Soprano notes to be most significant in determining the other parts. Hence, we
-choose to process the Soprano notes first and order notes in descending pitch
-within every frame.
+\begin{figure}[p]
+  \centering
+  \begin{verbatim}
+                              (59, True)
+                              (56, True)
+                              (52, True)
+                              (47, True)
+                              |||
+                              (59, True)
+                              (56, True)
+                              (52, True)
+                              (47, True)
+                              |||
+                              (59, True)
+                              (56, True)
+                              (52, True)
+                              (47, True)
+                              |||
+                              (.)
+                              (57, False)
+                              (52, False)
+                              (48, False)
+                              (45, False)
+                              |||
+                              (.)
+                              (57, True)
+                              (52, True)
+                              (48, True)
+                              (45, True)
+                              |||
+  \end{verbatim}
+  \caption{Example encoding of two chords, the second one annotated with fermatas (tokens $122$ to $148$, BWV 101.7).
+  chords are encoded as (MIDI pitch value, tied to previous frame?) tuples,
+  ``|||''' encodes the ends of frames, and ``(.)'' at the start of a chord
+  encodes a fermata. Each ``|||'' corresponds to time advancing by a semiquaver}
+  \label{fig:eg-encoded-score}
+\end{figure}
 
-The above specification describes our initial encoding. Later in our work
-\mynote{reference}, we found that this encoding resulted in unrealistically long
-phrase lengths. Including fermatas (represented by ``(.)'' in \mynote{Figure of
-encoded score}, which Bach used to denote ends of phrases, solves this problem.
+A design decision is the order in which notes within a frame are encoded and
+consequentially processed by a sequential model. Since chorale music places the
+melody in the Soprano part, it is reasonable to expect the Soprano notes to be
+most significant in determining the other parts. Hence, we would like to process
+Soprano notes first and \emph{order the notes within a frame in descending pitch}.
 
-Finally, for each score a unique start symbol (``START'' in \mynote{Figure})
-and end symbol (``END'' in \mynote{Figure}) are appended to the beginning and
+The above specification describes our initial attempt at an encoding format.
+However, we found that this encoding format resulted in unrealistically long
+phrase lengths. Including fermatas (represented by ``(.)'' in
+\vref{fig:eg-encoded-score}), which Bach used to denote ends of phrases, solves
+this problem.
+
+Finally, for each score a unique start symbol (``START'' in \cref{fig:eg-encoded-score})
+and end symbol (``END'' in \cref{fig:eg-encoded-score}) are appended to the beginning and
 end respectively. This causes the model to learn to initialize itself when
 given the start symbol and allows us to determine when a composition generated
-by the model has concluded. The vocabulary and corpus size after encoding is
-detailed in \cref{tab:encoded-corpus-stats}. The rank-size distribution of the
-note-level corpus tokens is shown in \cref{fig:zipf} and confirms the failure
-of Zipf's law in our data.
+by the model has concluded.
+
+The vocabulary and corpus size after encoding is detailed in
+\cref{tab:encoded-corpus-stats}. The rank-size distribution of the note-level
+corpus tokens is shown in \cref{fig:zipf} and confirms the failure of Zipf's
+law in our data.
 
 \begin{table}[tb]
   \centering
@@ -229,60 +282,51 @@ of Zipf's law in our data.
   \label{fig:zipf}
 \end{figure}
 
-\mynote{Trim this stuff}
-Notice that our encoding is sparse: unarticulated notes are not encoded. It is
-also variable length as anywhere from zero to four (in the case of chorales,
-more for arbitrary polyphonic scores) notes. Finally, the explicit
-representation of tied notes vs articulated notes solves the problem where
-multiple articulations at the same pitch are indistinguishable from a single
-note with the same duration, an issue present in many prior works
-\citep{Eck2002,eck2008learning,Liu2014,Brien2016}.
+We make the following observations about our proposed encoding scheme:
+\begin{itemize}
+  \item It is \emph{sparse}: unarticulated notes are not encoded
+  \item It is also \emph{variable length}: each frame can span anywhere from one to five tokens, requiring
+    LSTM's capability of detecting spacing between events\citep{gers2002learning}
+  \item The explicit representation of tied notes vs articulated notes \emph{enables us to
+    determine when notes end}, resolving an issue present in many prior works
+    \citep{Eck2002,eck2008learning,Liu2014,Brien2016}
+\end{itemize}
 
-Additionally, notice that our encoding avoids hand-engineered features such as
-pitch representations which are psychologically-based \citep{mozer1994neural}
-or harmonically-based \citep{franklin2004recurrent}
-\citep{laden1989representation}. This is intentional and is motivated by
-numerous reports \citep{bengio2009learning}\citep{Bengio2011} suggesting that
-that a key ingredient in deep learning's success is its ability to learn good
-features from raw data.
+Unlike many others
+\citep{mozer1994neural,franklin2004recurrent,laden1989representation}, we avoid
+adding prior informaton through engineering harmonically relevant features.
+Instead, we appeal to results by \citet{bengio2009learning,Bengio2011}
+suggesting that that a key ingredient in deep learning's success is its \emph{ability
+to learn good features from raw data}. Such features are very likely to be
+musically relevant, which we will explore further in \cref{sec:model-analysis}.
 
 \section{Design and validation of a generative model for music}
 
 In this section, we describe the design and validation process leading to our
-generative model. Unlike many prior models for music data, we intentionally avoid
-injection of domain-specific knowledge into our model architectures such as
-distinguishing between chords versus notes
-\citep{hild1991harmonet}\citep{mozer1994neural} \citep{Eck2002} and explicitly
-modelling of meter \citep{eck2008learning} or motifs
-\citep{feulner1994melonet}. Through this fundamental connectionist approach, we
-aim to minimize biases introduced by prior assumptions and force the model
-itself to learn musical structure from data.
+generative model. 
 
 \subsection{Training and evaluation criteria}
 
-Following \citep{mozer1994neural}, we will train the model to predict a distribution
-distribution over all possible tokens next $\x_{t+1}$ given the current token
-$\x_{t}$ and the previous hidden state $\h_{t-1}$. This is equivalent to
-setting the target sequence to be the input sequence delayed by one timestep:
-$\y_{1:T-1} = \x_{2:T}$ and $\y_T = \text{STOP}$. \mynote{Diagram for sequential prediction}.
-\mynote{Note similarity with language modeling}.
+Following \citep{mozer1994neural}, we will train the model to predict
+$P(\x_{t+1} | \x_t, \h_{t-1})$: a probability distribution over all possible
+next tokens $\x_{t+1}$ given the current token $\x_{t}$ and the previous hidden
+state $\h_{t-1}$. This is the exact same operation performed by RNN language
+models \citep{Mikolov2010}. We minimize cross-entropy loss between the
+predicted distributions $P(\x_{t+1} | \x_t, \h_{t-1})$ and the actual target
+distribution $\delta_{\x_{t+1}}$
 
-For training criteria, we use the cross-entropy between the predicted
-distributions $P(\y_t | \h_t, \x_t)$ and the actual target distribution
-$\delta_{\y_t}$.
+At the next timestep, the correct token $\x_{t+1}$ is provided as the recurrent
+input even if the most likely prediction $\argmax P(\x_{t+1} | \h_t, \x_t)$
+differs. This is is referred to as \emph{teacher forcing}
+\citep{williams1989learning} performed to aid convergence because the model's
+predictions may not be reliable early in training.
 
-Note that our training criteria as written in \mynote{reference} uses the actual
-next token $\x_{t+1}$ as the recurrent input, even if the most likely
-prediction $\argmax P(\x_{t+1} | \h_t, \x_t)$ differs. This is is referred to
-as \emph{teacher forcing}\citep{williams1989learning} and is motivated by the
-observation that model predictions may not yet be correct during the early
-iterations of training. However, at inference the token generated from
-$P(\x_{t+1} | \h_t, \x_t)$ is reused as the previous input, creating a
-discrepancy between training and inference. Scheduled sampling
-\citep{bengio2015scheduled} is a recently proposed alternative training method
-for resolving this discrepancy and may help the model better learn to predict
-using generated symbols rather than relying on ground truth to be always
-provided as input.
+However, at inference the token generated from $P(\x_{t+1} | \h_t, \x_t)$ is
+reused as the previous input, creating a discrepancy between training and
+inference. Scheduled sampling \citep{bengio2015scheduled} is a recently
+proposed alternative training method for resolving this discrepancy and may
+help the model better learn to predict using generated symbols rather than
+relying on ground truth to be always provided as input.
 
 \subsection{Establishing a baseline with $N$-gram language models}
 
@@ -299,8 +343,8 @@ Good-Turing discounted language model for benchmarking against.
 Both models were developed for applications modelling language data, whose distribution
 over words which may differ from our encoded music data (see \vref{fig:zipf}).
 Furthermore, both are based upon $N$-gram models which are constrained to only
-account for short-term dependencies. Hence, we expect RNNs to outperform the
-results shown in \vref{tab:baseline-perplexity}.
+account for short-term dependencies. Therefore, we expect RNNs to outperform the
+$N$-gram baselines shown in \vref{tab:baseline-perplexity}.
 
 \begin{table}[p]
   \centering
@@ -349,12 +393,11 @@ following hyperparameters:
   \item \texttt{num\_layers} -- the number of memory cell layers
   \item \texttt{rnn\_size} -- the number of hidden units per memory cell (\ie hidden state dimension)
   \item \texttt{wordvec} -- dimension of vector embeddings
-  \item \texttt{seq\_length}
+  \item \texttt{seq\_length} -- number of frames before truncating BPTT gradient
   \item \texttt{dropout} -- the dropout probability
 \end{enumerate}
 
 \mynote{Does this need to be diagrammed?}
-\mynote{Justify wordvec embedding}
 
 Our model first embeds the inputs $\x_t$ into a \texttt{wordvec}-dimensional
 vector-space, compressing the dimensionality down from $|V| \approx 140$ to
@@ -366,25 +409,22 @@ fully-connected layer mapping to $|V| = 108$ units, which are passed through a
 softmax to yield a predictive distribution $P(\x_{t+1} | \h_{t-1}, \x_{t})$.
 Cross entropy is used as the loss minimized during training.
 
-Models were trained using the Adam normalization \citep{kingma2014adam}
-and an initial learning rate of $2 \times 10^{-3}$ decayed by $0.5$ every $5$
-epochs. The back-propogation through time gradients were clipped
-at $t$\citep{Pascanu2012} and truncated after \texttt{seq\_length} time steps.
-We use a mini-batch size of $50$.
-
+Models were trained using Adam \citep{kingma2014adam} with an initial learning
+rate of $2 \times 10^{-3}$ decayed by $0.5$ every $5$ epochs. The
+back-propogation through time gradients were clipped at $\pm5.0$
+\citep{Pascanu2012} and BPTT was truncated after \texttt{seq\_length} frames. A
+minibatch size of $50$ was used.
 
 \subsection{Comparison of memory cells on music data}
 
-To rapidly compare a large number of memory cell implementations, we leveraged
-\texttt{theanets}\footnote{https://github.com/lmjohns3/theanets}: a Python
-software library for high-level specification of neural network models.
+We used \texttt{theanets}\footnote{https://github.com/lmjohns3/theanets} to
+rapidly implement and compare a large number of memory cell implementations.
 \Cref{fig:theanets-architecture} shows the results of exploring a range of RNN
 memory cell implementation and holding \texttt{num\_layers=1},
 \texttt{rnn\_size=130}, \texttt{wordvec=64}, and \texttt{seq\_length=50}
 constant. Unlike later models, none of these models utilized dropout or batch
-normalization. We used a batch size of $50$ and configured the clockwork RNN
-\citep{cho2014learning} with $5$ equal-sized hidden state blocks with update
-periods $(1, 2, 4, 8, 16)$.
+normalization. We configured the clockwork RNN \citep{cho2014learning} with $5$
+equal-sized hidden state blocks with update periods $(1, 2, 4, 8, 16)$.
 
 \begin{figure}[tb]
     \centering
@@ -411,11 +451,9 @@ the exporation of dropout regularization in \cref{sec:lstm-dropout}.
 
 After settling on LSTM as the memory cell, we conducted remaining experiments
 using the \texttt{torch-rnn} Lua software library. Our switch was motivated by
-support for GPU training, dropout, and batch normalization.
+support for GPU training (see \vref{tab:gpu-training}), dropout, and batch normalization.
 
 \subsubsection{Dropout regularization improves validation loss}\label{sec:lstm-dropout}
-
-\mynote{Is it still worth it to do some batch normalization experiments?}
 
 The increasing validation errors in \vref{fig:theanets-architecture} prompted
 investigation of regularization techniques. In addition to adding batch
@@ -454,8 +492,9 @@ The optimal hyperparameter settings within our grid was found to be
 $\texttt{num\_layers}=3$, $\texttt{rnn\_size}=$, $\texttt{wordvec}=32$,
 $\texttt{seq\_length}=128$ $\texttt{dropout}=0.3$. Such a model achieves
 $0.324$ and $0.477$ cross entropy losses on training and validation corpuses
-respectively. \Cref{fig:torch-rnn-best-model-trace} plots the training curve
-of this model and shows that training converges after only 30 iterations.
+respectively. \Cref{fig:torch-rnn-best-model-trace} plots the training curve of
+this model and shows that \emph{training converges after only 30 iterations ($\approx
+28.5$ minutes on a single GPU)}.
 
 \begin{figure}[tb]
   \centering
@@ -468,10 +507,24 @@ of this model and shows that training converges after only 30 iterations.
 To confirm local optimality, we perform perturbations about our final
 hyperparameter settings in
 \crefrange{fig:torch-rnn-network-params}{fig:torch-rnn-input-params-wordvec}.
+Our analysis of these experiments yield the following insights:
+\begin{enumerate}
+  \item Depth matters! Increasing \texttt{num\_layers} can yield up to $9\%$ lower validation loss.
+    The best model is $3$ layers deep, any further and overfitting occurs.
+    This finding is unsurprising: the dominance of deep RNNs in polyphonic
+    modelling was already noted by \citet{pascanu2013construct}
+  \item Increasing hidden state size (\texttt{rnn\_size}) improves model capacity, but causing overfitting when too large
+  \item The exact size of the vector embeddings (\texttt{wordvec}) did not appear significant
+  \item While training losses did not change, increasing the BPTT truncation length (\texttt{seq\_length})
+    decreased validation loss, suggesting improved generalization
+\end{enumerate}
 
-Consistent with prior work \citep{sutskever2014sequence,kaiser2015neural}, the
-\cref{tab:gpu-training} shows that GPU training resulted in training speedups
-of more than $800\%$ over CPU training.
+\subsection{GPU training yields $800\%$ acceperation}
+
+Consistent with prior work \citep{sutskever2014sequence,kaiser2015neural},
+timing results \cref{tab:gpu-training} from training our overall best model
+confirmed a $800\%$ speedup enabled by the GPU training implemented in
+\texttt{torch-rnn}.
 
 \begin{table}[tb]
   \centering
@@ -489,69 +542,24 @@ of more than $800\%$ over CPU training.
   \end{tabular}
 \end{table}
 
+\section{Results and comparison}
 
-Sensitivity to network structure: \texttt{num\_layers} and \texttt{rnn\_size}.
-\begin{itemize}
-    \item Larger \texttt{rnn\_size} leads to higher capacity and lower training loss
-        \begin{itemize}
-            \item Presents as overfitting on validation, where the lowest capacity
-                model \texttt{rnn\_size} appears to be improving in generalization while
-                others are flat/increasing
-        \end{itemize}
-    \item Training curves about the same wrt \texttt{num\_layers}, validation curves have interesting story
-        \begin{itemize}
-            \item Depth matters: small 64 and 128 hidden unit RNNs saw improvements up to 0.09
-            \item Unsurprising, \citet{pascanu2013construct} already observed deep RNNs dominated polyphonic modelling.
-            \item Expressivity gained from depth furthers overfitting: 256
-                hidden unit RNN has some of the best validation performance at
-                depth 1 but is the worst generalizing model for depths 2
-                and 3 even though training loss is low
-        \end{itemize}
-    \item \texttt{rnn\_size=128} found to be best generalizing, optimized at
-        \texttt{num\_layers=2}: will continue with these settings
-\end{itemize}
+As done by \citep{bayer2013fast,Boulanger-Lewandowski2012}, we quantitatively
+evaluate our models using cross entropies and perplexities on a 10\% held-out
+validation set. Our best model (\vref{tab:torch-rnn-config-perfs}) achieves
+\emph{cross-entropy losses of $0.323$ on training data and $0.477$ on held-out test
+data, corresponding to a training perplexity of $1.251$ bits and a test
+perplexity of $1.391$}. As expected, the deep LSTM model achieves more than
+\emph{$0.6$ bits lower than any validation perplexity obtained by the $N$-gram
+models} compared in \vref{tab:baseline-perplexity}.
 
-Sensitivity to network inputs: \texttt{seq\_length} and \texttt{wordvec}
-\begin{itemize}
-    \item Training losses are about the same across all \texttt{wordvec}s
-    \item Validation losses suggest that increasing \texttt{seq\_length} important for good performance \mynote{investigate further}
-    \item \texttt{wordvec=128} overfits for all cases, the other two depend on \texttt{seq\_length} and vary an order of magnitude smaller than the performance gains from increasing \texttt{seq\_length}
-\end{itemize}
+% Before presenting the following comparisons, make note that cross-entropy loss
+% results are not directly comparable. This is because our music encoding scheme
+% (described in \vref{sec:sequential-encoding}) differs from the \textit{JCB
+% Chorales} \citep{Allan2005} dataset used by other models.
 
-\section{Results}
-
-As done by \citep{bayer2013fast,Boulanger-Lewandowski2012}, we
-quantitatively evaluate our models using cross entropies and
-perplexities on a 10\% held-out validation set.
-
-\citet{Allan2005} achieve cross-entropy losses of $2.79-2.80$ on unseen
-test-set scores respectively for their ``harmonic skeleton'' sub-task. This task
-involves predicting a sequence of one of 81 harmonic symbols, which may be
-interpreted as equivalence classes of chords. Even after applying Viterbi
-decoding to find globally optimal sequences, their HMM models achieve cross
-entropies of $0.84-0.87$ on training-set scores (Table 5.2 in
-\citet{Allan2005}).
-
-Our best model achieves cross-entropy losses of $0.323$ on
-training data and $0.477$ on held-out test data
-(\vref{tab:torch-rnn-config-perfs}), corresponding to a training perplexity of
-$1.251$ bits and a test perplexity of $1.391$. This is more than $0.6$ bits
-lower than any test perplexity obtained by the $N$-gram models compared in
-\vref{tab:baseline-perplexity}. This result is expected and shows that the
-greater modelling capacity provided by RNNs is useful for encoded music score
-data.
-
-\mynote{Compare \citep{Brien2016}}.
-
-The best models investigated in \citet{Boulanger-Lewandowski2012} achieved
-$-5.56$ log likelihood and $33.12\%$ accuracy on the symbolic prediction task.
-Note that the log likelihood is significantly lower than the $-0.323$ log
-likelihood implied by our model's cross-entropy loss. This is because the two
-results are not comparable as they utilize different input encodings with
-varying vocabulary sizes.
-
-\mynote{Compare on pitch/pitch class usage, note durations, meter, lengths of compositions}
-
-\section{Other applications}
-
-Scoring things as ``Bach-like'', model for expectation by using the probability.
+% On the \textit{(JCB Chorales} dataset \citet{Allan2005} report cross-entropy
+% losses of $2.79-2.80$  for sequential prediction of ``harmonic skeletons,''
+% which dropped to $0.84-0.87$ after applying Viterbi decoding (Table 5.2 in
+% \citet{Allan2005}). The RNN-RBM by \citet{Boulanger-Lewandowski2012} achieved
+% $-5.56$ log likelihood and $33.12\%$ accuracy on the same dataset.
