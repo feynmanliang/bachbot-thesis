@@ -62,7 +62,7 @@ We restrict the scope of our investigation to Bach chorales for the following re
 
 While the \textit{JCB Chorales} \citep{Allan2005} has become a popular dataset
 for polyphonic music modelling, we will show in \ref{sec:jcb-distorts} that its quantization to quavers
-introduces a non-negligible amount of distortortion.
+introduces a non-negligible amount of distortion.
 
 Instead, we opt build a corpus of Bach chorales which is quantized to
 semiquavers rather than quavers, enabling our model to operate at a \emph{time
@@ -121,7 +121,7 @@ notation on \vref{fig:piano-roll-effects-preproc}.
         \input{Chapter4/Figs/bwv185-6-preproc-piano-roll.pgf}
     \caption{Piano roll representation of the same 4 bars from \cref{fig:score-effects-preproc}
       before and after preprocessing. Again, note the transposition to C-major
-      and time-quantization occuring in the Soprano part.}
+      and time-quantization occurring in the Soprano part.}
     \label{fig:piano-roll-effects-preproc}
 \end{figure}
 
@@ -138,8 +138,9 @@ quantization to quavers rather than semiquavers in
 \emph{distorts $2816$ notes in the corpus ($2.85\%$) because of quantization to
 quavers}. Since our research aim is to generate convincing music, we
 \emph{minimize unnecessary distortions and proceed with our own encoding
-scheme}, understanding that it will create difficulties in comparing
-quantitative evaluation.
+scheme}. We understand that this choice will create difficulties in evaluating
+our model's success, and address this concern through alternative means (\cref{ch:evaluation})
+of evaluation which are arguably more relevant for automatic stylistic composition systems.
 
 \begin{figure}[tb]
     \centering
@@ -184,7 +185,7 @@ improve performance with respect to out-of-vocabulary (OOV) tokens} in two ways.
 It first reduces the potential vocabulary size from $O(128^4)$ possible chords
 down to $O(128)$ potential notes. In addition, harmonic relationships learned
 by the model parameters may enable generalization to OOV queries (\eg OOV
-chords that are transpositions of in-vocabualry chords).
+chords that are transpositions of in-vocabulary chords).
 
 In fact, the decision may not even matter at all. \citet{graves2013generating}
 showed comparable performance between LSTM language models that operate on
@@ -309,7 +310,7 @@ We make the following observations about our proposed encoding scheme:
 
 Unlike many others
 \citep{mozer1994neural,franklin2004recurrent,laden1989representation}, we avoid
-adding prior informaton through engineering harmonically relevant features.
+adding prior information through engineering harmonically relevant features.
 Instead, we appeal to results by \citet{bengio2009learning,Bengio2011}
 suggesting that that a key ingredient in deep learning's success is its \emph{ability
 to learn good features from raw data}. Such features are very likely to be
@@ -426,7 +427,7 @@ Cross entropy is used as the loss minimized during training.
 
 Models were trained using Adam \citep{kingma2014adam} with an initial learning
 rate of $2 \times 10^{-3}$ decayed by $0.5$ every $5$ epochs. The
-back-propogation through time gradients were clipped at $\pm5.0$
+back-propagation through time gradients were clipped at $\pm5.0$
 \citep{Pascanu2012} and BPTT was truncated after \texttt{seq\_length} frames. A
 minibatch size of $50$ was used.
 
@@ -457,8 +458,8 @@ outperforming GRUs in music applications, we choose to use LSTM as the memory
 cell for all following experiments.
 
 The increasing validation loss over time in \cref{fig:theanets-architecture}
-is a red flag suggesting that overfitting is occuring. This observation motivates
-the exporation of dropout regularization in \cref{sec:lstm-dropout}.
+is a red flag suggesting that overfitting is occurring. This observation motivates
+the exploration of dropout regularization in \cref{sec:lstm-dropout}.
 
 \subsection{Optimizing the LSTM architecture}\label{sec:lstm-grid-search}
 \nomenclature[z-CPU]{CPU}{Central Processing Unit}
@@ -534,7 +535,7 @@ Our analysis of these experiments yield the following insights:
     decreased validation loss, suggesting improved generalization
 \end{enumerate}
 
-\subsection{GPU training yields $800\%$ acceperation}
+\subsection{GPU training yields $800\%$ acceleration}
 
 Consistent with prior work \citep{sutskever2014sequence,kaiser2015neural},
 timing results \cref{tab:gpu-training} from training our overall best model

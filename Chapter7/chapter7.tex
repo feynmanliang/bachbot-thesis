@@ -31,7 +31,7 @@ automatic composition problem.
 evaluation due to lack aim, claiming that studies in automatic music generation
 do not clearly define their goals. They proceed to differentiate between three
 different goals for automatic music generation research, each with different
-evaluation critera:
+evaluation criteria:
 \begin{enumerate}
   \item Automatic composition
   \item Design of compositional tools
@@ -75,7 +75,7 @@ bandwidth. Responses collected from the survey are stored in Azure BlobStore, a
 distributed object store supporting batch MapReduce processing using Hadoop on
 HDInsight.
 
-The frontend is buit using
+The frontend is built using
 React\footnote{\url{https://facebook.github.io/react/}} and
 Redux\footnote{\url{http://redux.js.org/}}. We chose these frameworks because
 their current popularity in front-end web development implies familiarity by a
@@ -169,7 +169,7 @@ the remaining $42.6\%$ had directly accessed \url{bachbot.com},
 
 \subsection{Participant backgrounds and demographics}
 
-At the time of writing, we recieved a total of $759$ participants from $54$
+At the time of writing, we received a total of $759$ participants from $54$
 different countries. After selecting only the first response per IP address and
 filtering down to participants whom had played both choices in every question
 at least once, we are left with $721$ participants answering $5$ questions each
@@ -181,7 +181,7 @@ includes participants from six different continents.
 between $18-45$ and have played an instrument. The large number of participants
 with significant music experience is larger than our expectations: more than
 $24.13\%$ of participants have either formally studied or taught music theory.
-This large proportion of advanced participats shows that voluntary studies
+This large proportion of advanced participants shows that voluntary studies
 promoted through social media can generate significant participation by expert
 users interested in the problem domain.
 
@@ -227,7 +227,7 @@ users interested in the problem domain.
 \end{figure}
 
 \Cref{fig:responses-mask} shows the performance of BachBot on various question
-types. The SATB column shows that particants on average successfully
+types. The SATB column shows that participants on average successfully
 discriminated Bach from BachBot only $59\%$ of the time. As the baseline method
 of randomly guessing between the two choices in \cref{fig:question-screen}
 achieves $50\%$, our findings suggest that \emph{the pool of participants on
@@ -247,8 +247,8 @@ music. However, this result is expected and can be explained by the
 shortcomings of our greedy $1$-best harmonization method noted in
 \vref{sec:shortcomings-harm}.
 
-BachBot's results compare favorably against a recently published comparable
-automatic stylistic compostion system \citep{collins2016developing}, which
+BachBot's results compare favourably against a recently published comparable
+automatic stylistic composition system \citep{collins2016developing}, which
 found that $5$ out of $25$ participants were able to significantly
 differentiate their generated compositions from Bach. However, the comparison
 must be interpreted with case as \citet{collins2016developing} evaluate on a
@@ -273,7 +273,7 @@ parts are least significant in defining Bach's compositional style.
 \subsubsection{Certain compositions by BachBot cannot be significantly discriminated Bach}
 
 \cref{fig:responses-name} shows the proportion correct of correct responses
-recieved for each question. Encouragingly, it shows that more than a quarter of
+received for each question. Encouragingly, it shows that more than a quarter of
 the SATB pairs were not insignificantly different from baseline, suggesting
 that \textbf{while not always consistent BachBot is capable of composing music
 which the average participant cannot discern from actual Bach}. While we lack the

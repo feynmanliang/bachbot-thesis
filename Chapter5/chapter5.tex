@@ -40,7 +40,7 @@ analyses should be carefully interpreted.
 \subsection{Pooling over frames}
 
 In order to align and compare the activation profiles with the original score,
-all the activations occuring in between two chord boundary delimiters must be
+all the activations occurring in between two chord boundary delimiters must be
 combined. This aggregation of neuron activations from higher resolution (\eg
 note-by-note) to lower resolution (\eg frame-by-frame) is reminiscent of
 pooling operations in convolutional neural networks
@@ -121,7 +121,7 @@ is the high probability predictions for fermatas (third from top ``(.)'') near
 the end of phrases. This could indicate the model has managed to learned a
 notion of phrase structure.
 
-Anotering interesting row of \cref{fig:model-analysis-probabilistic-piano-roll}
+Another interesting row of \cref{fig:model-analysis-probabilistic-piano-roll}
 corresponds to frame delimiters (fourth from top, ``|||''). Notice that the
 predictions for frame delimiters are particularly strong during rests. This is
 because rests are encoded as empty frames, so the large probability values
@@ -162,7 +162,7 @@ structures, and show their activity profiles in
     \label{fig:model-analysis-cells-individual}
 \end{figure}
 
-Given our limited knowledge of music theory, we provided the actication
+Given our limited knowledge of music theory, we provided the activation
 profiles for our collaborator Dr.\ Mark Gotham \citet{mark-analysis}, who
 provided the following remarks:
 \begin{itemize}
@@ -176,7 +176,7 @@ provided the following remarks:
     \item The rest are less clear to me.
 \end{itemize}
 Dr.\ Gotham's analysis suggests that while some neurons are ambiguous to interpretation,
-other neurons have learned highly specific and musically relevant concents.
+other neurons have learned highly specific and musically relevant concepts.
 
 To our knowledge, this is the first reported result demonstrating LSTM neurons
 specializing to detect musically meaningful features. As we were careful to

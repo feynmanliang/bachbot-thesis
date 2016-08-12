@@ -130,8 +130,8 @@ knowledge and a offer high degree of interpretability, they are inherently
 biased by their creators' subjective theories on harmony and music cognition.
 Furthermore, specification of hand-crafted rules requires music expertise and
 the rules may not generalize across different tasks. Additionally, rule-based
-methods are brittle to even small amounts of distortion and noise, making the
-insuitable for noisy applications. Furthermore, symbolic methods limit
+methods are brittle to even small amounts of distortion and noise, making them
+unsuitable for noisy applications. Furthermore, symbolic methods limit
 creativity by disallowing any form of deviation from the defined rules.
 
 \subsection{Early connectionist methods}
@@ -192,7 +192,7 @@ progressions and another LSTM to model melody lines given chords. The authors
 reported that LSTM can learn long term music structure such as repeated motifs
 without explicit modelling, an improvement over earlier systems such as
 HARMONET by \citet{feulner1994melonet} where motifs were explicitly modelled. However,
-\citet{Eck2002} used a severly constrained music representation which quantized
+\citet{Eck2002} used a severely constrained music representation which quantized
 to eight notes, neglected the octave numbers for pitch classes, limited the
 model to $12$ possible chords, and had ``no explicit way to determine when a
 note ends'' \citet{Eck2002}.
@@ -326,7 +326,7 @@ automatic composition. The authors evaluate their system on $25$ participants
 with a mean of $8.56$ years of formal music training and impressively find that
 only $20\%$ of participants performed significantly better than chance. While
 we believe this to be one of the most convincing studies on automatic stylistic
-compostion to date, a few criticisms remain. First, the proposed model is
+composition to date, a few criticisms remain. First, the proposed model is
 highly specialized to automatic stylistic composition and is more of a
 testament to the author's ability to encode the stylistic rules of Bach than to
 the model's ability to learn from data. Additionally, a larger and more diverse
