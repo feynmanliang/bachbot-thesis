@@ -61,21 +61,21 @@ to understand what features are present in the failure cases which
 make them easy to distinguish, a potential extension for any
 interested music theorists.
 
-One significant opportunity for improvement is to account for future
-context during harmonization tasks. Specifically, the requirement that
-our model can be sampled to generate compositions constrains its
-architecture to be unidirectional, significantly impacting its
-performance on harmonization tasks where future outputs are constrained.
+One significant opportunity for improvement is to account for future context
+during harmonization tasks in \cref{ch:harmonization}. Specifically, the
+requirement that our model can be sampled to generate compositions constrains
+its architecture to be unidirectional, significantly impacting its performance
+on harmonization tasks where future outputs are constrained.
 
-One method to address this is to apply bidirectional
-RNNs\citep{Graves2005} and the sequence to sequence
-framework\citep{sutskever2014sequence} to map the constrained parts to
-the harmonized parts while accounting for both past and future context.
-An attention mechanism similar to \citet{Bahdanau2015} could be
+One method to address this is to apply bidirectional RNNs\citep{Graves2005} and
+the sequence to sequence framework\citep{sutskever2014sequence} to map the
+constrained parts to the harmonized parts while accounting for both past and
+future context. An attention mechanism similar to \citet{Bahdanau2015} could be
 introduced on top of the bidirectional RNN to both enable the model to
-selectively attend to specific time intervals within the context as well
-as provide insight into what the model deems relevant when generating
-harmonies.
+selectively attend to specific time intervals within the context as well as
+provide insight into what the model deems relevant when generating harmonies.
+
+\mynote{Group lookahead with lattice based}
 
 Another way to account for future constraints is using a lookahead
 search. Instead of generating outputs by greedily sampling the RNN's
@@ -86,15 +86,21 @@ states when looking ahead $L$ timesteps), but nevertheless can be made
 computationally tractable using approximation techniques like
 beam search\citep{norvig1992paradigms}.
 
-Another interesting area for further exploration is in how the different parts
-are ordered when flattening music scores (where all the notes in a chord are
-played simultaneously) into encoded token sequences (where a sequential
-ordering is imposed on the notes in a chord). Harmonization results from
-\vref{sec:harmonization-results} showed that the Soprano and Alto parts
-achieved significantly higher error rates than Tenor and Bass parts, which
-might be attributed the SATB order imposed when encoding chords. We expect
-ordering the parts to be harmonized last should improve the model as the fixed
-parts can now provide additional context aiding more consistent harmony
+Under this lattice based interpretation, our strategy is recognized as a beam
+search with beam width $1$. A wider beam-width which maintained $N$-best
+hypotheses such as in \citet{liu2014efficient} would allow the model to
+partially recover from mistakes made bygreedy action selection. We leave this
+extension for future work.
+
+
+Another interesting area for further exploration is how the encoding's ordering
+of parts within a frame (see \vref{sec:ordering-notes-within-frame}) affects
+harmonization performance. Results from \vref{sec:harmonization-results} showed
+that the Soprano and Alto parts achieved significantly higher error rates than
+Tenor and Bass parts, which might be attributed the SATB order imposed when
+encoding chords. We expect ordering the parts to be harmonized last should
+improve the model as the fixed parts can now provide additional context aiding
+more consistent harmony
 prediction.
 
 We use the Bach chorales because they are fairly homogeneous, widely available

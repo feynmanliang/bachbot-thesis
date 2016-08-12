@@ -7,125 +7,143 @@
     \graphicspath{{Chapter6/Figs/Vector/}{Chapter6/Figs/}}
 \fi
 
-\mynote{Talk about how correct harmonization is equivalent to conditioning on
-  future hidden state over all possible $\h$ trajectories passing through it.
-  Intractable conditioning, so we approximate by neglecting to constrain (\ie
-  don't account for future at all) and instead do teacher forcing. Hope that
-  teacher forcing induces the hidden state to go in a reasonable trajectory,
-but results show otherwise}
+Every aspiring music theorist is at some point tasked with composing simple
+pieces of music in order demonstrate understanding of the harmonic rules of
+Western classical music. These pedagogical exercises often include
+harmonization of chorale melodies, a task which is viewed as sufficiently
+constrained to allow a composer's basic technique to be judged.
 
-Unlike automatic composition, in harmonization tasks we are given the entire sequence of notes
-for one or more parts. As one of the parts is now fixed, the model is no longer able to freely
-compose and harmonic deviations from the fixed parts will result in dissonances and conflicting
-expectations. This lack of accountability for future expectations is one of the failure modes of our models.
-One potential method for mitigating this is bidirectional LSTM \citep{Graves2005}, which account
-for both the future and prior contexts. However, a bidirectional LSTM cannot be sequentially
-sampled to perform automatic composition.
+Mirroring the pedagogy for music students, this chapter evaluates the learned
+deep LSTM model's ability on various harmonization tasks. Unlike automatic
+composition, where the model is free compose a score of music without any
+constraints, in harmonization tasks one or more of the parts are fixed and only
+the remaining are generated.
 
-\section{Background}
+In music education, harmonization of a given melody is considered a more
+elementary task than generation of a novel chorale
+\cite{denny1960oxford,piston1978harmony}. However, these expectations may not
+be valid for our model, which was trained without any consideration of the
+future notes occuring in the provided melody. Our experiments in this chapter
+will yield a definitive answer to this question.
 
-A chorale consists of four parts: soprano, alto, tenor, and bass. Chorale harmonization
-involves producing the alto, tenor, and bass parts given a fixed soprano melody. As described
-by Walter Piston \citep{piston1978harmony}:
+% \section{Introduction to chorale harmonization}
 
-\begin{quote}
-  True harmonisation, then, means a consideration of the alternatives in available chords, the reasoned selection of one
-  of these alternatives, and the tasteful arrangement of the texture of the added parts with due regard
-  for consistency of style
-\end{quote}
+% as described by Walter Piston \citep{piston1978harmony}:
 
-The Baroque style employed by Bach has specific guidelines
-such as disallowing parallel fifths and parallel octaves as well as
-considerations for voice leading \citep{piston1978harmony}.
+% \begin{quote}
+%   True harmonisation, then, means a consideration of the alternatives in
+%   available chords, the reasoned selection of one of these alternatives, and
+%   the tasteful arrangement of the texture of the added parts with due regard
+%   for consistency of style
+% \end{quote}
 
-For a music student studying chorale harmonization, a common pedagogical
-exercise \citep{denny1960oxford}\citep{piston1978harmony} is a sequence of tasks increasing in difficulty:
-\begin{enumerate}
-  \item Providing either alto or tenor given fixed soprano and bass
-  \item Providing both alto and tenor parts given fixed soprano and bass
-  \item Harmonization: provide all remaining parts given only the soprano line
-  \item Composition: provide all four parts with nothing given in advance
-\end{enumerate}
+% The Baroque style employed by Bach has specific guidelines
+% such as disallowing parallel fifths and parallel octaves as well as
+% considerations for voice leading \citep{piston1978harmony}.
 
-There are no definitive formalization of the harmonization process, making
-evaluation difficult. Attenpts to formalize the process using Shenkerian
-structural analysis \citep{schenker1954harmony} and symbolic methods such as
-generative grammars \citep{lerdahl1983jackendoff}\citep{winograd1968linguistics}
-exist, but involve human analytical process.
+% For a music student studying chorale harmonization, a common pedagogical
+% exercise \citep{denny1960oxford}\citep{piston1978harmony} is a sequence of tasks increasing in difficulty:
+% \begin{enumerate}
+%   \item Providing either alto or tenor given fixed soprano and bass
+%   \item Providing both alto and tenor parts given fixed soprano and bass
+%   \item Harmonization: provide all remaining parts given only the soprano line
+%   \item Composition: provide all four parts with nothing given in advance
+% \end{enumerate}
 
-\section{Harmonizing}
+% There are no definitive formalization of the harmonization process, making
+% evaluation difficult. Attenpts to formalize the process using Shenkerian
+% structural analysis \citep{schenker1954harmony} and symbolic methods such as
+% generative grammars \citep{lerdahl1983jackendoff}\citep{winograd1968linguistics}
+% exist, but involve human analytical process.
 
-For chorale harmonization, we are interested in predicting the notes for a part
-given the other parts. Concretely, suppose we wish to predict a $L \in \NN$
-length sequence $w_{1:L}$. Let $\alpha \subset [1,T]$ be a multi-index,
-$\alpha^c \coloneqq [1,T] \setminus \{\alpha\}$, and $w_\alpha$ the tokens
-corresponding to the given parts. We are interested in finding
+\section{Adapting the automatic composition model}
+
+\nomenclature[a-Pstar]{$P^*$}{true probability distribution}
+\nomenclature[a-Ptilde]{$\tilde{P}$}{distribution predicted by model}
+\nomenclature[a-xstar]{$\x^*$}{the optimal harmonization}
+\nomenclature[a-xtilde]{$\tilde{\x}$}{the proposed harmonization}
+\nomenclature[a-xhat]{$\hat{\x}$}{values of fixed tokens in a harmonization}
+\nomenclature[g-alpha]{$\alpha$}{multi-index of fixed tokens in harmonization}
+\nomenclature[g-delta]{$\delta$}{Kroneker delta}
+
+Recall that \cref{sec:model-analysis} gave us a RNN model
+$\tilde{P}(\vec{x}_{t+1} | \vec{x}_{t}, \h_{t-1})$, which combined with a fixed
+initial hidden state $\h_0$ yields a \emph{sequential prediction model}
+$\tilde{P}(\x_t | \x_{1:t-1})$ approximating the \emph{true distribution}
+$P^*(\x_{t+1} | \x_{t})$. In this section, we describe a method for applying
+such a sequential prediction model to produce chorale harmonizations. The
+proposed technique is equivalent to a $1$-best greedy search through a lattice
+constrained by the fixed melody line, and we will explore how solutions from
+the lattice processing literature might be applied.
+
+In chorale harmonization, we are tasked to compose the notes for a subset of
+parts which are harmonically and stylistically compatible with the fixed parts.
+To be concrete, let $\{\x_{t}\}_{t=1}^T$ be a \emph{sequence of tokens}
+representing an encoded score. Let $\alpha \subset \{1,2,\cdots,T\}$ be \emph{a
+multi-index} and suppose $\hat{\x}_{\alpha}$ correspond to the \emph{fixed
+token values for the given parts} in the harmonization task. We are interested
+in optimizing the conditional distribution:
 \begin{equation}
-  w_{1:L}^* = \argmax_{w_{1:L}} P(w_{1:L} | w_{\alpha})
+  \x_{1:T}^* = \argmax_{x_{1:L}} P(\x_{1:L} | \x_{\alpha} = \hat{\x}_\alpha )
 \end{equation}
+First, any \emph{proposed solution} $\tilde{\x}_{1:T}$ must satisfy
+$\tilde{\x}_{\alpha} = \hat{\x}_\alpha$, so the only decision variables are
+$\tilde{\x}_{\alpha^c}$ where $\alpha^c \coloneqq \{1,2,\cdots,T\} \setminus
+\alpha$. \citet{hinton1986learning} refer to this constraint as ``clamping''
+the generative model.
 
-We can constrain the set of candidate sequences by first noting any solution
-$\hat{w_{1:L}}$ must satisfy $\hat{w}_\alpha = w_\alpha$. In
-\citet{hinton1986learning}, this is referred to as ``clamping'' the generative
-model. Next, we can ``fill in'' the unconstrained indices in the sequence by
-greedily sample from our generative model to arrive at an approximate solution:
-\begin{equation}
-  \hat{w_{t}} = \begin{cases}
-    w_{\alpha_t} &\text{if}~t \in \alpha \\
-    \argmax_{w_t} \hat{P}(w_t | \hat{w}_{1:t-1}) &\text{otherwise}
+The remaining task is to choose values for $\tilde{\x}_{\alpha^c}$.
+We propose a simple greedy strategy:
+\begin{equation}\label{eq:greedy-harmonization}
+  \tilde{\x}_{t} = \begin{cases}
+    \hat{\x}_{t} &\text{if}~t \in \alpha \\
+    \argmax_{\x_t} P(\x_t | \tilde{\x}_{1:t-1}) &\text{otherwise}
   \end{cases}
 \end{equation}
-where the hat on the previous words $\hat{w}_{1:t-1}$ indicates that they are
-set equal to the actual previous $\argmax$ choices.
+where the tilde on the previous tokens $\tilde{\x}_{1:t-1}$ indicate that they are
+equal to the actual previous $\argmax$ choices.
 
-This solution is approximate because while the factorization
-\begin{equation}
-  P(w_{1:L}) = \prod_{t=1}^L P(w_t | w_{1:t-1})
-\end{equation}
-is true and justifies our model, the factorization
-\begin{equation}
-  P(w_{1:L} | w_{\alpha}) = \prod_{t=1}^L \hat{P}(w_t | \hat{w_{1:t-1}} )
-\end{equation}
-does not hold. Some primary criticisms include
-\begin{itemize}
-  \item Modeling capacity limits for RNNs: the model $\hat{P}$ may not be able to fully express
-    the true distribution $P$ (\eg if $P$ is non-Markovian)
-  \item Greedy sequential selection: it is possible that the greedy $\argmax$ at each
-    time without accounting for future constraints on sequences $(w_{\alpha_{t'}})_{t' > t}$
-    leads to a solution with sub-optimal joint probability
-  \item Assumption that prior selections $\hat{w_{1:t-1}}$ optimize $P(w_t | w_{1:t-1})$:
-    the model $\hat{P}$ is trained on data which assumes all prior inputs have beeen
-    ground truth. It has been shown \mynote{mikolov} that such an assumption can lead to
-    very sensitive hidden state dynamics which are not robust to errors (\ie when
-    $\hat{w_{1:t-1}}$ contain errors).
-\end{itemize}
-Beam search is one way to mitigate the effects of greedy selection: our current
-method is equivalent to a beam search with width one. Maintaining $N$-best
-hypotheses using a lattice-based framework such as in \citet{liu2014efficient}
-would allow the model to partially recover from mistakes made during greedy
-action selection.
+We admit that this approach is a greedy approximation: we are not guaranteed
+$\hat{\x}_{1:T}$. In fact, we can view the problem as a search over a lattice
+of possible trajectories $\tilde{\x}_{1:T}$ constrained such that
+$\tilde{\x}_{\alpha} = \hat{\x}_\alpha$. Under the lattice framework, our
+strategy is recognized as a beam search with beam width $1$. A wider beam-width
+which maintained $N$-best hypotheses such as in \citet{liu2014efficient} would
+allow the model to partially recover from mistakes made by greedy action
+selection. We leave this extension for future work.
 
-Furthermore, another potential issue with the proposed model is a discrepancy
-between the inputs provided during training (which are taken from actual data
-sequences regargless of model predictions) and sampling (where the inputs are
-generated by the model at the previous timestep). To resolve this discrepancy,
-\citet{bengio2015scheduled} proposed \emph{scheduled sampling} as a curriculum
-learning strategy gradually transitioning sequence models to rely on their
-prior predictions as inputs and thereby learn state dynamics more resilient to
-erroneous inputs.
+% We make the 
+% \begin{itemize}
+%   \item Modeling capacity limits for RNNs: the model $\hat{P}$ may not be able to fully express
+%     the true distribution $P$ (\eg if $P$ is non-Markovian)
+%   \item Greedy sequential selection: it is possible that the greedy $\argmax$ at each
+%     time without accounting for future constraints on sequences $(w_{\alpha_{t'}})_{t' > t}$
+%     leads to a solution with sub-optimal joint probability
+%   \item Assumption that prior selections $\hat{w_{1:t-1}}$ optimize $P(w_t | w_{1:t-1})$:
+%     the model $\hat{P}$ is trained on data which assumes all prior inputs have beeen
+%     ground truth. It has been shown \mynote{mikolov} that such an assumption can lead to
+%     very sensitive hidden state dynamics which are not robust to errors (\ie when
+%     $\hat{w_{1:t-1}}$ contain errors).
+% \end{itemize}
+% Beam search is one way to mitigate the effects of greedy selection: our current
+% method is equivalent to a beam search with width one. Maintaining $N$-best
+% hypotheses using a lattice-based framework such as in \citet{liu2014efficient}
+% would 
 
-Despite these limitations, implementation of greedy action selection is still
-valuable because it forms the basis for more sophisticated lattice-based search
-methods as well as provides a baseline for comparing performance against.
+% Another potential issue with the proposed model is a discrepancy between the
+% inputs provided during training (which are taken from actual data sequences
+% regargless of model predictions) and sampling (where the inputs are generated
+% by the model at the previous timestep). To resolve this discrepancy,
+% \citet{bengio2015scheduled} proposed \emph{scheduled sampling} as a curriculum
+% learning strategy gradually transitioning sequence models to rely on their
+% prior predictions as inputs and thereby learn state dynamics more resilient to
+% erroneous inputs.
+
+% Despite these limitations, implementation of greedy action selection is still
+% valuable because it forms the basis for more sophisticated lattice-based search
+% methods as well as provides a baseline for comparing performance against.
 
 \section{Datasets}
-
-We create datasets where one or more parts are masked:
-\begin{itemize}
-  \item A single voice: Soprano (S), Alto (A), Tenor (T), or Bass (B)
-  \item The middle two voices (AT)
-  \item All voices except Soprano (ATB), aka \emph{harmonization}
-\end{itemize}
 
 \nomenclature[z-S]{S}{Soprano}
 \nomenclature[z-A]{A}{Alto}
@@ -135,12 +153,18 @@ We create datasets where one or more parts are masked:
 \nomenclature[z-ATB]{ATB}{Alto, Tenor, and Bass}
 \nomenclature[z-SATB]{SATB}{Soprano, Alto, Tenor, and Bass}
 
-Of particular interest is the AT dataset. Bach oftentimes only wrote the
-Soprano and Bass parts of a piece, leaving the middle parts to be filled in by
-students. Our networks performance on this task can be used as a benchmark for
-an easier task. Another intersting configuration is ATB, which corresponds to
-harmonizing a given melody (\ie Soprano line) and can be compared against
-prior work such as \citet{Allan2005}.
+We create datasets where one or more parts are to be harmonized by the model:
+\begin{enumerate}
+  \item A single parts: Soprano (S), Alto (A), Tenor (T), or Bass (B).
+  \item The middle two parts (AT).
+  \item All parts except Soprano (ATB). This is what is usually meant by \emph{harmonization}.
+\end{enumerate}
+It is widely accepted that these tasks successively increase in terms of
+difficulty \citep{denny1960oxford}. Of particular interest is the AT case.
+Bach oftentimes only wrote the Soprano and Bass parts of a piece, leaving the
+middle parts to be filled in by students. Based on these observations, we
+hypothesize that performance will be similar for harmonizing any single part
+and successively deteriorate for the AT and ATB cases respectively.
 
 \section{Results}
 \label{sec:harmonization-results}
@@ -148,29 +172,54 @@ prior work such as \citet{Allan2005}.
 \nomenclature[z-ter]{TER}{Token Error Rate}
 \nomenclature[z-fer]{FER}{Frame Error Rate}
 
+\subsection{Error rates harmonizing Bach chorales}
+
+We deleted different subsets of parts from a held-out validation corpus
+consisting of $10\%$ of the data and used the method proposed in
+\cref{eq:greedy-harmonization} to harmonize the missing parts. We evaluate
+our model's error rate predicting individual tokens (\emph{token error rate}, TER)
+as well as all tokens within frames (\emph{frame error rate}, FER) and show
+our results in \cref{fig:harmonization-results}.
+
 \begin{figure}[tb]
   \centering
   \input{Chapter6/Figs/harmonization-results.pgf}
-  \caption{Error rates for harmonization tasks}
+  \caption{Token error rates (TER) and frame error rates (FER) for various harmonization tasks}
   \label{fig:harmonization-results}
 \end{figure}
 
-We are unable to compare against \citet{Allan2005} because their model consists
-of multiple domain specific subtasks (\eg harmony and chord skeletons,
-ornamentation) and because they only consider the ATB case.
+Our results are surprising. Contrary to expectations, we found that error rates
+were significantly higher for S and A than for T and B. One possible
+explanation for this result is our design decision in
+\vref{sec:ordering-notes-within-frame} to order the notes within a frame in
+SATB order. While the model must immediately predict the Soprano part without
+any knowledge of the other parts, it has already processed all of the other
+parts and can utilize information about harmonic context when predicting the
+Bass parts. To further validate this idea, one could investigate trying other
+orderings in the encoding, which we propose as extension work.
 
 \subsection{Harmonizing popular tunes with BachBot}
 
-In addition to being able to harmonize Bach chorales, we found that BachBot was
-capable of generating Baroque acompanyments to a variety of pieces.
-\cref{fig:harm-twinkle-twinkle} shows BachBot's proposed ATB harmonization for
-\textit{Twinkle Twinkle Little Star}.
+One question we would like to investigate is the generality of the concepts
+extracted by the model. Although it is trained for sequential prediction of
+Bach chorales, \cref{sec:model-analysis} demonstrated that the model learns
+high-level music theoretic concepts. We hypothesized that these high-level
+concepts may enable the model to generalize to data which may significantly
+differ from its training data.
+
+To test this hypothesis, we used BachBot to produce a harmoniation for
+\textit{Twinkle Twinkle Little Star}, a popular English lullaby published
+more than $50$ years after Bach's era.
 
 \begin{figure}[tb]
   \centering
   \includegraphics[trim={0 10cm 0 3.7cm},clip,width=0.9\linewidth]{twinkle-twinkle-score.pdf}
-  \caption{Twinkle-twinkle soprano melody, ATB harmonized by BachBot}
+  \caption{BachBot's ATB harmonization to a \textit{Twinkle Twinkle Little Star} melody}
   \label{fig:harm-twinkle-twinkle}
 \end{figure}
 
-\mynote{EXPERIMENT: Given the head, fill in the rest.}
+To our surprise, we found that BachBot was not only able to generate a
+harmonically pleasant harmonization, but that \emph{the harmonization exhibited
+features reminiscent of Bach's Baroque style}. This result demonstrates that
+BachBot has successfully extracted statistical regularities from its input
+corpus which are involved in giving Baroque music its sense of style.

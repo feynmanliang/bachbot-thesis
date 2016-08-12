@@ -18,31 +18,44 @@
     \graphicspath{{Chapter7/Figs/Vector/}{Chapter7/Figs/}}
 \fi
 
-Many prior studies \citep{Eck2002-blues,Allan2005,Boulanger-Lewandowski2012,Lyu2015}
-evalute their success using either log likelihood or self-assessing
-some generated samples.
+Evaluation of automatic composition systems is still a difficult question with
+no generally-accepted solution. While many recent models use log-likelihood on
+the \textit{JCB Chorales} \citep{Allan2005} as as a benchmark for comparing
+performance
+\citep{Boulanger-Lewandowski2012,bayer2013fast,pascanu2013construct,goel2014polyphonic,zaremba2015empirical,Lyu2015},
+this evaluation merely measures a model's ability to approximate a probability
+distribution given limited data and does not correspond with success as an
+automatic composition problem.
 
-\citep{pearce2001towards} addresses difficulty in quantitative evaluation,
-suggesting the use of a learned critic in a manner similar to generative
-adversarial networks \citep{goodfellow2014generative}. In a later report,
-\citep{pearce2002motivations} attribute difficulty in evaluation due to lack
-aim: algorithmic composition, design of compositional tools, and computational
-modelling of musical styles or music cognition all have different motivations
-and should thus be evaluated differently.
+\citet{pearce2001towards,pearce2002motivations} attribute difficulty in
+evaluation due to lack aim, claiming that studies in automatic music generation
+do not clearly define their goals. They proceed to differentiate between three
+different goals for automatic music generation research, each with different
+evaluation critera:
+\begin{enumerate}
+  \item Automatic composition
+  \item Design of compositional tools
+  \item Computational modelling of music style/cognition
+\end{enumerate}
 
-Following advice of \citep{pearce2002motivations}, we identify our research
-motivation as building ``computational models'' for musical style and cognition.
-Specifically, our goal is to build a model which composes music in a style
-that is perceptually indistinguishable from Bach.
-To evaluate our results, we adapt Alan Turing's proposed ``Imitation Game''
-\citep{turing1950computing} and carry out a large-scale musical Turing test.
+While our model design and analysis has happened to yield interesting results
+relating to music cognition (\cref{ch:model-analysis}), it has not been the aim
+of our work. As initially stated in \cref{ch:intro}, \emph{the aim of our work is
+automatic composition}: to produce a system which automatically composes music
+indistinguishable from Bach.
 
-\citep{ariza2009interrogator} criticizes a musical Turing test as providing little data about
-how to improve the system, suggesting that listener studies using music experts
-may be more insightful.
+To directly measure our success on this task, we adapt Alan Turing's proposed
+``Imitation Game'' \citep{turing1950computing} into a musical Turing test.
+Although some authors \citep{ariza2009interrogator} are critical of such tests'
+ability to provide meaningful data which can be utilized to improve the system,
+their recommended alternative of listener studies with music experts is
+cost-prohibitive and generates a small sample of free-form text responses which
+must be manually analyzed.
 
 \section{Evaluation framework design}
 
+In this section, we describe the design of a software framework for conducting
+large-scale a musical Turing test. Our design 
 \subsection{Software architecture}
 
 The frontend utilizes React and Redux, allowing us to collect fine-grained user
@@ -118,29 +131,30 @@ compositions. See \cref{tab:bachbot-com-question-distribtion} for details.
 
 \subsection{Promoting the study}
 
-We promoted the study through solely through social media and personal
-contacts. Participation was voluntary and growth was organic; we did not
-solicit any paid responses or advertising. We found that $52.1\%$\todo{UPDATE}
-of participants were referred from social media, $4.8\%$ through other websites
-and blogs, $2\%$ through search engine results, and the remaining $41.2\%$ had
-directly accessed \url{bachbot.com},
+Unlike prior studies which leverage paid services like Amazon MTurk for human
+feedback \cite{quick2014kulitta}, we do not not compensate participants and
+promote our study only through social media and personal contacts.
+Participation was voluntary and growth was organic; we did not solicit any paid
+responses or advertising. We found that $52.1\%$\todo{UPDATE} of participants
+were referred from social media, $4.8\%$ through other websites and blogs,
+$2\%$ through search engine results, and the remaining $41.2\%$ had directly
+accessed \url{bachbot.com},
 
 \section{Results}\label{sec:eval-results}
 
 \subsection{Participant backgrounds and demographics}
 
-\mynote{Update with most recent results before submitting}
-We recieved a total of $695$\todo{UPDATE} participants from \todo{UPDATE}
+At the time of writing, we recieved a total of $759$ participants from $54$
 different countries. After selecting only the first response per IP address and
-filtering down to participants whom had listened to both choices in every
-question, we are left with $657$\todo{UPDATE} participants answering
-$5$ questions each to yield a total of $3285$\todo{UPDATE} responses.
+filtering down to participants whom had played both choices in every question
+at least once, we are left with $721$ participants answering $5$ questions each
+to yield a total of $3605$ responses.
 
 As evidenced by \vref{fig:user-geographics}, our participant is diverse and
 includes participants from six different continents.
 \vref{fig:user-demographics} shows that while the majority of our participants
-are between $18-45$\todo{UPDATE} and have played an instrument, more than
-$23.7\%$\todo{UPDATE} have either formally studied or taught music theory.
+are between $18-45$ and have played an instrument, more than
+$24.13\%$ of participants have either formally studied or taught music theory.
 
 \begin{figure}[p]
   \centering
@@ -246,12 +260,11 @@ cannot discern from actual Bach}.
 \section{User feedback}
 
 In this section, we showcase some of the particularly helpful feedback we
-received from our users and observe that some common themes are present
-among the features participants used to discriminate synthetic from original Bach.
+received from our users and observe that some common themes are present among
+the features participants used to discriminate synthetic from original Bach.
 
 Most critically, we found that lack of convincing phrasing to be one of the most
-cited difference between BachBot and real Back:
-
+cited difference between BachBot and real Bach:
 \begin{quote}
   The modulations and part writing were the giveaway for me (and once or twice the phrasing)
 \end{quote}
@@ -303,6 +316,7 @@ certain scores despite normalizing key and tempo:
 \end{quote}
 
 \section{Competitive analysis of large-scale evaluation methodologies}
+
 
 \mynote{Breakdown costs of Azure CDN, App Service, BlobStore. Most expensive was domain registration}
 
