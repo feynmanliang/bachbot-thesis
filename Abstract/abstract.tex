@@ -1,42 +1,38 @@
 % ************************** Thesis Abstract *****************************
 % Use `abstract' as an option in the document class to print only the titlepage and the abstract.
 \begin{abstract}
-  This thesis investigates Bach's music composition style using deep sequence
-  learning. We develop \textit{BachBot}: a deep LSTM model for automatic
-  stylistic composition of polyphonic music in the style of Bach's chorales.
+  This thesis investigates Bach's composition style using deep sequence
+  learning. We develop BachBot: an automatic stylistic composition system for
+  composing polyphonic music in the style of Bach's chorales.
+
   Our approach encodes music scores into a sequential format, reducing the task
   to one of sequence modeling. Traditional $N$-gram language models are found
   to be insufficient, prompting the use of RNN sequence models. We find a
   $3$-layer stacked LSTM performs best and conduct analyses and evaluations to
-  understand its success and failure modes.
+  understand its success and failure modes. Unlike many previous works, we
+  avoid allowing prior assumptions about music impact model design, opting
+  instead to build systems that learn rather than ones which encode prior
+  hypotheses. While this is not the first application of deep LSTM to Bach
+  chorales, our work consists of the following novel contributions.
 
-  Unlike many previous works where model architecture is carefully designed
-  using an understanding of music theory, we \emph{consciously avoid allowing
-  prior assumptions impact model design}, opting instead to build systems that
-  learn rather than ones which encode prior hypotheses. While this is not the
-  first application of deep LSTM to Bach chorales, our work consists of the
-  following novel contributions.
+  First, we devise a sequential encoding for polyphonic music which resolves
+  issues noted by prior work, including: the ability to determine when notes
+  end and a time-resolution exceeding all prior work by at least $2\times$.
 
-  First, we devise \emph{a sequential encoding for polyphonic music which
-  avoids hand-crafted features and resolves issues noted by prior work}. Our
-  improvements include the ability to determine when notes end and a
-  time-resolution at least two times greater than any prior work.
+  Second, we identify neurons which, without any prior knowledge or
+  supervision, have learned to specifically detect musically meaningful
+  concepts such as chords and cadences. To our knowledge, this is the first
+  reported reesult demonstrating LSTM is capable of learning high-level
+  musically-meaningful concepts automatically from data.
 
-  Second, our model analysis uncovers neurons which have learned to specialize
-  to detect music-theoretic concepts such as chords and cadences without any
-  prior knowledge or supervision. To our knowledge, this is \emph{the first
-    reported case demonstrating that LSTM is capable of learning complex
-  harmonic relations automatically from music data}.
-
-  Finally, we evaluate our automatic composition using a web-based musical
-  Turing test (\url{www.bachbot.com}) on a participant pool \emph{more than three
-  times larger than the next-closest comparable study} \citep{quick2014kulitta}.
-  We demonstrate that a voluntary participation study promoted over social
-  media can generate responses from a significant number ($165$ at time of
-  writing) of highly-skilled domain experts, and is infinitely more cost efficient.
-  After evaluating BachBot on $721$ participants, we found that participants
-  could only differentiate BachBot's generated chorales from Bach's originals
-  works only 9\% better than random guessing. In other words, \emph{generating
+  Finally, we build a web-based musical Turing test (\url{www.bachbot.com}) and
+  evaluate on a participant pool more than $3\times$ larger than the
+  next-closest comparable study \citep{quick2014kulitta}. We find that a
+  human evaluation study promoted over social media can yield responses from a
+  significant number ($165$ at time of writing) of domain experts. After
+  evaluating BachBot on $721$ participants, we found that participants could
+  only differentiate BachBot's generated chorales from Bach's originals works
+  \emph{only 9\% better than random guessing}. In other words, generating
   stylistically successful Bach chorales is more closed (as a result of
-BachBot) than open a problem}.
+  BachBot) than open a problem.
 \end{abstract}
