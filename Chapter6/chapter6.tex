@@ -103,6 +103,8 @@ We propose a simple greedy strategy:
 where the tilde on the previous tokens $\tilde{\x}_{1:t-1}$ indicate that they are
 equal to the actual previous $\argmax$ choices.
 
+\subsection{Shortcomings of the proposed model}\label{sec:shortcomings-harm}
+
 We admit that this approach is a greedy approximation: we are not guaranteed
 $\hat{\x}_{1:T}$. In fact, we can view the problem as a search over a lattice
 of possible trajectories $\tilde{\x}_{1:T}$ constrained such that

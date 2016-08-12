@@ -177,9 +177,13 @@ to yield a total of $3605$ responses.
 
 As evidenced by \vref{fig:user-geographics}, our participant is diverse and
 includes participants from six different continents.
-\vref{fig:user-demographics} shows that while the majority of our participants
-are between $18-45$ and have played an instrument, more than
+\vref{fig:user-demographics} shows that the majority of our participants are
+between $18-45$ and have played an instrument. The large number of participants
+with significant music experience is larger than our expectations: more than
 $24.13\%$ of participants have either formally studied or taught music theory.
+This large proportion of advanced participats shows that voluntary studies
+promoted through social media can generate significant participation by expert
+users interested in the problem domain.
 
 \begin{figure}[p]
   \centering
@@ -208,64 +212,73 @@ $24.13\%$ of participants have either formally studied or taught music theory.
 
 \subsection{BachBot's performance results}
 
-\mynote{Average time per response, average number plays/replays}
-
-\mynote{\cref{fig:responses-mask} suggests performance is weakest on
-  harmonizations. Unsurprising because we only do 1-best and don't account
-  for future. Bidirectional LSTM or N-best lattice search (reference marcin)
-  would do better}
-
-\cref{fig:responses-mask} shows the performance of BachBot on various question
-types. It shows that $59\%$\mynote{VERIFY LAST} of participants could correctly
-identify original Bach from BachBot's generated music. As the baseline method
-of randomly guessing between the two choices in \cref{fig:question-screen}
-achieves $50\%$, our findings suggest that {\bf the average participant has only a
-$9\%$\mynote{VERIFY LAST} better chance than randomly guessing when
-distinguishing Bach from BachBot correctly}.
-
-\mynote{Collins only uses expert evaluators} In comparison, a recently
-published comparable system for generating Bach-styled music found that
-$20\%$ of its evaluators were able to discriminate significantly better than chance.
-
 \begin{figure}[tb]
   \centering
   \input{Chapter7/Figs/responses-mask.pgf}
-  \caption{responses-Mask}
+  \caption{Proportion of participants correctly discriminating Bach from BachBot for each question type.}
   \label{fig:responses-mask}
 \end{figure}
 
-\cref{fig:responses-mask} also shows that participants had more trouble
-discriminating entire compositions (SATB) than harmonizations (AT, ATB) where a
-subset of the parts have already been given. While this may seem
-counterintuitive, recall that the model in \mynote{reference} is uni-directional
-and does not account for any future constraints on other parts. We made
-this design decision intentionally because one of our requirements was sampling
-the model for novel compositions. However, since harmonization tasks provide
-the full past and future context for other parts, they effectively impose constraints
-on LSTM hidden state dynamics. We expect methods which account for both future and past
-context (\eg using the output sequence from a bidirectional RNN\mynote{cite} inputs)
-to mitigate this problem, which we leave for future work.
-
-When only a single part is composed by BachBot, we find the results vary significantly
-across different parts. Composing the soprano part proved to be the easiest to
-discriminate, an unsurprising result given that in chorale style music soprano parts
-are responsible for the melody\mynote{cite}. Composing the alto and tenor parts achieved
-similar performance as composing all four parts, a result which may also be caused by
-not accounting for future constraints on model outputs. Removing the bass proved
-to be the most perceptually difficult to discern from real Bach.
-
-In \cref{fig:responses-mask-musicExperience}, responses are further segmented
-by music experience. Unsurprisingly, we find that the proportion of correct responses
-correlates positively with experience.
-
-\mynote{Comment more about these figures in captions}
-\mynote{Mark: Surprising that that new bass is so successful. Worthy of discussion.}
 \begin{figure}[tb]
   \centering
   \input{Chapter7/Figs/responses-mask-musicExperience.pgf}
   \caption{Proportion of correct responses for each question type and music experience level.}
   \label{fig:responses-mask-musicExperience}
 \end{figure}
+
+\Cref{fig:responses-mask} shows the performance of BachBot on various question
+types. The SATB column shows that particants on average successfully
+discriminated Bach from BachBot only $59\%$ of the time. As the baseline method
+of randomly guessing between the two choices in \cref{fig:question-screen}
+achieves $50\%$, our findings suggest that \emph{the pool of participants on
+average could only perform $9\%$ better than random guessing}. This is a much
+lower number than we anticipated and provides strong evidence affirming successful
+accomplishment of our research goals.
+
+In \cref{fig:responses-mask-musicExperience}, responses are further segmented
+by music experience. Unsurprisingly, we find that the proportion of correct responses
+correlates positively with experience.
+
+The weaker performance of BachBot's outputs on harmonization questions
+(\cref{fig:responses-mask}, AT, ATB) compared to automatic composition
+questions (\cref{fig:responses-mask}, SATB) is counterintuitive as one might
+expect the provided parts to better aid the model to create more Bach-like
+music. However, this result is expected and can be explained by the
+shortcomings of our greedy $1$-best harmonization method noted in
+\vref{sec:shortcomings-harm}.
+
+BachBot's results compare favorably against a recently published comparable
+automatic stylistic compostion system \citep{collins2016developing}, which
+found that $5$ out of $25$ participants were able to significantly
+differentiate their generated compositions from Bach. However, the comparison
+must be interpreted with case as \citet{collins2016developing} evaluate on a
+highly experienced participant pool averaging $8.56$.
+
+When only a single part is composed by BachBot, we find the results vary
+significantly across different parts. Composing only the Soprano part proved to be
+the easiest to discriminate, an unsurprising result given that in chorale style
+music soprano parts are responsible for the melody \citep{denny1960oxford}.
+Composing only the Alto or Tenor parts achieved similar performance as composing
+all four parts.
+
+However, using BachBot to compose new bass parts for Bach chorales yielded
+surprisingly successful results. \Cref{fig:responses-mask} shows that
+participants could not correctly discriminate Bach from BachBot any better than
+random guessing, and \cref{fig:responses-mask-musicExperience} showed that even
+advanced and expert participants could not distinguish the two. This may be due
+to BachBot's lower error rates harmonizing Bass parts compared to any other
+part (\vref{fig:harmonization-results}), or it could also suggest that Bass
+parts are least significant in defining Bach's compositional style.
+
+\subsubsection{Certain compositions by BachBot cannot be significantly discriminated Bach}
+
+\cref{fig:responses-name} shows the proportion correct of correct responses
+recieved for each question. Encouragingly, it shows that more than a quarter of
+the SATB pairs were not insignificantly different from baseline, suggesting
+that \textbf{while not always consistent BachBot is capable of composing music
+which the average participant cannot discern from actual Bach}. While we lack the
+expertise, one valuable extension would be to review the samples which performed
+abnormally well and poor and attempt to identify some regularities among them.
 
 \begin{figure}[tb]
   \centering
@@ -274,97 +287,91 @@ correlates positively with experience.
   \label{fig:responses-name}
 \end{figure}
 
-\cref{fig:responses-name} shows the proportion correct for each question.
-Encouragingly, it shows that $41.7\%$\mynote{VERIFY LAST} of the SATB pairs were not
-statistically different than baseline, suggesting that \textbf{while not always
-consistent BachBot is capable of composing music which the average participant
-cannot discern from actual Bach}.
+% \section{User feedback}
 
-\mynote{Reference Future work: analyze bad examples in \cref{fig:responses-name}}
+% We showcase some of the particularly helpful feedback we received from our
+% users and observe that some common themes are present among the features
+% participants used to discriminate synthetic from original Bach.
 
-\section{User feedback}
+% Most critically, we found that lack of convincing phrasing to be one of the most
+% cited difference between BachBot and real Bach:
+% \begin{quote}
+%   The modulations and part writing were the giveaway for me (and once or twice the phrasing)
+% \end{quote}
 
-In this section, we showcase some of the particularly helpful feedback we
-received from our users and observe that some common themes are present among
-the features participants used to discriminate synthetic from original Bach.
+% \begin{quote}
+%   Got 5/5. The trick is to listen for the unnatural pauses at regular intervals.
+% \end{quote}
 
-Most critically, we found that lack of convincing phrasing to be one of the most
-cited difference between BachBot and real Bach:
-\begin{quote}
-  The modulations and part writing were the giveaway for me (and once or twice the phrasing)
-\end{quote}
-
-\begin{quote}
-  Got 5/5. The trick is to listen for the unnatural pauses at regular intervals.
-\end{quote}
-
-\begin{quote}
-  Cool project, I scored 100\% so I'm quite pleased with myself ;o) I do
-  play an instrument although I'm not classical trained. If I had an
-  inkling to why I could choose the background phrasing of the Bach
-  pieces is far more elegant than the computer generated pieces.
-\end{quote}
+% \begin{quote}
+%   Cool project, I scored 100\% so I'm quite pleased with myself ;o) I do
+%   play an instrument although I'm not classical trained. If I had an
+%   inkling to why I could choose the background phrasing of the Bach
+%   pieces is far more elegant than the computer generated pieces.
+% \end{quote}
 
 
-\begin{quote}
-  really impressive! If I didn't know about counterpoint that quiz would've stumped me
-\end{quote}
+% \begin{quote}
+%   really impressive! If I didn't know about counterpoint that quiz would've stumped me
+% \end{quote}
 
-We also found that certain participants who have studied Bach chorales could recognize
-certain scores despite normalizing key and tempo:
-\begin{quote}
-  [BWV-248.5 ATB]
-  \#2: there was a first inversion at a strong cadence point that just wasn't
-  credible in the non-Bach clip (of course I am sure you can point to a piece
-  of Bach that does end on a first inversion!)
+% We also found that certain participants who have studied Bach chorales could recognize
+% certain scores despite normalizing key and tempo:
+% \begin{quote}
+%   [BWV-248.5 ATB]
+%   \#2: there was a first inversion at a strong cadence point that just wasn't
+%   credible in the non-Bach clip (of course I am sure you can point to a piece
+%   of Bach that does end on a first inversion!)
 
-  [BWV-248.5 ATB]
-  \#3: this was the hardest one to judge in my opinion. I went on gut feeling
-  of the first section, before the very slow part that I suspect may be an
-  artefact of the tempo normalisation that you have done. Were there perhaps
-  fewer open chords in the genuine Bach?
+%   [BWV-248.5 ATB]
+%   \#3: this was the hardest one to judge in my opinion. I went on gut feeling
+%   of the first section, before the very slow part that I suspect may be an
+%   artefact of the tempo normalisation that you have done. Were there perhaps
+%   fewer open chords in the genuine Bach?
 
-  [BWV-11.6 B]
-  \#4: the harmony felt quit wrong in this one - too many weird chromatic
-  harmonies and semitone clashes even for JSB and it ended in the wrong key.
+%   [BWV-11.6 B]
+%   \#4: the harmony felt quit wrong in this one - too many weird chromatic
+%   harmonies and semitone clashes even for JSB and it ended in the wrong key.
 
-  [BWV-436 SATB]
-  \#5: this one I found quite easy, partly because I recognised it, but also
-  because the algorithm was perhaps trying to be too clever and turn too many
-  harmonic corners in too quick a succession
+%   [BWV-436 SATB]
+%   \#5: this one I found quite easy, partly because I recognised it, but also
+%   because the algorithm was perhaps trying to be too clever and turn too many
+%   harmonic corners in too quick a succession
 
-  Further, although I couldn't quote BWV numbers to you, I recognised samples 2
-  and 5, though the performance of \#2 in particular seemed highly ornamented
-  and embellished.
+%   Further, although I couldn't quote BWV numbers to you, I recognised samples 2
+%   and 5, though the performance of \#2 in particular seemed highly ornamented
+%   and embellished.
 
-  The whole thing is really quite impressive overall though\ldots
-\end{quote}
+%   The whole thing is really quite impressive overall though\ldots
+% \end{quote}
 
-\section{Competitive analysis of large-scale evaluation methodologies}
+% \section{Competitive analysis of large-scale evaluation methodologies}
+
+% In cont
 
 
-\mynote{Breakdown costs of Azure CDN, App Service, BlobStore. Most expensive was domain registration}
+% \mynote{Breakdown costs of Azure CDN, App Service, BlobStore. Most expensive was domain registration}
 
-\mynote{Compare costs and quality with MTurk}
+% \mynote{Compare costs and quality with MTurk}
 
-Higher quality. Music experts are not usually doing tasks on MTurk, but would
-be very interested in an open-source research project. In contrast, $20\%$
-\mynote{UPDATE THIS NUMBER} of our participants have either formally studied
-or taught music theory.
+% Higher quality. Music experts are not usually doing tasks on MTurk, but would
+% be very interested in an open-source research project. In contrast, $20\%$
+% \mynote{UPDATE THIS NUMBER} of our participants have either formally studied
+% or taught music theory.
 
-\begin{quote}
-Payments on MTurk are suggested to follow a reasonable hourly rate, with an
-example of \$8 per hour or about 13c per minute. In practice, many mTurk
-tasks pay much less overall, with the median study paying just 5-10c for a task
-taking ``a few minutes,'' like watching and providing feedback on 3 short
-(15-second) videos, summarizing a website, and evaluating hypothetical and real
-market products. Indeed, ``wages'' this low have been shown to result in lower
-quality output than could be had for no payment at all, by pure volunteers.
-\end{quote}
-\citep{downs2010your}
+% \begin{quote}
+% Payments on MTurk are suggested to follow a reasonable hourly rate, with an
+% example of \$8 per hour or about 13c per minute. In practice, many mTurk
+% tasks pay much less overall, with the median study paying just 5-10c for a task
+% taking ``a few minutes,'' like watching and providing feedback on 3 short
+% (15-second) videos, summarizing a website, and evaluating hypothetical and real
+% market products. Indeed, ``wages'' this low have been shown to result in lower
+% quality output than could be had for no payment at all, by pure volunteers.
+% \end{quote}
+% \citep{downs2010your}
 
-MTurk is also crestricted to US participants only\cite{quick2014kulitta}.
+% MTurk is also crestricted to US participants only\cite{quick2014kulitta}.
 
-Paid service providers cost anywhere from \$20 to \$55 per month
-just for authoring tools and server space\citep{JCC4:JCC411} At the time of writing,
-paid responses cost \$1.50--\$3.00 on SurveyMonkey \citep{uksurveymonkey}.
+% Paid service providers cost anywhere from \$20 to \$55 per month
+% just for authoring tools and server space\citep{JCC4:JCC411} At the time of writing,
+% paid responses cost \$1.50--\$3.00 on SurveyMonkey \citep{uksurveymonkey}.
