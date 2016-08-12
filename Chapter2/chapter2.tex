@@ -38,7 +38,7 @@ by \vref{eq:rnn-dynamics} (review \cref{sec:primer-nn} if this is unfamiliar).
 \nomenclature[a-Nout]{$N_{out}$}{dimensionality of outputs}
 \nomenclature[a-T]{$T$}{total number of timesteps in a sequence}
 \nomenclature[g-sxh]{$\sigma$}{elementwise activation function}
-\nomenclature[g-th]{$\theta$}{Model Parameters}
+\nomenclature[g-th]{$\theta$}{model parameters}
 \nomenclature[r-l]{$(l)$}{layer index in multi-layer networks}
 \nomenclature[s-t]{$t$}{time index}
 \nomenclature[s-st]{$st$}{connections from source $s$ to target $t$}
@@ -181,8 +181,8 @@ from memory.
 \subsection{Training RNNs and backpropagation through time}
 
 \nomenclature[z-BPTT]{BPTT}{Backpropagation Through Time}
-\nomenclature[r-E]{$\mathcal{E}$}{Error or Loss}
-\nomenclature[r-Et]{$\mathcal{E}_t$}{Error or Loss at time $t$}
+\nomenclature[o-E]{$\mathcal{E}$}{error or loss}
+\nomenclature[o-Et]{$\mathcal{E}_t$}{error or loss at time $t$}
 
 The parameters $\vec{\theta}$ of a RNN are typically learned from data by
 minimizing some \emph{cost} $\mathcal{E} = \sum_{1 \leq t \leq T}
@@ -282,10 +282,10 @@ presents a significant challenge for music applications. As noted by
 
 \nomenclature[z-LSTM]{LSTM}{Long Short Term Memory}
 \nomenclature[z-CEC]{CEC}{Constant Error Carousel}
-\nomenclature[r-input-gate]{$\i_t$}{Input gate values at time $t$}
-\nomenclature[r-forget-gate]{$\f_t$}{Forget gate values at time $t$}
-\nomenclature[r-output-gate]{$\o_t$}{Output gate values at time $t$}
-\nomenclature[x-odot]{$\odot$}{Elementwise multiplication}
+\nomenclature[a-input-gate]{$\i_t$}{input gate values at time $t$}
+\nomenclature[a-forget-gate]{$\f_t$}{forget gate values at time $t$}
+\nomenclature[a-output-gate]{$\o_t$}{output gate values at time $t$}
+\nomenclature[x-odot]{$\odot$}{elementwise multiplication}
 
 In order to build a model which learns long range dependencies, vanishing
 gradients must be avoided. A popular memory cell architecture which does so is
