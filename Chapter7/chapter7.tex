@@ -55,13 +55,33 @@ must be manually analyzed.
 \section{Evaluation framework design}
 
 In this section, we describe the design of a software framework for conducting
-large-scale a musical Turing test. Our design 
+large-scale a musical Turing test which was deployed to \url{http://bachbot.com/}
+and used to evaluate our model on human evaluators.
+
 \subsection{Software architecture}
 
-The frontend utilizes React and Redux, allowing us to collect fine-grained user
-action data. Azure App Service is used to host an Express web-service which
-randomizes experimental questions and collects responses. The data is stored to
-Azure Data Storage and processed in batch MapReduce using Azure HDInsight.
+We architected the evaluation framework with two requirements in mind:
+\begin{enumerate}
+  \item It must scale in a cost-efficient manner to meet rapid growth
+  \item It must be easily adaptable for usage by others
+\end{enumerate}
+
+Our scalability requirement motivated our choice for using a cloud service
+provider to manage infrastructure. While multiple options for providers, we
+chose to use Microsoft Azure. Our application is built using
+Node.js\footnote{\url{https://nodejs.org/en/}} and is hosted by Azure App
+Services. We host static content (\eg audio samples) using Azure CDN to offload
+bandwidth. Responses collected from the survey are stored in Azure BlobStore, a
+distributed object store supporting batch MapReduce processing using Hadoop on
+HDInsight.
+
+The frontend is buit using
+React\footnote{\url{https://facebook.github.io/react/}} and
+Redux\footnote{\url{http://redux.js.org/}}. We chose these frameworks because
+their current popularity in front-end web development implies familiarity by a
+large number of users, achieving our second software requirement. Additionally,
+Redux enables fine-grained instrumentation of user actions and allows us to
+collect detailed data such as when users play/pause the sample.
 
 \subsection{User interface}
 
@@ -101,14 +121,18 @@ correct was reported.
 
 \subsection{Question generation}
 
-Questions were generated for both harmonizations (using the same abbreviations
-as defined in \mynote{ref}) as well as original compositions (denoted SATB as all parts
-are generated). For each question, a random chorale was selected without
-replacement from the corpus and paired with a corresponding harmonization.
-SATB sampls were paired with chorales randomly sampled from the corpus. The
-five question answered by any given participant were comprised of one S/A/T/B
-question chosen at random, one AT question, one ATB question, and two original
-compositions. See \cref{tab:bachbot-com-question-distribtion} for details.
+Questions were generated for both harmonizations produced using the method
+proposed in \cref{ch:harmonization} as well as automatic compositions generated
+by sequentially sampling the model from \cref{ch:automatic-composition}. We
+re-use notation from \cref{sec:harm-dataset} and use ``SATB'' to denote
+unconstrained automatic composition.
+
+For each question, a random chorale was selected without replacement from the
+corpus and paired with a corresponding harmonization. SATB samples were paired
+with chorales randomly sampled from the corpus. The five question answered by
+any given participant were comprised of one S/A/T/B question chosen at random,
+one AT question, one ATB question, and two original compositions. See
+\cref{tab:bachbot-com-question-distribtion} for details.
 
 \begin{table}[tb]
   \centering
@@ -135,10 +159,11 @@ Unlike prior studies which leverage paid services like Amazon MTurk for human
 feedback \cite{quick2014kulitta}, we do not not compensate participants and
 promote our study only through social media and personal contacts.
 Participation was voluntary and growth was organic; we did not solicit any paid
-responses or advertising. We found that $52.1\%$\todo{UPDATE} of participants
-were referred from social media, $4.8\%$ through other websites and blogs,
-$2\%$ through search engine results, and the remaining $41.2\%$ had directly
-accessed \url{bachbot.com},
+responses or advertising.
+
+We found that $50\%$ of participants were referred from social media, $4.8\%$
+through other websites and blogs, $2.6\%$ through search engine results, and
+the remaining $42.6\%$ had directly accessed \url{bachbot.com},
 
 \section{Results}\label{sec:eval-results}
 
@@ -160,7 +185,7 @@ $24.13\%$ of participants have either formally studied or taught music theory.
   \centering
   \begin{subfigure}[b]{0.98\textwidth}
     \centering
-    \includegraphics[width=0.85\linewidth]{participants-by-country.png}
+    \includegraphics[width=1.0\linewidth]{participants-by-country.png}
   \end{subfigure}
   \begin{subfigure}[c]{0.55\textwidth}
     \centering
