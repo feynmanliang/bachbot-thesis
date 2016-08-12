@@ -80,114 +80,110 @@ visualizations produced.
     \includegraphics[width=1.0\linewidth]{model-analysis-chords-3.pdf}
     \includegraphics[width=1.0\linewidth]{model-analysis-chords-4.pdf}
     \includegraphics[width=1.0\linewidth]{model-analysis-chords-5.pdf}
-    \caption{Neuron activations, pooled over frames}
+    \caption{Neuron activations after max pooling over frames}
     \label{fig:model-analysis-frames}
 \end{figure}
 
 The max-pooled frame-level activations are shown in
 \cref{fig:model-analysis-frames} As a result of pooling, the horizontal axis
 can be aligned and compared against the stimulus
-\cref{fig:model-analysis-stimulus}. Notice the appearance of vertical bands
-corresponding to when a chord/rest is held for multiple frames. In particular,
-the vector embedding corresponding to rests (\eg near frames $30$ and $90$ in
-\cref{fig:model-analysis-frames} top) are sparse, showing up as white smears
-not only in the embedding layer but on all LSTM memory cells.
-(the unpooled token-level activations are deferred to \vref{fig:model-analysis-tokens})
+\cref{fig:model-analysis-stimulus}.  This is note the case for unpooled
+token-level activations (see \vref{fig:model-analysis-tokens}).
+
+Notice the vertical bands corresponding to when a chord/rest is held for
+multiple frames. Also, the vector embedding corresponding to (\eg near frames
+$30$ and $90$ in \cref{fig:model-analysis-frames} top) are sparse, showing up
+as white smears on the LSTM memory cells at all levels of the model.
 
 \subsection{Probabilistic piano roll: likely variations of the stimulus}
 
-\mynote{Revise: the piano roll reference is removed}
-The bottom panel in \cref{fig:model-analysis-frames} shows the model's predictions
-for tokens in the next frames, where the tokens are arranged according to (arbitrary)
-index within the vocabulary. As the tokens correspond to pitches, they can be sorted
-according to pitch to reconstruct a {\bf probabilistic piano roll}\citep{eck2008learning}
-consisting of the model's sequence of next-frame predictions as it processes the input.
+The bottom panel in \cref{fig:model-analysis-frames} shows the model's
+predictions for tokens in the next frames, where the tokens are arranged
+according to some arbitrary ordering of tokens within the vocabulary. To aid
+interpretation, the tokens can be mapped back to their corresponding pitches
+and laid out to reconstruct a {\bf probabilistic piano
+roll}\citep{eck2008learning} consisting of the model's sequence of next-frame
+predictions as it processes the input. This is shown in
+\cref{fig:model-analysis-probabilistic-piano-roll}.
 
-\mynote{Revise: the piano roll reference is removed}
 \begin{figure}[tb]
     %~~\includegraphics[width=0.99\linewidth]{model-analysis-input-piano-roll.pdf}
     \centering
-    \includegraphics[trim={0 0 0 1.4cm},clip,width=1.0\linewidth]{model-analysis-probabilistic-piano-roll.pdf}
-    \caption{Probabilistic piano roll of next note predictions. Note the strong predictions
-    for fermatas near ends of phrases and the uncertain predictions immediately
-    after long periods of rest.}
+    \includegraphics[trim={0 0 0 0},clip,width=1.0\linewidth]{model-analysis-probabilistic-piano-roll.pdf}
+    \caption{Probabilistic piano roll of next note predictions.
+        The model assigns high probability to fermatas near ends of phrases, suggesting
+        an understanding of phrase structure in chorales.}
     \label{fig:model-analysis-probabilistic-piano-roll}
 \end{figure}
 
-Notice that the probabilistic piano roll in
-\cref{fig:model-analysis-probabilistic-piano-roll} closely resembles the
-stimulus. This is unsurprising because the recurrent inputs are taken from the
+One surprising insight from \cref{fig:model-analysis-probabilistic-piano-roll}
+is the high probability predictions for fermatas (third from top ``(.)'') near
+the end of phrases. This could indicate the model has managed to learned a
+notion of phrase structure.
+
+Anotering interesting row of \cref{fig:model-analysis-probabilistic-piano-roll}
+corresponds to frame delimiters (fourth from top, ``|||''). Notice that the
+predictions for frame delimiters are particularly strong during rests. This is
+because rests are encoded as empty frames, so the large probability values
+indicate that the model has learned to prolong periods of rests. At the end of
+rest periods, the model tends to assign probability across a wide range of
+notes, suggesting that there are more permissible notes to play at the end of a
+rest than in the middle of a phrase. Finally, the probability assigned to
+fermatas is larger near the ends of phrases, suggesting that the model has
+learned some notion of of phrasing within music.
+
+However, it may also not be very significant. Notice that the probabilistic
+piano roll in \cref{fig:model-analysis-probabilistic-piano-roll} closely
+resembles the stimulus. This is because the recurrent inputs are taken from the
 stimulus rather than sampled from the model's predictions (a.k.a.
-\citep{williams1989learning}), so a model which predicts to only continue holding
-its input would produce a probabilistic piano roll identical to the stimulus
-delayed by one frame.
-
-Two interesting rows of \cref{fig:model-analysis-probabilistic-piano-roll}
-are the rows corresponding to frame delimiters (fourth from top, ``|||'') and
-fermatas (third from top ``(.)''). Notice that the predictions for chord
-delimiters are particularly strong during rests. This is because rests are
-encoded as empty frames, so the large probability values indicate that the
-model has learned to prolong periods of rests. At the end of rest periods, the
-model tends to assign probability across a wide range of notes, consistent with
-the intuition that the possible notes occuring directly after a rest is less
-constrained than \mynote{cite the intuition?} those occuring in the middle of a
-phrase. Finally, notice that the probability assigned to fermatas is larger
-near the ends of phrases, suggesting that the model has successfully learned
-the concept of phrasing within music.
-
-The probabilistic piano roll can be interpreted as variations on the stimulus
-which the model finds likely and may serve as a useful computational tool for
-generating likely chorale variations.
+\citep{williams1989learning}), so a model which predicts to only continue
+holding its input would produce a probabilistic piano roll identical to the
+stimulus delayed by one frame.
 
 \subsection{Neurons specific to musical concepts}\label{sec:music-concept-neurons}
 
 Research in convolutional networks has shown that individual neurons within the
 network oftentimes specialize and specifically detect certain high-level visual
-features\mynote{Cite deconvolution}. Extending the analogy to musical data, we
-might expect certain neurons within our learned model to act as specific
-detectors to certain musical concepts.
+features \citep{zeiler2010deconvolutional}. Extending the analogy to musical
+data, we might expect certain neurons within our learned model to act as
+specific detectors to certain musical concepts.
 
 To investigate this further, we look at the activations over time of individual
-neurons within the LSTM memory cells. Our results confirm our hypothesis: we
-discover certain neurons whose activities are correlated to specific motifs,
-chord progression, and phrase structures. The activity profiles of these
-neurons are shown in \cref{fig:model-analysis-cells-individual}.
+neurons within the LSTM memory cells. We discover certain neurons whose
+activities appear correlated to specific motifs, chord progression, and phrase
+structures, and show their activity profiles in
+\cref{fig:model-analysis-cells-individual}.
 
 \begin{figure}[tb]
     \centering
     \includegraphics[width=1.0\linewidth]{model-analysis-cells-individual.png}
-    \caption{Activation profiles of neurons within our model which have learned
-    high-level musical concepts}
+    \caption{Activation profiles demonstrating that neurons have specialized to become
+    highly specific detectors of musically relevant features}
     \label{fig:model-analysis-cells-individual}
 \end{figure}
 
-For notational clarity, we will use the ordered tuple $(l,i)$ to refer to the
-$i$th neuron in layer $l$.
+Given our limited knowledge of music theory, we provided the actication
+profiles for our collaborator Dr.\ Mark Gotham \citet{mark-analysis}, who
+provided the following remarks:
+\begin{itemize}
+    \item The first two (Layer 1, Neuron 64 / Layer 1, Neuron 138) seem to pick out (specifically) perfect cadence
+        with root position chords in the the tonic key.
+    \item There are no imperfect cadences here; just one interruptions into bar 14.
+    \item Layer 1, Neuron 87: the I$^6$ chords on the first downbeat, and its reprise 4 bars later.
+    \item Layer 1, Neuron 151: the two equivalent a minor (originally b minor) cadences that end phrases 2 and 4.
+    \item Layer 2, Neuron 37: Seems to be looking for I$^6$ chords: strong peak
+        for a full I$^6$; weaker for other similar chords (same bass).
+    \item The rest are less clear to me.
+\end{itemize}
+Dr.\ Gotham's analysis suggests that while some neurons are ambiguous to interpretation,
+other neurons have learned highly specific and musically relevant concents.
 
-The first three neurons ($(1,64)$, $(1,138)$, $(1,207)$) shown in the 2nd to
-4th panel from top of \cref{fig:model-analysis-cells-individual} effectively
-behave like cadence detectors. While they all exhibit activity when the
-stimulus contains $V$ chords (\ie G-major). $(1,64)$ and $(1,138)$ are both
-specific to perfect cadences (\ie $V -- I$ chord progressions) used to
-conclude phrases and differ only in the chord inversions which they are most
-sensitive to. In contrast, $(1,207)$ only exhibits activity for the $V$ chord
-associated with the imperfect cadences near frames $150$ and $180$.
-
-The next two neurons in \cref{fig:model-analysis-cells-individual}, $(1,87)$
-and $(1,151)$, act as motif detectors. Activity in $(1,151)$ peaks when a $vi-vii-vi$
-progression is present in the stimulus. $(1,87)$ exhibits large spikes on $I--V--I$,
-
-$(2,37)$ exhibits less specificity, but has large spikes right before the $IV$ chord
-in $I--IV$ chord progressions.
-
-$(2,82)$ peaks at the top of an ascending harmonic progressions, right before a descending
-major scale is to follow.
-
-$(2, 243)$ is specific to $v -- vi$ progressions, with large spikes occuring at
-the $v -- vi$ progressions near frames $55$, $120$, $130$, and a lower intensity spike at
-$170$. Some activity is also observed for the $V -- vi$ around frame $230$ despite
-the first chord being a major mode $V$ rather than minor $v$.
-
-\mynote{Add mark's analysis and credit him}
-\mynote{This refutes criticisms of black boxness of approach, play it up}
+To our knowledge, this is the first reported result demonstrating LSTM neurons
+specializing to detect musically meaningful features. As we were careful to
+avoid imposing prior assumptions when designing the model, these neurons
+learned to specialize as a result of exposure to the Bach data. While we are
+hesitant to make broader conclusions from this single experiment, the
+implications of this finding are tremendously exciting for music theorists
+and deep learning researchers alike. We propose future work in this area
+in \vref{sec:future-work}.
 
