@@ -1,0 +1,113 @@
+% ******************************* Thesis Appendix D ****************************
+\chapter{Appendix D: Description of Software}\label{sec:software}
+
+\ifpdf
+    \graphicspath{{Appendix4/Figs/Raster/}{Appendix4/Figs/PDF/}{Appendix4/Figs/}}
+\else
+    \graphicspath{{Appendix4/Figs/Vector/}{Appendix4/Figs/}}
+\fi
+
+This appendix chapter provides a listing of the key elements of software as
+well instructions for accessing the code and reproducing the experiments. The
+software is divided into three different repositories: \texttt{bachbot}
+includes tools to preprocess musical data and train/sample/harmonize/score LSTM
+sequence models, and the other two repositories are the front-end javascript
+client (\texttt{subjective-evaluation-client}) and back-end \texttt{node.js}/Azure
+server (\texttt{subjective-evaluation-server}).
+
+\section{\texttt{bachbot}}
+
+The \texttt{bachbot} repository contains code related to:
+\begin{enumerate}
+    \item Preprocessing and sequential encoding for polyphonic music (\path{bachbot/scripts/datasets.py})
+    \item A modified version of \texttt{torch-rnn} supporting harmonization and
+        UTF8 token sequences (\path{bachbot/scripts/harm\_model})
+    \item Training \texttt{torch-rnn} the \texttt{bachbot} sequence model (\path{bachbot/scripts/train.py})
+    \item Automatic composition (\ie sampling) with a trained model (\path{bachbot/scripts/sample.py})
+    \item Harmonization with a trained model (\path{bachbot/scripts/harm\_model/harmonize.lua})
+    \item Benchmarking against $N$-gram language models \path{bachbot/scripts/benchmarks/}
+    \item Benchmarking against other memory-cell implementations \path{bachbot/scripts/theanet/}
+\end{enumerate}
+
+We provide the following files to demonstrate some use cases:
+\begin{enumerate}
+    \item \path{bachbot/scripts/0-prepare\_all.zsh} -- prepares preprocessed and encoded corpuses
+        for model training, automatic composition, and harmonization
+    \item \path{bachbot/scripts/1-train.zsh} -- trains the LSTM sequence model with parameters used
+        for our experiments
+    \item \path{bachbot/scripts/2-sample-decode.zsh} -- automatic composition; samples a token
+        sequence from the LSTM and decodes into \texttt{musicxml}
+    \item \path{bachbot/scripts/3-harmonize.zsh} -- harmonization; performs all harmonization tasks,
+        decodes and scores the results
+\end{enumerate}
+
+\section{Subjective evaluation}
+
+We provide our infrastructure for conducting large-scale web-based human evaluation, which can be
+easily adapted to other applications. Our code is split into two parts: front-end and back-end.
+
+\subsection{\texttt{subjective-evaluation-client}}
+
+The client is written in Javascript (ECMAScript 2016) and requires compilation
+(\texttt{npm run build}) before it can be deployed. Some important
+files/folders:
+\begin{enumerate}
+    \item \path{src/components} -- contains the React code for front-end
+        components (\eg audio playback, quiz question-response form, user-info
+        form, landing page)
+    \item \path{src/redux} -- contains the Redux code for application state management
+        and data collection
+    \item \path{test} -- contains tests documenting and enforcing correct application behavior
+\end{enumerate}
+
+\subsection{\texttt{subjective-evaluation-server}}
+
+The server is written using \texttt{node.js} and requires an Azure connection string to be
+available in the shell environment. The repository is organized as follows:
+\begin{enumerate}
+    \item \path{src/app.js} -- static serving of \texttt{experiments.json} and handling
+        of POST \texttt{/submitResponse} which persists responses to Azure BlobStorage
+    \item \path{src/public} -- directory for static assets
+    \item \path{scripts/} -- utilities for interacting with Azure (\eg setting CORS headers,
+        uploading experiments, downloading responses)
+\end{enumerate}
+
+\section{Instructions for access and reproducting experiments}
+
+All software has been made open-source and is available on GitHub:
+\begin{itemize}
+    \item \url{https://github.com/feynmanliang/bachbot}
+    \item \url{https://github.com/feynmanliang/subjective-evaluation-client}
+    \item \url{https://github.com/feynmanliang/subjective-evaluation-server}
+\end{itemize}
+
+To reproduce experimental results, we recommend cloning the \texttt{bachbot} repository
+and exploring \path{README.md} and the source code in \path{scripts/bachbot.py}.
+
+Although we use Azure for the back-end, \texttt{subjective-evaluation-client}
+was written to be vendor-agnostic and can be delivered by any static content
+web-server or content delivery network. Its dependencies are:
+\begin{itemize}
+    \item A URL providing \texttt{experiments.json}
+    \item A REST end-point handling POSTs to \texttt{/submitResponse} which persists
+        JSON blobs containing user responses
+\end{itemize}
+After cloning the repository, run \texttt{npm install && npm start}.
+
+A Microsoft Azure account is required for deploying \texttt{subjective-evaluation-server}.
+Its dependencies are:
+\begin{itemize}
+    \item Azure App Service -- for running the \texttt{node.js} web server
+    \item Azure BlobStorage -- for persisting JSON blobs of user responses
+\end{itemize}
+After cloning the repository, run \texttt{npm install && npm start} to start the server
+locally. Look at \texttt{npm run deploy} for more details on deploying to Azure.
+
+Although not required, we encourage the use of a CDN to serve \texttt{mp3}
+files, parameters for the current quiz questions (\texttt{experiments.json}),
+and even the compiled front-end javascript (\texttt{bundle.js}). We use Azure
+CDN for this purpose.
+
+IPython notebooks reproducing the data analyses, figures, and tables shown in this
+dissertation are available at
+\url{https://github.com/feynmanliang/bachbot-thesis}.
