@@ -7,13 +7,15 @@
     \graphicspath{{Appendix4/Figs/Vector/}{Appendix4/Figs/}}
 \fi
 
-This appendix chapter provides a listing of the key elements of software as
-well instructions for accessing the code and reproducing the experiments. The
-software is divided into three different repositories: \texttt{bachbot}
-includes tools to preprocess musical data and train/sample/harmonize/score LSTM
-sequence models, and the other two repositories are the front-end javascript
-client (\texttt{subjective-evaluation-client}) and back-end \texttt{node.js}/Azure
-server (\texttt{subjective-evaluation-server}).
+This appendix chapter provides a listing of the key
+elements of software as well instructions for accessing
+the code and reproducing the experiments. The software
+is divided into three different repositories:
+\texttt{bachbot} includes tools to preprocess musical
+data and train/sample/harmonize/score LSTM sequence
+models, and the other two repositories are the
+front-end javascript client and back-end
+\texttt{node.js}/Azure server.
 
 \section{\texttt{bachbot}}
 
@@ -21,17 +23,17 @@ The \texttt{bachbot} repository contains code related to:
 \begin{enumerate}
     \item Preprocessing and sequential encoding for polyphonic music (\path{bachbot/scripts/datasets.py})
     \item A modified version of \texttt{torch-rnn} supporting harmonization and
-        UTF8 token sequences (\path{bachbot/scripts/harm\_model})
+        UTF8 token sequences (\path{bachbot/scripts/harm_model})
     \item Training \texttt{torch-rnn} the \texttt{bachbot} sequence model (\path{bachbot/scripts/train.py})
     \item Automatic composition (\ie sampling) with a trained model (\path{bachbot/scripts/sample.py})
-    \item Harmonization with a trained model (\path{bachbot/scripts/harm\_model/harmonize.lua})
+    \item Harmonization with a trained model (\path{bachbot/scripts/harm_model/harmonize.lua})
     \item Benchmarking against $N$-gram language models \path{bachbot/scripts/benchmarks/}
     \item Benchmarking against other memory-cell implementations \path{bachbot/scripts/theanet/}
 \end{enumerate}
 
 We provide the following files to demonstrate some use cases:
 \begin{enumerate}
-    \item \path{bachbot/scripts/0-prepare\_all.zsh} -- prepares preprocessed and encoded corpuses
+    \item \path{bachbot/scripts/0-prepare_all.zsh} -- prepares preprocessed and encoded corpuses
         for model training, automatic composition, and harmonization
     \item \path{bachbot/scripts/1-train.zsh} -- trains the LSTM sequence model with parameters used
         for our experiments
@@ -92,7 +94,7 @@ web-server or content delivery network. Its dependencies are:
     \item A REST end-point handling POSTs to \texttt{/submitResponse} which persists
         JSON blobs containing user responses
 \end{itemize}
-After cloning the repository, run \texttt{npm install && npm start}.
+After cloning the repository, run \texttt{npm install \&\& npm start}.
 
 A Microsoft Azure account is required for deploying \texttt{subjective-evaluation-server}.
 Its dependencies are:
@@ -100,7 +102,7 @@ Its dependencies are:
     \item Azure App Service -- for running the \texttt{node.js} web server
     \item Azure BlobStorage -- for persisting JSON blobs of user responses
 \end{itemize}
-After cloning the repository, run \texttt{npm install && npm start} to start the server
+After cloning the repository, run \texttt{npm install \&\& npm start} to start the server
 locally. Look at \texttt{npm run deploy} for more details on deploying to Azure.
 
 Although not required, we encourage the use of a CDN to serve \texttt{mp3}
