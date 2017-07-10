@@ -48,7 +48,7 @@ def latexify(fig_width=None, fig_height=None, columns=1, tick_labelsize=8):
         "xtick.labelsize": tick_labelsize,
         "ytick.labelsize": tick_labelsize,
         'figure.figsize': [fig_width,fig_height],
-        'text.latex.preamble': ['\usepackage{gensymb}'],
+        'text.latex.preamble': [r'\usepackage{gensymb}'],
         "pgf.preamble": [
             r"\usepackage[utf8x]{inputenc}",    # use utf8 fonts becasue your computer can handle it :)
             r"\usepackage[T1]{fontenc}",        # plots will be generated using this preamble
